@@ -1,0 +1,76 @@
+const Coupon = require('../models/Coupon');
+
+// @desc    Get all coupons
+// @route   GET /api/coupons
+// @access  Private/Admin
+const getCoupons = async (req, res) => {
+    try {
+        const { search, status } = req.query;
+        let query = {};
+
+        if (search) {
+            query.code = { $regex: search, $options: 'i' };
+        }
+
+        if (status && status !== 'all') {
+            query.status = status;
+        }
+
+        const coupons = await Coupon.find(query).sort({ createdAt: -1 });
+        res.json(coupons);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// @desc    Create a new coupon
+// @route   POST /api/coupons
+// @access  Private/Admin
+const createCoupon = async (req, res) => {
+    try {
+        const { code, discountType, discountValue, minOrderAmount, validUntil, status } = req.body;
+
+        const couponExists = await Coupon.findOne({ code: code.toUpperCase() });
+        if (couponExists) {
+            return res.status(400).json({ message: 'Coupon code already exists' });
+        }
+
+        const coupon = await Coupon.create({
+            code: code.toUpperCase(),
+            discountType,
+            discountValue: Number(discountValue),
+            minOrderAmount: Number(minOrderAmount) || 0,
+            validUntil: new Date(validUntil),
+            status: status || 'active'
+        });
+
+        res.status(201).json(coupon);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// @desc    Toggle coupon status (disable/enable)
+// @route   PUT /api/coupons/:id/toggle
+// @access  Private/Admin
+const toggleCouponStatus = async (req, res) => {
+    try {
+        const coupon = await Coupon.findById(req.params.id);
+
+        if (coupon) {
+            coupon.status = coupon.status === 'active' ? 'disabled' : 'active';
+            const updatedCoupon = await coupon.save();
+            res.json(updatedCoupon);
+        } else {
+            res.status(404).json({ message: 'Coupon not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+module.exports = {
+    getCoupons,
+    createCoupon,
+    toggleCouponStatus
+};
