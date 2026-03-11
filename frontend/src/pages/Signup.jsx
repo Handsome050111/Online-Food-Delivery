@@ -26,6 +26,17 @@ const Signup = () => {
         }
     };
 
+    // Auto-redirect if user hits the back button to /signup but is still logged in
+    React.useEffect(() => {
+        const userInfoContext = JSON.parse(localStorage.getItem('userInfo'));
+        if (userInfoContext) {
+             if (userInfoContext.role === 'admin') navigate('/admin');
+             else if (userInfoContext.role === 'rider') navigate('/rider');
+             else if (userInfoContext.role === 'owner') navigate('/owner');
+             else navigate('/');
+        }
+    }, [navigate]);
+
     return (
         <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">
             <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">

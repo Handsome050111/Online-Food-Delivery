@@ -10,9 +10,22 @@ const PartnerRegistration = () => {
         name: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        restaurantName: '',
+        restaurantCategory: ''
     });
     const [loading, setLoading] = useState(false);
+
+    // Auto-redirect if user hits the back button to /partner but is still logged in
+    React.useEffect(() => {
+        const userInfoContext = JSON.parse(localStorage.getItem('userInfo'));
+        if (userInfoContext) {
+             if (userInfoContext.role === 'admin') navigate('/admin');
+             else if (userInfoContext.role === 'rider') navigate('/rider');
+             else if (userInfoContext.role === 'owner') navigate('/owner');
+             else navigate('/');
+        }
+    }, [navigate]);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,6 +44,8 @@ const PartnerRegistration = () => {
                 name: formData.name,
                 email: formData.email,
                 password: formData.password,
+                restaurantName: formData.restaurantName,
+                restaurantCategory: formData.restaurantCategory,
                 role: 'owner' // Explicitly request an owner portal
             });
 
@@ -68,6 +83,43 @@ const PartnerRegistration = () => {
                 <div className="bg-white py-8 px-4 shadow-xl shadow-gray-200/50 sm:rounded-2xl sm:px-10 border border-gray-100">
                     
                     <form className="space-y-6" onSubmit={handleSubmit}>
+                        
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700">Restaurant Name</label>
+                            <div className="mt-2 relative rounded-xl shadow-sm">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <Store className="h-5 w-5 text-gray-400" />
+                                </div>
+                                <input
+                                    type="text"
+                                    name="restaurantName"
+                                    required
+                                    value={formData.restaurantName}
+                                    onChange={handleChange}
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-100 focus:border-primary-400 font-medium transition-colors"
+                                    placeholder="e.g. Pizza Express"
+                                />
+                            </div>
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-bold text-gray-700">Cuisine / Category</label>
+                            <div className="mt-2 relative rounded-xl shadow-sm">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <Store className="h-5 w-5 text-gray-400" />
+                                </div>
+                                <input
+                                    type="text"
+                                    name="restaurantCategory"
+                                    required
+                                    value={formData.restaurantCategory}
+                                    onChange={handleChange}
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-100 focus:border-primary-400 font-medium transition-colors"
+                                    placeholder="e.g. Italian, Burgers"
+                                />
+                            </div>
+                        </div>
+                        
                         <div>
                             <label className="block text-sm font-bold text-gray-700">Business Owner Name</label>
                             <div className="mt-2 relative rounded-xl shadow-sm">

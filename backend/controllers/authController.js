@@ -24,6 +24,7 @@ const loginUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                status: user.status,
                 token: generateToken(user._id),
             });
         } else {
@@ -39,7 +40,7 @@ const loginUser = async (req, res) => {
 // @access  Public
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, role, restaurantName, restaurantCategory } = req.body;
 
         const userExists = await User.findOne({ email });
 
@@ -48,15 +49,28 @@ const registerUser = async (req, res) => {
         }
 
         // Restrict role assignment to just customer or owner to prevent privilege escalation
-        const userRole = req.body.role === 'owner' ? 'owner' : 'customer';
+        const userRole = role === 'owner' ? 'owner' : 'customer';
+        const userStatus = role === 'owner' ? 'pending' : 'active';
 
         const user = await User.create({
             name,
             email,
             password,
             role: userRole,
-            status: 'active'
+            status: userStatus
         });
+        
+        // If owner, automatically create a pending restaurant linked to them
+        if (userRole === 'owner' && restaurantName && restaurantCategory) {
+            const Restaurant = require('../models/Restaurant');
+            await Restaurant.create({
+                owner: user._id,
+                ownerName: name,
+                name: restaurantName,
+                category: restaurantCategory,
+                status: 'pending'
+            });
+        }
 
         if (user) {
             res.status(201).json({
@@ -64,6 +78,7 @@ const registerUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
+                status: user.status,
                 token: generateToken(user._id),
                 message: 'Account created successfully'
             });

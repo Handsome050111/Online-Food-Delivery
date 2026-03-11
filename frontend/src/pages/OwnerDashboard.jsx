@@ -1,13 +1,60 @@
-import React from 'react';
-import { ShoppingBag, Star, DollarSign, TrendingUp, Check, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ShoppingBag, Star, DollarSign, TrendingUp, Check, X, ShieldAlert } from 'lucide-react';
 import StatsCard from '../components/StatsCard';
+import api from '../services/api';
 
 const OwnerDashboard = () => {
+    const [userContext, setUserContext] = useState(null);
+    const [restaurant, setRestaurant] = useState(null);
+
+    useEffect(() => {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        if (userInfo) {
+            setUserContext(userInfo);
+        }
+    }, []);
+
+    useEffect(() => {
+        const fetchRestaurant = async () => {
+            try {
+                const { data } = await api.get('/restaurants/my-restaurant');
+                if (data.success) {
+                    setRestaurant(data.data);
+                }
+            } catch (error) {
+                console.error("Error fetching restaurant:", error);
+            }
+        };
+
+        if (userContext && userContext.status !== 'pending') {
+            fetchRestaurant();
+        }
+    }, [userContext]);
+
+    if (userContext?.status === 'pending') {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center animate-in zoom-in-95 duration-500">
+                <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-sm border border-orange-200">
+                    <ShieldAlert size={48} className="text-orange-500" />
+                </div>
+                <h1 className="text-3xl font-extrabold text-gray-900 mb-4 tracking-tight">Account Under Verification</h1>
+                <p className="text-gray-600 font-medium max-w-md mx-auto leading-relaxed">
+                    Welcome, {userContext.name}! Your partner application is currently being reviewed by our administration team.
+                    Once approved, your restaurant dashboard will be unlocked and you can start receiving orders.
+                </p>
+                <div className="mt-8 px-6 py-3 bg-orange-50 text-orange-700 rounded-xl border border-orange-200 font-bold text-sm shadow-sm inline-flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
+                    Status: Pending Admin Approval
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div>
             <div className="mb-8 flex flex-wrap justify-between items-end gap-4">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Burger Joint Dashboard</h1>
+                    <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">{restaurant ? restaurant.name : `${userContext?.name}'s Dashboard`}</h1>
                     <p className="text-gray-500 font-medium pt-1">Manage your restaurant operations from here.</p>
                 </div>
                 <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3.5 py-1.5 rounded-lg border border-green-200 shadow-sm">

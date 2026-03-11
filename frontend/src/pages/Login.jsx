@@ -21,22 +21,29 @@ const Login = () => {
             // Store user info in localStorage
             localStorage.setItem('userInfo', JSON.stringify(data));
 
-            // Redirect based on role
-            if (data.role === 'admin') {
-                navigate('/admin');
-            } else if (data.role === 'rider') {
-                navigate('/rider');
-            } else if (data.role === 'owner') {
-                navigate('/owner');
-            } else {
-                navigate('/');
-            }
+            // Execute programmatic dashboard switch immediately on memory load
+            if (data.role === 'admin') navigate('/admin');
+            else if (data.role === 'rider') navigate('/rider');
+            else if (data.role === 'owner') navigate('/owner');
+            else navigate('/');
+            
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to login');
         } finally {
             setLoading(false);
         }
     };
+
+    // Auto-redirect if user hits the back button to /login but is still logged in
+    React.useEffect(() => {
+        const userInfoContext = JSON.parse(localStorage.getItem('userInfo'));
+        if (userInfoContext) {
+             if (userInfoContext.role === 'admin') navigate('/admin');
+             else if (userInfoContext.role === 'rider') navigate('/rider');
+             else if (userInfoContext.role === 'owner') navigate('/owner');
+             else navigate('/');
+        }
+    }, [navigate]);
 
     return (
         <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50">

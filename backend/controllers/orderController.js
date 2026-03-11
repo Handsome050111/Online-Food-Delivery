@@ -43,12 +43,12 @@ const getMyOrders = async (req, res) => {
     }
 };
 
-// @desc    Get all orders (admin)
+// @desc    Get all orders (admin & owner filter)
 // @route   GET /api/orders
-// @access  Private/Admin
+// @access  Private
 const getOrders = async (req, res) => {
     try {
-        const { search, status } = req.query;
+        const { search, status, restaurant } = req.query;
         let query = {};
 
         if (search) {
@@ -61,6 +61,10 @@ const getOrders = async (req, res) => {
 
         if (status && status !== 'all') {
             query.status = status;
+        }
+
+        if (restaurant) {
+            query.restaurant = restaurant;
         }
 
         const orders = await Order.find(query).sort({ createdAt: -1 });

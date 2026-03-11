@@ -36,6 +36,9 @@ import AdminCoupons from './pages/AdminCoupons';
 import Notifications from './pages/Notifications';
 import AdminRiders from './pages/AdminRiders';
 import OwnerDashboard from './pages/OwnerDashboard';
+import OwnerMenu from './pages/OwnerMenu';
+import OwnerOrders from './pages/OwnerOrders';
+import OwnerAnalytics from './pages/OwnerAnalytics';
 import RiderDashboard from './pages/RiderDashboard';
 import RiderActiveTask from './pages/RiderActiveTask';
 import RiderHistory from './pages/RiderHistory';
@@ -64,10 +67,10 @@ function App() {
                             <Route path="/terms" element={<TermsOfService />} />
                             <Route path="/privacy" element={<PrivacyPolicy />} />
                             <Route path="/cookie" element={<CookiePolicy />} />
+                            
+                            {/* Partner Registration */}
+                            <Route path="/partner" element={<PartnerRegistration />} />
                         </Route>
-
-                        {/* Partner Registration */}
-                        <Route path="/partner" element={<PartnerRegistration />} />
 
                         {/* Admin Dashboard */}
                         <Route path="/admin" element={<DashboardLayout />}>
@@ -83,6 +86,9 @@ function App() {
                         {/* Restaurant Owner Dashboard */}
                         <Route path="/owner" element={<DashboardLayout />}>
                             <Route index element={<OwnerDashboard />} />
+                            <Route path="menu" element={<OwnerMenu />} />
+                            <Route path="orders" element={<OwnerOrders />} />
+                            <Route path="analytics" element={<OwnerAnalytics />} />
                             <Route path="notifications" element={<Notifications />} />
                         </Route>
 

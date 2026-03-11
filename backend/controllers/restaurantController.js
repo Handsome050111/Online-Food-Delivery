@@ -86,9 +86,26 @@ const getRestaurantById = async (req, res) => {
     }
 };
 
+// @desc    Get owner's restaurant
+// @route   GET /api/restaurants/my-restaurant
+// @access  Private/Owner
+const getMyRestaurant = async (req, res) => {
+    try {
+        const restaurant = await Restaurant.findOne({ owner: req.user._id });
+        if (restaurant) {
+            res.json({ success: true, data: restaurant });
+        } else {
+            res.status(404).json({ success: false, message: 'Restaurant not found for this owner.' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+};
+
 module.exports = {
     getRestaurants,
     getRestaurantById,
     createRestaurant,
-    updateRestaurantStatus
+    updateRestaurantStatus,
+    getMyRestaurant
 };
