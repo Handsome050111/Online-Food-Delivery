@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Contact = () => {
+    const [formData, setFormData] = useState({
+        firstName: '', lastName: '', email: '', subject: 'General Inquiry', message: ''
+    });
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Handle form submission
-        alert("Thanks for your message! We'll get back to you soon.");
+        toast.success("Thanks for your message! We'll get back to you soon.");
+        setFormData({ firstName: '', lastName: '', email: '', subject: 'General Inquiry', message: '' });
     };
 
     return (
@@ -70,22 +75,22 @@ const Contact = () => {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">First Name</label>
-                                    <input type="text" required className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all placeholder-gray-400 font-medium" placeholder="John" />
+                                    <input type="text" value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} required className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all placeholder-gray-400 font-medium" placeholder="John" />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Last Name</label>
-                                    <input type="text" required className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all placeholder-gray-400 font-medium" placeholder="Doe" />
+                                    <input type="text" value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} required className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all placeholder-gray-400 font-medium" placeholder="Doe" />
                                 </div>
                             </div>
 
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-                                <input type="email" required className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all placeholder-gray-400 font-medium" placeholder="john@example.com" />
+                                <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all placeholder-gray-400 font-medium" placeholder="john@example.com" />
                             </div>
 
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-2">Subject</label>
-                                <select className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all font-medium text-gray-700 bg-white">
+                                <select value={formData.subject} onChange={e => setFormData({...formData, subject: e.target.value})} className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all font-medium text-gray-700 bg-white">
                                     <option>General Inquiry</option>
                                     <option>Where is my order?</option>
                                     <option>Feedback & Suggestions</option>
@@ -96,7 +101,7 @@ const Contact = () => {
 
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-2">Message</label>
-                                <textarea required rows="4" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all placeholder-gray-400 font-medium resize-none" placeholder="How can we help you today?"></textarea>
+                                <textarea required value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} rows="4" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all placeholder-gray-400 font-medium resize-none" placeholder="How can we help you today?"></textarea>
                             </div>
 
                             <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md shadow-primary-500/20 active:scale-[0.98] flex items-center justify-center gap-2">

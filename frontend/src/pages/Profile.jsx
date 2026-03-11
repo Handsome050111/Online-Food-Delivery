@@ -133,15 +133,15 @@ const Profile = () => {
                                 <Package size={20} />
                                 My Orders
                             </Link>
-                            <button className="flex w-full items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium px-4 py-3 rounded-xl transition-colors text-left">
+                            <button onClick={() => toast("Saved Addresses coming in next update!", { icon: '🚧' })} className="flex w-full items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium px-4 py-3 rounded-xl transition-colors text-left">
                                 <MapPin size={20} />
                                 Saved Addresses
                             </button>
-                            <button className="flex w-full items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium px-4 py-3 rounded-xl transition-colors text-left">
+                            <button onClick={() => toast("Payment Methods coming in next update!", { icon: '🚧' })} className="flex w-full items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium px-4 py-3 rounded-xl transition-colors text-left">
                                 <CreditCard size={20} />
                                 Payment Methods
                             </button>
-                            <button className="flex w-full items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium px-4 py-3 rounded-xl transition-colors text-left">
+                            <button onClick={() => toast("Settings coming in next update!", { icon: '🚧' })} className="flex w-full items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium px-4 py-3 rounded-xl transition-colors text-left">
                                 <Settings size={20} />
                                 Settings
                             </button>

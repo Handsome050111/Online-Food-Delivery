@@ -1,8 +1,13 @@
 import React from 'react';
 import { Package, MapPin, Calendar, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import toast from 'react-hot-toast';
 
 const OrderCard = ({ order }) => {
+    const { addToCart } = useCart();
+    const navigate = useNavigate();
+
     const getStatusColor = (status) => {
         switch (status.toLowerCase()) {
             case 'delivered': return 'bg-green-100 text-green-700 border-green-200';
@@ -11,6 +16,23 @@ const OrderCard = ({ order }) => {
             case 'cancelled': return 'bg-red-100 text-red-700 border-red-200';
             default: return 'bg-gray-100 text-gray-700 border-gray-200';
         }
+    };
+
+    const handleReorder = () => {
+        // Mock reorder functionality
+        order.items.forEach(item => {
+            addToCart({ 
+                _id: Math.random().toString(), 
+                name: item.name, 
+                price: order.total / order.items.length 
+            }, { 
+                _id: 'reorder', 
+                name: order.restaurantName, 
+                deliveryFee: 150 
+            });
+        });
+        toast.success(`Items from ${order.restaurantName} added to cart`);
+        navigate('/cart');
     };
 
     return (
@@ -49,10 +71,10 @@ const OrderCard = ({ order }) => {
                     </div>
                 </div>
                 <div className="flex gap-3 w-full sm:w-auto">
-                    <Link to={`/track/${order.id}`} className="flex-1 sm:flex-none text-center bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-2 px-4 rounded-lg transition-colors">
+                    <button onClick={() => toast("Live tracking module coming soon!", { icon: '🗺️' })} className="flex-1 sm:flex-none text-center bg-gray-100 hover:bg-gray-200 text-gray-900 font-bold py-2 px-4 rounded-lg transition-colors">
                         Track Details
-                    </Link>
-                    <button className="flex-1 sm:flex-none bg-primary-50 text-primary-600 hover:bg-primary-500 hover:text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                    </button>
+                    <button onClick={handleReorder} className="flex-1 sm:flex-none bg-primary-50 text-primary-600 hover:bg-primary-500 hover:text-white font-bold py-2 px-4 rounded-lg transition-colors">
                         Reorder
                     </button>
                 </div>

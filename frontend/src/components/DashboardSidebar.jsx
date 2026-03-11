@@ -1,9 +1,15 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { UtensilsCrossed, LogOut } from 'lucide-react';
 
 const DashboardSidebar = ({ links, basePath }) => {
     const location = useLocation();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem('userInfo');
+        navigate('/login');
+    };
 
     return (
         <aside className="w-64 bg-gray-900 text-white min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-50">
@@ -41,10 +47,10 @@ const DashboardSidebar = ({ links, basePath }) => {
             </div>
 
             <div className="p-4 border-t border-gray-800 text-sm">
-                <Link to="/" className="flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-red-500 hover:bg-red-500/10 transition-colors">
+                <button onClick={handleLogout} className="flex w-full items-center gap-3 px-4 py-3 rounded-xl font-bold text-red-500 hover:bg-red-500/10 transition-colors">
                     <LogOut size={20} strokeWidth={2.5} />
                     Logout
-                </Link>
+                </button>
             </div>
         </aside>
     );
