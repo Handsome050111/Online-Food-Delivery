@@ -8,8 +8,20 @@ export const useCart = () => useContext(CartContext);
 export const CartProvider = ({ children }) => {
     // Try to load cart from localStorage on initial render
     const [cart, setCart] = useState(() => {
-        const savedCart = localStorage.getItem('foodexpress_cart');
-        return savedCart ? JSON.parse(savedCart) : { items: [], restaurant: null };
+        try {
+            const savedCart = localStorage.getItem('foodexpress_cart');
+            if (savedCart) {
+                const parsed = JSON.parse(savedCart);
+                // If it's the old mock array format or corrupted, dump it
+                if (Array.isArray(parsed) || !parsed.items) {
+                    return { items: [], restaurant: null };
+                }
+                return parsed;
+            }
+        } catch (e) {
+            console.error("Failed to parse cart from local storage", e);
+        }
+        return { items: [], restaurant: null };
     });
 
     // Save cart to localStorage whenever it changes

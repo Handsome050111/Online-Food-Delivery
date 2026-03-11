@@ -7,8 +7,9 @@ const Navbar = () => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const { cart } = useCart();
 
-    // Calculate total items in cart
-    const cartItemCount = cart.items.reduce((total, item) => total + item.quantity, 0);
+    // Calculate total items in cart safely
+    const cartItems = cart?.items || [];
+    const cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
     return (
         <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100">
