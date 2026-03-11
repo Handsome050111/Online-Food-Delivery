@@ -47,11 +47,14 @@ const registerUser = async (req, res) => {
             return res.status(400).json({ message: 'User already exists' });
         }
 
+        // Restrict role assignment to just customer or owner to prevent privilege escalation
+        const userRole = req.body.role === 'owner' ? 'owner' : 'customer';
+
         const user = await User.create({
             name,
             email,
             password,
-            role: 'customer', // Default to customer on public public signup
+            role: userRole,
             status: 'active'
         });
 

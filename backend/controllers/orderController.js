@@ -90,9 +90,83 @@ const updateOrderStatus = async (req, res) => {
     }
 };
 
+// @desc    Get available orders for riders
+// @route   GET /api/orders/available
+// @access  Private/Rider
+const getAvailableOrders = async (req, res) => {
+    try {
+         // Find orders that are ready or preparing, and have no rider assigned
+        const orders = await Order.find({ 
+            $or: [{ status: 'preparing' }, { status: 'pending' }],
+            rider: { $exists: false } 
+        }).sort({ createdAt: -1 });
+        
+        // Also include orders specifically assigned to null if they exist
+        const nullRiderOrders = await Order.find({
+             $or: [{ status: 'preparing' }, { status: 'pending' }],
+             rider: null
+        }).sort({ createdAt: -1 });
+
+        // Merge and deduplicate
+        const uniqueOrderIds = new Set();
+        const allAvailable = [];
+        
+        [...orders, ...nullRiderOrders].forEach(order => {
+             if (!uniqueOrderIds.has(order._id.toString())) {
+                  uniqueOrderIds.add(order._id.toString());
+                  allAvailable.push(order);
+             }
+        });
+
+        res.json(allAvailable);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// @desc    Accept an order for delivery
+// @route   PUT /api/orders/:id/accept
+// @access  Private/Rider
+const acceptOrder = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        if (order.rider) {
+            return res.status(400).json({ message: 'Order has already been accepted by another rider' });
+        }
+
+        order.rider = req.user._id;
+        order.status = 'out_for_delivery';
+        
+        const updatedOrder = await order.save();
+        res.json(updatedOrder);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// @desc    Get orders assigned to the logged-in rider
+// @route   GET /api/orders/rider
+// @access  Private/Rider
+const getRiderOrders = async (req, res) => {
+    try {
+        const orders = await Order.find({ rider: req.user._id }).sort({ createdAt: -1 });
+        res.json(orders);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 module.exports = {
     getOrders,
     updateOrderStatus,
     createOrder,
-    getMyOrders
+    getMyOrders,
+    getAvailableOrders,
+    acceptOrder,
+    getRiderOrders
 };

@@ -1,11 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Bell, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import api from '../services/api';
+import toast from 'react-hot-toast';
 
-const AdminNotifications = () => {
+const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const markAllAsRead = () => {
-        setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+    const fetchNotifications = async () => {
+        try {
+            setLoading(true);
+            const res = await api.get('/notifications');
+            setNotifications(res.data);
+        } catch (error) {
+            console.error("Error fetching notifications:", error);
+            toast.error("Failed to load notifications");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchNotifications();
+    }, []);
+
+    const markAllAsRead = async () => {
+        try {
+            // Find all unread notifications
+            const unread = notifications.filter(n => !n.isRead);
+            if (unread.length === 0) return toast.success("All caught up!");
+
+            // Mark them all as read concurrently
+            await Promise.all(unread.map(n => api.put(`/notifications/${n._id}/read`)));
+            
+            // Update local state instead of refetching everything
+            setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+            toast.success("All notifications marked as read");
+        } catch (error) {
+            console.error("Error marking read:", error);
+            toast.error("Failed to update read status");
+        }
     };
 
     return (
@@ -13,12 +47,13 @@ const AdminNotifications = () => {
             <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
                 <div>
                     <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Notifications</h1>
-                    <p className="text-gray-500 font-medium">System alerts, new registrations, and important updates.</p>
+                    <p className="text-gray-500 font-medium">System alerts, new assignments, and important updates.</p>
                 </div>
                 <div className="flex items-center gap-3">
                     <button
                         onClick={markAllAsRead}
-                        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm active:scale-95"
+                        disabled={loading || notifications.length === 0}
+                        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm active:scale-95 disabled:opacity-50"
                     >
                         <CheckCircle2 size={18} />
                         <span>Mark All as Read</span>
@@ -28,12 +63,14 @@ const AdminNotifications = () => {
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                 <div className="space-y-4">
-                    {notifications.length === 0 ? (
+                    {loading ? (
+                         <p className="text-gray-500 font-bold text-center py-6">Loading notifications...</p>
+                    ) : notifications.length === 0 ? (
                         <p className="text-gray-500 font-bold text-center py-6">No notifications found.</p>
                     ) : (
                         notifications.map((notif) => (
                             <div
-                                key={notif.id}
+                                key={notif._id}
                                 className={`flex items-start gap-4 p-4 rounded-xl relative overflow-hidden group transition-colors border ${notif.isRead
                                         ? 'hover:bg-gray-50 border-transparent'
                                         : notif.type === 'error'
@@ -66,7 +103,9 @@ const AdminNotifications = () => {
                                     <p className={`text-sm mb-2 ${notif.isRead ? 'text-gray-500' : 'text-gray-600 font-medium'}`}>
                                         {notif.message}
                                     </p>
-                                    <p className="text-xs text-gray-400 font-bold">{notif.time}</p>
+                                    <p className="text-xs text-gray-400 font-bold">
+                                         {new Date(notif.createdAt).toLocaleDateString()} at {new Date(notif.createdAt).toLocaleTimeString()}
+                                    </p>
                                 </div>
                             </div>
                         ))
@@ -77,4 +116,4 @@ const AdminNotifications = () => {
     );
 };
 
-export default AdminNotifications;
+export default Notifications;

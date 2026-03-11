@@ -164,10 +164,42 @@ const getUserProfile = async (req, res) => {
     }
 };
 
+// @desc    Update rider availability
+// @route   PUT /api/users/availability
+// @access  Private/Rider
+const updateRiderAvailability = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+
+        if (user && user.role === 'rider') {
+            if (!user.riderDetails) {
+                 user.riderDetails = { isAvailable: false, vehicleType: 'Motorcycle', licensePlate: 'N/A' };
+            }
+            
+            user.riderDetails.isAvailable = typeof req.body.isAvailable !== 'undefined' 
+                ? req.body.isAvailable 
+                : !user.riderDetails.isAvailable;
+                
+            const updatedUser = await user.save();
+
+            res.json({
+                _id: updatedUser._id,
+                name: updatedUser.name,
+                isAvailable: updatedUser.riderDetails.isAvailable
+            });
+        } else {
+            res.status(404).json({ message: 'Rider not found or invalid role' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 module.exports = {
     getUsers,
     createUser,
     toggleUserStatus,
     updateUserProfile,
-    getUserProfile
+    getUserProfile,
+    updateRiderAvailability
 };

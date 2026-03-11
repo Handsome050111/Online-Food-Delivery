@@ -38,6 +38,11 @@ const orderSchema = new mongoose.Schema({
         enum: ['pending', 'preparing', 'out_for_delivery', 'delivered', 'cancelled'],
         default: 'pending'
     },
+    rider: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: false
+    },
     paymentMethod: {
         type: String,
         default: 'Cash on Delivery'

@@ -25,6 +25,7 @@ import CookiePolicy from './pages/CookiePolicy';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
+import PartnerRegistration from './pages/PartnerRegistration';
 
 // Dashboard Pages
 import AdminDashboard from './pages/AdminDashboard';
@@ -32,10 +33,12 @@ import AdminUsers from './pages/AdminUsers';
 import AdminRestaurants from './pages/AdminRestaurants';
 import AdminOrders from './pages/AdminOrders';
 import AdminCoupons from './pages/AdminCoupons';
-import AdminNotifications from './pages/AdminNotifications';
+import Notifications from './pages/Notifications';
 import AdminRiders from './pages/AdminRiders';
 import OwnerDashboard from './pages/OwnerDashboard';
 import RiderDashboard from './pages/RiderDashboard';
+import RiderActiveTask from './pages/RiderActiveTask';
+import RiderHistory from './pages/RiderHistory';
 
 function App() {
     return (
@@ -63,6 +66,9 @@ function App() {
                             <Route path="/cookie" element={<CookiePolicy />} />
                         </Route>
 
+                        {/* Partner Registration */}
+                        <Route path="/partner" element={<PartnerRegistration />} />
+
                         {/* Admin Dashboard */}
                         <Route path="/admin" element={<DashboardLayout />}>
                             <Route index element={<AdminDashboard />} />
@@ -71,17 +77,22 @@ function App() {
                             <Route path="restaurants" element={<AdminRestaurants />} />
                             <Route path="orders" element={<AdminOrders />} />
                             <Route path="coupons" element={<AdminCoupons />} />
-                            <Route path="notifications" element={<AdminNotifications />} />
+                            <Route path="notifications" element={<Notifications />} />
                         </Route>
 
                         {/* Restaurant Owner Dashboard */}
                         <Route path="/owner" element={<DashboardLayout />}>
                             <Route index element={<OwnerDashboard />} />
+                            <Route path="notifications" element={<Notifications />} />
                         </Route>
 
                         {/* Rider Dashboard */}
                         <Route path="/rider" element={<DashboardLayout />}>
                             <Route index element={<RiderDashboard />} />
+                            <Route path="available" element={<RiderDashboard />} />
+                            <Route path="active" element={<RiderActiveTask />} />
+                            <Route path="history" element={<RiderHistory />} />
+                            <Route path="notifications" element={<Notifications />} />
                         </Route>
                     </Routes>
                 </div>

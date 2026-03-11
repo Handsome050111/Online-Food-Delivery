@@ -32,6 +32,9 @@ const DashboardLayout = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    // Read user auth state to populate dynamic dashboard names
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
+
     const isAdmin = location.pathname.startsWith('/admin');
     const isOwner = location.pathname.startsWith('/owner');
     const isRider = location.pathname.startsWith('/rider');
@@ -106,8 +109,12 @@ const DashboardLayout = () => {
                             >
                                 <UserCircle size={32} className="text-gray-400" />
                                 <div className="hidden sm:block pr-2">
-                                    <p className="text-sm font-bold text-gray-900 leading-none mb-1">Admin User</p>
-                                    <p className="text-xs text-gray-500 font-bold leading-none">Settings</p>
+                                    <p className="text-sm font-bold text-gray-900 leading-none mb-1">
+                                        {userInfo ? userInfo.name : 'Unknown User'}
+                                    </p>
+                                    <p className="text-xs text-gray-500 font-bold leading-none capitalize">
+                                        {userInfo ? userInfo.role : 'Guest'}
+                                    </p>
                                 </div>
                             </button>
 
