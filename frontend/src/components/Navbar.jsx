@@ -1,15 +1,34 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { ShoppingBag, User, UtensilsCrossed, Menu, Search, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ShoppingBag, User, UtensilsCrossed, Menu, Search, X, LogOut } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 const Navbar = () => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const { cart } = useCart();
+    const navigate = useNavigate();
+
+    // Read user auth state
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
 
     // Calculate total items in cart safely
     const cartItems = cart?.items || [];
     const cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+    const handleLogout = () => {
+        localStorage.removeItem('userInfo');
+        navigate('/login');
+    };
+
+    const getDashboardLink = () => {
+        if (!userInfo) return '/login';
+        switch (userInfo.role) {
+            case 'admin': return '/admin';
+            case 'owner': return '/owner';
+            case 'rider': return '/rider';
+            default: return '/profile'; // Customer profile or settings
+        }
+    };
 
     return (
         <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100">
@@ -57,8 +76,31 @@ const Navbar = () => {
                             )}
                         </Link>
                         <div className="hidden sm:flex items-center gap-3 border-l border-gray-200 pl-4 ml-2">
-                            <Link to="/login" className="text-gray-600 hover:text-primary-500 font-medium px-2 py-1 transition-colors">Log in</Link>
-                            <Link to="/signup" className="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2 rounded-full font-medium transition-all shadow-sm hover:shadow-md active:scale-95">Sign Up</Link>
+                            {userInfo ? (
+                                <div className="flex items-center gap-4">
+                                    <Link 
+                                        to={getDashboardLink()} 
+                                        className="flex items-center gap-2 text-gray-700 hover:text-primary-600 font-bold transition-colors"
+                                    >
+                                        <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-600">
+                                            <User size={18} />
+                                        </div>
+                                        <span className="hidden lg:block">{userInfo.name?.split(' ')[0]}</span>
+                                    </Link>
+                                    <button 
+                                        onClick={handleLogout}
+                                        className="text-gray-400 hover:text-red-500 transition-colors p-1 flex items-center justify-center"
+                                        title="Logout"
+                                    >
+                                        <LogOut size={20} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <Link to="/login" className="text-gray-600 hover:text-primary-500 font-medium px-2 py-1 transition-colors">Log in</Link>
+                                    <Link to="/signup" className="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2 rounded-full font-medium transition-all shadow-sm hover:shadow-md active:scale-95">Sign Up</Link>
+                                </>
+                            )}
                         </div>
                         <button className="md:hidden text-gray-500 hover:text-gray-900 focus:outline-none">
                             <Menu size={24} />
