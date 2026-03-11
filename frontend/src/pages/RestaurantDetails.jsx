@@ -57,7 +57,7 @@ const RestaurantDetails = () => {
 
     // Calculate Cart totals for the sidebar
     const cartTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const deliveryFee = restaurant ? restaurant.deliveryFee : 0;
+    const deliveryFee = restaurant?.deliveryFee || 0;
 
     // Group items by category dynamically
     const categories = useMemo(() => {
@@ -119,11 +119,11 @@ const RestaurantDetails = () => {
                                         </div>
                                         <div className="flex items-center gap-1.5 text-gray-700 font-bold bg-gray-50 px-3.5 py-1.5 rounded-full">
                                             <Clock size={16} className="text-primary-500" />
-                                            <span>{restaurant.deliveryTime} mins</span>
+                                            <span>{restaurant.deliveryTime || 30} mins</span>
                                         </div>
                                         <div className="flex items-center gap-1.5 text-gray-700 font-bold bg-gray-50 px-3.5 py-1.5 rounded-full">
                                             <Navigation size={16} className="text-primary-500" />
-                                            <span>{restaurant.deliveryFee === 0 ? 'Free Delivery' : `Rs. ${restaurant.deliveryFee.toFixed(0)} delivery`}</span>
+                                            <span>{(restaurant.deliveryFee || 0) === 0 ? 'Free Delivery' : `Rs. ${(restaurant.deliveryFee || 0).toFixed(0)} delivery`}</span>
                                         </div>
                                     </div>
                                 </div>

@@ -32,11 +32,11 @@ const RestaurantCard = ({ restaurant }) => {
                 <div className="flex items-center justify-between pt-4 border-t border-gray-50 text-sm font-medium text-gray-600 w-full mt-auto">
                     <div className="flex items-center gap-1.5">
                         <Clock size={16} className="text-primary-500" />
-                        <span>{restaurant.deliveryTime} min</span>
+                        <span>{restaurant.deliveryTime || 30} min</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                         <Navigation size={16} className="text-primary-500" />
-                        <span>{restaurant.deliveryFee === 0 ? 'Free' : `Rs. ${restaurant.deliveryFee.toFixed(0)}`}</span>
+                        <span>{(restaurant.deliveryFee || 0) === 0 ? 'Free' : `Rs. ${(restaurant.deliveryFee || 0).toFixed(0)}`}</span>
                     </div>
                 </div>
             </div>

@@ -9,7 +9,7 @@ const Cart = () => {
     const cartItems = cart.items || [];
 
     const subtotal = cartItems.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
-    const deliveryFee = cart.restaurant ? cart.restaurant.deliveryFee : 0;
+    const deliveryFee = cart.restaurant ? (cart.restaurant.deliveryFee || 0) : 0;
     const tax = subtotal * 0.08;
     const total = subtotal + deliveryFee + tax;
 
