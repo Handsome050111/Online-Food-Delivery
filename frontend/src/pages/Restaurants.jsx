@@ -1,21 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import SearchBar from '../components/SearchBar';
 import FilterSidebar from '../components/FilterSidebar';
 import RestaurantCard from '../components/RestaurantCard';
-import { SlidersHorizontal } from 'lucide-react';
-
-const RESTAURANTS_DATA = [
-    { id: 1, name: 'Burger Joint', category: 'American', tags: ['Burgers', 'Fries', 'Shakes'], rating: 4.8, deliveryTime: 25, deliveryFee: 0, image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=800&q=80', featured: true },
-    { id: 2, name: 'Sushi Master', category: 'Japanese', tags: ['Sushi', 'Ramen', 'Bento'], rating: 4.9, deliveryTime: 40, deliveryFee: 250, image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&q=80', featured: false },
-    { id: 3, name: 'Pizza Paradise', category: 'Italian', tags: ['Pizza', 'Pasta', 'Salads'], rating: 4.6, deliveryTime: 30, deliveryFee: 150, image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80', featured: false },
-    { id: 4, name: 'Spice Route', category: 'Pakistani', tags: ['Karahi', 'Naan', 'Tandoori'], rating: 4.7, deliveryTime: 35, deliveryFee: 0, image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&q=80', featured: false },
-    { id: 5, name: 'Taco Fiesta', category: 'Mexican', tags: ['Tacos', 'Burritos', 'Nachos'], rating: 4.5, deliveryTime: 20, deliveryFee: 199, image: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=800&q=80', featured: false },
-    { id: 6, name: 'Healthy Greens', category: 'Healthy', tags: ['Salads', 'Bowls', 'Smoothies'], rating: 4.8, deliveryTime: 45, deliveryFee: 399, image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=800&q=80', featured: true },
-    { id: 7, name: 'Wok This Way', category: 'Chinese', tags: ['Noodles', 'Dim Sum', 'Rice'], rating: 4.4, deliveryTime: 30, deliveryFee: 249, image: 'https://images.unsplash.com/photo-1552611052-33e04de081de?w=800&q=80', featured: false },
-    { id: 8, name: 'Grill & Chill', category: 'American', tags: ['Steak', 'Ribs', 'BBQ'], rating: 4.7, deliveryTime: 50, deliveryFee: 499, image: 'https://images.unsplash.com/photo-1544025162-8315ea07f440?w=800&q=80', featured: false },
-];
+import { SlidersHorizontal, Loader2 } from 'lucide-react';
+import api from '../services/api';
+import { toast } from 'react-hot-toast';
 
 const Restaurants = () => {
+    const [restaurants, setRestaurants] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
     const [showMobileFilters, setShowMobileFilters] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState('Recommended');
@@ -23,9 +17,29 @@ const Restaurants = () => {
     const [activeFilters, setActiveFilters] = useState({});
     const [visibleCount, setVisibleCount] = useState(6);
 
+    // Fetch live restaurants on mount
+    useEffect(() => {
+        const fetchRestaurants = async () => {
+            try {
+                // Fetch only approved restaurants for the customer facing portal
+                const { data } = await api.get('/restaurants?status=approved');
+                if (data.success) {
+                    // Map backend schema fields to frontend expected fields if necessary, though they should be close
+                    setRestaurants(data.data);
+                }
+            } catch (error) {
+                console.error("Error fetching restaurants:", error);
+                toast.error("Failed to load restaurants.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchRestaurants();
+    }, []);
+
     // Apply Filters & Search
     const filteredRestaurants = useMemo(() => {
-        let result = [...RESTAURANTS_DATA];
+        let result = [...restaurants];
 
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
@@ -120,23 +134,32 @@ const Restaurants = () => {
                             </div>
                         </div>
 
-                        <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 transition-opacity duration-300 ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
-                            {filteredRestaurants.length === 0 ? (
-                                <div className="col-span-full py-16 text-center text-gray-500 font-bold">No restaurants found matching your criteria.</div>
-                            ) : filteredRestaurants.slice(0, visibleCount).map(restaurant => (
-                                <RestaurantCard key={restaurant.id} restaurant={restaurant} />
-                            ))}
-                        </div>
-
-                        {visibleCount < filteredRestaurants.length && (
-                            <div className="mt-12 text-center">
-                                <button
-                                    onClick={() => setVisibleCount(prev => prev + 6)}
-                                    className="bg-white text-gray-800 font-bold border border-gray-200 px-10 py-3.5 rounded-full shadow-sm hover:shadow-md hover:border-gray-300 transition-all active:scale-95"
-                                >
-                                    Load More
-                                </button>
+                        {isLoading ? (
+                            <div className="col-span-full py-20 flex flex-col items-center justify-center text-gray-400">
+                                <Loader2 className="w-10 h-10 animate-spin mb-4 text-primary-500" />
+                                <p className="font-medium">Loading live restaurants from database...</p>
                             </div>
+                        ) : (
+                            <>
+                                <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 transition-opacity duration-300 ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
+                                    {filteredRestaurants.length === 0 ? (
+                                        <div className="col-span-full py-16 text-center text-gray-500 font-bold">No restaurants found matching your criteria.</div>
+                                    ) : filteredRestaurants.slice(0, visibleCount).map(restaurant => (
+                                        <RestaurantCard key={restaurant._id} restaurant={restaurant} />
+                                    ))}
+                                </div>
+
+                                {visibleCount < filteredRestaurants.length && (
+                                    <div className="mt-12 text-center">
+                                        <button
+                                            onClick={() => setVisibleCount(prev => prev + 6)}
+                                            className="bg-white text-gray-800 font-bold border border-gray-200 px-10 py-3.5 rounded-full shadow-sm hover:shadow-md hover:border-gray-300 transition-all active:scale-95"
+                                        >
+                                            Load More
+                                        </button>
+                                    </div>
+                                )}
+                            </>
                         )}
                     </div>
                 </div>

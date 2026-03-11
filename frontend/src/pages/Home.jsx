@@ -1,30 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Clock, ShieldCheck, Wallet } from 'lucide-react';
+import { Clock, ShieldCheck, Wallet, Loader2 } from 'lucide-react';
 import SearchBar from '../components/SearchBar';
 import RestaurantCard from '../components/RestaurantCard';
 import FoodCard from '../components/FoodCard';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-hot-toast';
-
-// Mock Data
-const POPULAR_RESTAURANTS = [
-    { id: 1, name: 'Burger Joint', category: 'American', tags: ['Burgers', 'Fries', 'Shakes'], rating: 4.8, deliveryTime: 25, deliveryFee: 0, image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=800&q=80', featured: true },
-    { id: 2, name: 'Sushi Master', category: 'Japanese', tags: ['Sushi', 'Ramen', 'Bento'], rating: 4.9, deliveryTime: 40, deliveryFee: 250, image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&q=80', featured: false },
-    { id: 3, name: 'Pizza Paradise', category: 'Italian', tags: ['Pizza', 'Pasta', 'Salads'], rating: 4.6, deliveryTime: 30, deliveryFee: 150, image: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80', featured: false },
-    { id: 4, name: 'Spice Route', category: 'Pakistani', tags: ['Karahi', 'Naan', 'Tandoori'], rating: 4.7, deliveryTime: 35, deliveryFee: 0, image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800&q=80', featured: false },
-];
-
-const POPULAR_DISHES = [
-    { id: 1, name: 'Classic Cheeseburger', price: 1299, description: 'Double beef patty, cheddar, lettuce, tomato, special sauce', popular: true, image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&q=80' },
-    { id: 2, name: 'Margherita Pizza', price: 1650, description: 'Fresh mozzarella, tomato sauce, basil, extra virgin olive oil', popular: true, image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=500&q=80' },
-    { id: 3, name: 'Chicken Karahi', price: 1400, description: 'Traditional Pakistani chicken curry cooked in a wok', popular: false, image: 'https://images.unsplash.com/photo-1589302168068-964664d93cb0?w=500&q=80' },
-    { id: 4, name: 'Beef Biryani', price: 1899, description: 'Spicy marinated meat slow cooked with fragrant basmati rice', popular: false, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&q=80' },
-];
+import api from '../services/api';
 
 const Home = () => {
     const { addToCart } = useCart();
     const navigate = useNavigate();
+
+    const [popularRestaurants, setPopularRestaurants] = useState([]);
+    const [popularDishes, setPopularDishes] = useState([]);
+    const [isLoadingRestaurants, setIsLoadingRestaurants] = useState(true);
+    const [isLoadingDishes, setIsLoadingDishes] = useState(true);
+
+    useEffect(() => {
+        const fetchPopularRestaurants = async () => {
+            try {
+                // Fetch top 4 restaurants based on DB query
+                const { data } = await api.get('/restaurants?status=approved');
+                if (data.success) {
+                    setPopularRestaurants(data.data.slice(0, 4));
+                }
+            } catch (error) {
+                console.error("Error fetching popular restaurants:", error);
+            } finally {
+                setIsLoadingRestaurants(false);
+            }
+        }
+
+        const fetchPopularDishes = async () => {
+            try {
+                const { data } = await api.get('/menu?popular=true&limit=4');
+                if (data.success) {
+                    setPopularDishes(data.data);
+                }
+            } catch (error) {
+                console.error("Error fetching popular dishes:", error);
+            } finally {
+                setIsLoadingDishes(false);
+            }
+        }
+
+        fetchPopularRestaurants();
+        fetchPopularDishes();
+    }, []);
 
     const handleSearch = (query) => {
         if (query.trim()) {
@@ -33,9 +56,7 @@ const Home = () => {
     };
 
     const handleAddToCart = (dish) => {
-        // We simulate a restaurant context since it's a generic popular dish on the homepage
-        // Real implementation would pass actual restaurant ID with dish
-        addToCart(dish, { _id: 'pop_res', name: 'Popular Dishes Co.', deliveryFee: 0 });
+        addToCart(dish, dish.restaurantId || { _id: 'pop_res', name: 'Popular Dishes Co.', deliveryFee: 0 });
         toast.success(`${dish.name} added to cart!`);
     };
 
@@ -102,9 +123,17 @@ const Home = () => {
                             <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
                         </Link>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {POPULAR_RESTAURANTS.map(restaurant => (
-                            <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 min-h-[200px]">
+                        {isLoadingRestaurants ? (
+                            <div className="col-span-full flex flex-col items-center justify-center text-gray-400">
+                                <Loader2 className="w-10 h-10 animate-spin mb-4 text-primary-500" />
+                            </div>
+                        ) : popularRestaurants.length === 0 ? (
+                            <div className="col-span-full flex flex-col items-center justify-center text-gray-500 font-bold py-10 bg-white rounded-2xl border border-dashed border-gray-300">
+                                <p>No popular restaurants available right now.</p>
+                            </div>
+                        ) : popularRestaurants.map(restaurant => (
+                            <RestaurantCard key={restaurant._id} restaurant={restaurant} />
                         ))}
                     </div>
                     <div className="mt-10 text-center sm:hidden">
@@ -122,9 +151,17 @@ const Home = () => {
                         <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">Popular Dishes Near You</h2>
                         <p className="text-gray-500 text-lg">Trending food items available for prompt delivery</p>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {POPULAR_DISHES.map(dish => (
-                            <FoodCard key={dish.id} food={dish} onAddToCart={() => handleAddToCart(dish)} />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 min-h-[200px]">
+                        {isLoadingDishes ? (
+                            <div className="col-span-full flex flex-col items-center justify-center text-gray-400">
+                                <Loader2 className="w-10 h-10 animate-spin mb-4 text-primary-500" />
+                            </div>
+                        ) : popularDishes.length === 0 ? (
+                            <div className="col-span-full flex flex-col items-center justify-center text-gray-500 font-bold py-10 bg-white rounded-2xl border border-dashed border-gray-300">
+                                <p>No popular dishes available right now.</p>
+                            </div>
+                        ) : popularDishes.map(dish => (
+                            <FoodCard key={dish._id} food={dish} onAddToCart={() => handleAddToCart(dish)} />
                         ))}
                     </div>
                 </div>

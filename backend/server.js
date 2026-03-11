@@ -22,6 +22,7 @@ app.use('/api/test', require('./routes/testRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/restaurants', require('./routes/restaurantRoutes'));
+app.use('/api/menu', require('./routes/menuRoutes'));
 app.use('/api/orders', require('./routes/orderRoutes'));
 app.use('/api/coupons', require('./routes/couponRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));

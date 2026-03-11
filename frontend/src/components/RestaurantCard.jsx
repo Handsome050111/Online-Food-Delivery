@@ -5,7 +5,7 @@ import RatingStars from './RatingStars';
 
 const RestaurantCard = ({ restaurant }) => {
     return (
-        <Link to={`/restaurants/${restaurant.id}`} className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 flex-grow">
+        <Link to={`/restaurants/${restaurant._id || restaurant.id}`} className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 border border-gray-100 flex-grow">
             <div className="relative h-48 overflow-hidden flex-shrink-0">
                 <img
                     src={restaurant.image}
