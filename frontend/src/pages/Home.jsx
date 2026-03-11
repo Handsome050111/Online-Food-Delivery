@@ -22,7 +22,9 @@ const Home = () => {
             try {
                 // Fetch top 4 restaurants based on DB query
                 const { data } = await api.get('/restaurants?status=active');
-                if (data.success) {
+                if (Array.isArray(data)) {
+                    setPopularRestaurants(data.slice(0, 4));
+                } else if (data && data.success && Array.isArray(data.data)) {
                     setPopularRestaurants(data.data.slice(0, 4));
                 }
             } catch (error) {

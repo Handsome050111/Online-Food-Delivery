@@ -1,18 +1,85 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CreditCard, Banknote, MapPin, Truck, CheckCircle2 } from 'lucide-react';
+import { CreditCard, Banknote, MapPin, Truck, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { toast } from 'react-hot-toast';
+import api from '../services/api';
 
 const Checkout = () => {
+    const { cart, clearCart } = useCart();
     const [paymentMethod, setPaymentMethod] = useState('card');
     const [orderPlaced, setOrderPlaced] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [error, setError] = useState('');
+    
+    // Delivery form states
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        address: '',
+        phone: ''
+    });
+
     const navigate = useNavigate();
 
-    const handlePlaceOrder = (e) => {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
+
+    // Calculate totals
+    const cartItems = cart?.items || [];
+    const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const deliveryFee = cartItems.length > 0 ? (cart?.restaurant?.deliveryFee || 250) : 0;
+    const tax = Math.round(subtotal * 0.08); // 8% tax example
+    const totalAmount = subtotal + deliveryFee + tax;
+
+    const handlePlaceOrder = async (e) => {
         e.preventDefault();
-        setOrderPlaced(true);
-        setTimeout(() => {
-            navigate('/orders');
-        }, 3000);
+        
+        if (!userInfo) {
+            toast.error('You must be logged in to place an order');
+            navigate('/login');
+            return;
+        }
+
+        if (cartItems.length === 0) {
+            toast.error('Your cart is empty');
+            return;
+        }
+
+        if (!formData.address || !formData.phone || !formData.firstName) {
+            setError('Please fill in all required delivery details (First Name, Address, Phone)');
+            return;
+        }
+
+        setIsProcessing(true);
+        setError('');
+
+        try {
+            const orderPayload = {
+                orderItems: cartItems.map(item => ({
+                    name: item.name,
+                    quantity: item.quantity,
+                    price: item.price
+                })),
+                deliveryAddress: `${formData.address} (Contact: ${formData.phone})`,
+                paymentMethod: paymentMethod === 'card' ? 'Credit/Debit Card' : 'Cash on Delivery',
+                totalAmount: totalAmount,
+                restaurantId: cart.restaurant?._id,
+                restaurantName: cart.restaurant?.name
+            };
+
+            await api.post('/orders', orderPayload);
+            
+            clearCart();
+            setOrderPlaced(true);
+            
+            setTimeout(() => {
+                navigate('/orders');
+            }, 3000);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to process order. Please try again.');
+        } finally {
+            setIsProcessing(false);
+        }
     };
 
     if (orderPlaced) {
@@ -47,23 +114,29 @@ const Checkout = () => {
                                 Delivery Details
                             </h2>
                             <form className="space-y-4">
+                                {error && (
+                                    <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-center gap-3 text-sm font-bold border border-red-100 mb-4">
+                                        <AlertCircle size={20} />
+                                        {error}
+                                    </div>
+                                )}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-1">First Name</label>
-                                        <input type="text" className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" defaultValue="John" />
+                                        <label className="block text-sm font-bold text-gray-700 mb-1">First Name *</label>
+                                        <input type="text" value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" placeholder="John" />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold text-gray-700 mb-1">Last Name</label>
-                                        <input type="text" className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" defaultValue="Doe" />
+                                        <input type="text" value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" placeholder="Doe" />
                                     </div>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">Address</label>
-                                    <input type="text" className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" defaultValue="House 123, Street 4, F-8, Islamabad" />
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Address *</label>
+                                    <input type="text" value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" placeholder="House 123, Street 4, Islamabad" />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-1">Phone Number</label>
-                                    <input type="tel" className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" defaultValue="+92 300 1234567" />
+                                    <label className="block text-sm font-bold text-gray-700 mb-1">Phone Number *</label>
+                                    <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" placeholder="+92 300 1234567" />
                                 </div>
                             </form>
                         </div>
@@ -124,48 +197,46 @@ const Checkout = () => {
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 sticky top-24">
                             <h2 className="text-xl font-extrabold text-gray-900 mb-6">Summary</h2>
 
-                            <div className="space-y-4 pb-6 border-b border-gray-100">
-                                <div className="flex items-start gap-4">
-                                    <div className="bg-gray-100 rounded-lg p-2 font-bold text-sm">1x</div>
-                                    <div>
-                                        <h4 className="font-bold text-gray-900">Classic Cheeseburger</h4>
-                                        <span className="text-gray-500 text-sm font-medium">Rs. 1299</span>
+                            <div className="space-y-4 pb-6 border-b border-gray-100 max-h-[40vh] overflow-y-auto">
+                                {cartItems.length > 0 ? cartItems.map((item, idx) => (
+                                    <div key={idx} className="flex items-start gap-4">
+                                        <div className="bg-gray-100 rounded-lg p-2 font-bold text-sm">{item.quantity}x</div>
+                                        <div>
+                                            <h4 className="font-bold text-gray-900">{item.name}</h4>
+                                            <span className="text-gray-500 text-sm font-medium">Rs. {item.price}</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="flex items-start gap-4">
-                                    <div className="bg-gray-100 rounded-lg p-2 font-bold text-sm">2x</div>
-                                    <div>
-                                        <h4 className="font-bold text-gray-900">Truffle Fries</h4>
-                                        <span className="text-gray-500 text-sm font-medium">Rs. 1398</span>
-                                    </div>
-                                </div>
+                                )) : (
+                                    <p className="text-gray-500 italic">Your cart is empty.</p>
+                                )}
                             </div>
 
                             <div className="py-6 space-y-3 border-b border-dashed border-gray-200">
                                 <div className="flex justify-between text-gray-500 font-medium text-sm">
                                     <span>Subtotal</span>
-                                    <span className="text-gray-900">Rs. 2697</span>
+                                    <span className="text-gray-900">Rs. {subtotal}</span>
                                 </div>
                                 <div className="flex justify-between text-gray-500 font-medium text-sm">
                                     <span>Delivery Fee</span>
-                                    <span className="text-gray-900">Rs. 250</span>
+                                    <span className="text-gray-900">Rs. {deliveryFee}</span>
                                 </div>
                                 <div className="flex justify-between text-gray-500 font-medium text-sm">
-                                    <span>Tax</span>
-                                    <span className="text-gray-900">Rs. 216</span>
+                                    <span>Tax (8%)</span>
+                                    <span className="text-gray-900">Rs. {tax}</span>
                                 </div>
                             </div>
 
                             <div className="flex justify-between items-center py-6">
                                 <span className="text-lg font-bold text-gray-900">Total</span>
-                                <span className="text-3xl font-extrabold text-primary-600">Rs. 3163</span>
+                                <span className="text-3xl font-extrabold text-primary-600">Rs. {totalAmount}</span>
                             </div>
 
                             <button
                                 onClick={handlePlaceOrder}
-                                className="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-4 rounded-xl transition-all shadow-md active:scale-95 text-lg flex items-center justify-center gap-2"
+                                disabled={isProcessing || cartItems.length === 0}
+                                className={`w-full ${isProcessing || cartItems.length === 0 ? 'bg-primary-400 cursor-not-allowed' : 'bg-primary-500 hover:bg-primary-600 active:scale-95'} text-white font-bold py-4 rounded-xl transition-all shadow-md text-lg flex items-center justify-center gap-2`}
                             >
-                                Place Order <Truck size={20} />
+                                {isProcessing ? 'Processing...' : 'Place Order'} {!isProcessing && <Truck size={20} />}
                             </button>
                         </div>
                     </div>

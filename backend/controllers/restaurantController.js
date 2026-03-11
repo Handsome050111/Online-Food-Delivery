@@ -70,8 +70,25 @@ const updateRestaurantStatus = async (req, res) => {
     }
 };
 
+// @desc    Get single restaurant by ID
+// @route   GET /api/restaurants/:id
+// @access  Public
+const getRestaurantById = async (req, res) => {
+    try {
+        const restaurant = await Restaurant.findById(req.params.id);
+        if (restaurant) {
+            res.json({ success: true, data: restaurant });
+        } else {
+            res.status(404).json({ success: false, message: 'Restaurant not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+};
+
 module.exports = {
     getRestaurants,
+    getRestaurantById,
     createRestaurant,
     updateRestaurantStatus
 };

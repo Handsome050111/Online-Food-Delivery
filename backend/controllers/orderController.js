@@ -1,5 +1,48 @@
 const Order = require('../models/Order');
 
+// @desc    Create new order
+// @route   POST /api/orders
+// @access  Private
+const createOrder = async (req, res) => {
+    try {
+        const { orderItems, deliveryAddress, paymentMethod, totalAmount, restaurantId, restaurantName } = req.body;
+
+        if (orderItems && orderItems.length === 0) {
+            return res.status(400).json({ message: 'No order items' });
+        }
+
+        const order = new Order({
+            orderId: 'OD' + Date.now().toString().slice(-8),
+            items: orderItems,
+            user: req.user._id,
+            customerName: req.user.name,
+            restaurant: restaurantId || null,
+            restaurantName: restaurantName || 'Unknown Restaurant',
+            deliveryAddress,
+            paymentMethod,
+            totalAmount,
+            status: 'pending'
+        });
+
+        const createdOrder = await order.save();
+        res.status(201).json(createdOrder);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// @desc    Get logged in user orders
+// @route   GET /api/orders/myorders
+// @access  Private
+const getMyOrders = async (req, res) => {
+    try {
+        const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+        res.json(orders);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 // @desc    Get all orders (admin)
 // @route   GET /api/orders
 // @access  Private/Admin
@@ -49,5 +92,7 @@ const updateOrderStatus = async (req, res) => {
 
 module.exports = {
     getOrders,
-    updateOrderStatus
+    updateOrderStatus,
+    createOrder,
+    getMyOrders
 };

@@ -20,7 +20,7 @@ const RatingStars = ({ rating = 0, count = 0, showCount = true }) => {
             {showCount && count > 0 && (
                 <span className="text-xs text-gray-500 font-medium">({count})</span>
             )}
-            {!showCount && rating > 0 && (
+            {!showCount && typeof rating === 'number' && (
                 <span className="text-xs font-bold text-gray-800 ml-0.5">{rating.toFixed(1)}</span>
             )}
         </div>

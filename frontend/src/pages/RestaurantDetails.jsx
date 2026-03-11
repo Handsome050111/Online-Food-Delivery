@@ -115,7 +115,7 @@ const RestaurantDetails = () => {
                                     <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm">
                                         <div className="flex items-center gap-1.5 bg-green-50 text-green-700 px-3.5 py-1.5 rounded-full font-bold">
                                             <Star size={16} fill="currentColor" strokeWidth={0} />
-                                            <span>{restaurant.rating || "4.8"} ({(restaurant.reviews || 1240)}+)</span>
+                                            <span>{typeof restaurant.rating === 'number' ? restaurant.rating.toFixed(1) : "0.0"} ({restaurant.reviews || 0} reviews)</span>
                                         </div>
                                         <div className="flex items-center gap-1.5 text-gray-700 font-bold bg-gray-50 px-3.5 py-1.5 rounded-full">
                                             <Clock size={16} className="text-primary-500" />

@@ -23,8 +23,9 @@ const Restaurants = () => {
             try {
                 // Fetch only active restaurants for the customer facing portal
                 const { data } = await api.get('/restaurants?status=active');
-                if (data.success) {
-                    // Map backend schema fields to frontend expected fields if necessary, though they should be close
+                if (Array.isArray(data)) {
+                    setRestaurants(data);
+                } else if (data && data.success && Array.isArray(data.data)) {
                     setRestaurants(data.data);
                 }
             } catch (error) {
