@@ -28,7 +28,7 @@ const RestaurantCard = ({ restaurant }) => {
                         <RatingStars rating={restaurant.rating} showCount={false} />
                     </div>
                 </div>
-                <p className="text-gray-500 text-sm mb-4 line-clamp-1 flex-grow">{restaurant.tags.join(' • ')}</p>
+                <p className="text-gray-500 text-sm mb-4 line-clamp-1 flex-grow">{(restaurant.tags || []).join(' • ')}</p>
                 <div className="flex items-center justify-between pt-4 border-t border-gray-50 text-sm font-medium text-gray-600 w-full mt-auto">
                     <div className="flex items-center gap-1.5">
                         <Clock size={16} className="text-primary-500" />
