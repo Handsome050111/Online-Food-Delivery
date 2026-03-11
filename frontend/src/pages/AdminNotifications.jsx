@@ -2,32 +2,7 @@ import React, { useState } from 'react';
 import { Bell, CheckCircle2, AlertCircle, Info } from 'lucide-react';
 
 const AdminNotifications = () => {
-    const [notifications, setNotifications] = useState([
-        {
-            id: 1,
-            title: "New Restaurant Registration",
-            message: "\"Spicy Curry House\" has submitted a request to join the platform. Please review their documentation.",
-            time: "10 minutes ago",
-            type: "info",
-            isRead: false
-        },
-        {
-            id: 2,
-            title: "High Server Load Detected",
-            message: "API response times are exceeding normal thresholds (+400ms). Please monitor backend health.",
-            time: "1 hour ago",
-            type: "error",
-            isRead: false
-        },
-        {
-            id: 3,
-            title: "Daily Payouts Completed",
-            message: "Automated settlements to 45 restaurant partners have been successfully processed.",
-            time: "Yesterday",
-            type: "success",
-            isRead: true
-        }
-    ]);
+    const [notifications, setNotifications] = useState([]);
 
     const markAllAsRead = () => {
         setNotifications(notifications.map(n => ({ ...n, isRead: true })));
