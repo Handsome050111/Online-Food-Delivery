@@ -94,7 +94,7 @@ const DashboardLayout = () => {
 
                         <Link to={`${basePath}/notifications`} className="relative p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors active:scale-95 block">
                             <Bell size={20} />
-                            {isAdmin && <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>}
+                            {/* Removed hardcoded notification dot */}
                         </Link>
 
                         <div className="h-8 w-px bg-gray-200 mx-1"></div>

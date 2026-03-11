@@ -41,7 +41,7 @@ const createRestaurant = async (req, res) => {
             status: status || 'pending',
             address: address || '',
             imageUrl: imageUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80',
-            rating: (Math.random() * (5.0 - 3.5) + 3.5).toFixed(1) // Random rating for demo
+            rating: 0
         });
 
         res.status(201).json(restaurant);

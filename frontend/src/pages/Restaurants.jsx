@@ -21,8 +21,8 @@ const Restaurants = () => {
     useEffect(() => {
         const fetchRestaurants = async () => {
             try {
-                // Fetch only approved restaurants for the customer facing portal
-                const { data } = await api.get('/restaurants?status=approved');
+                // Fetch only active restaurants for the customer facing portal
+                const { data } = await api.get('/restaurants?status=active');
                 if (data.success) {
                     // Map backend schema fields to frontend expected fields if necessary, though they should be close
                     setRestaurants(data.data);

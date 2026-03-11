@@ -21,7 +21,7 @@ const Home = () => {
         const fetchPopularRestaurants = async () => {
             try {
                 // Fetch top 4 restaurants based on DB query
-                const { data } = await api.get('/restaurants?status=approved');
+                const { data } = await api.get('/restaurants?status=active');
                 if (data.success) {
                     setPopularRestaurants(data.data.slice(0, 4));
                 }
