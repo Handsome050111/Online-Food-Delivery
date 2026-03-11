@@ -1,15 +1,29 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, Eye, EyeOff, ArrowRight } from 'lucide-react';
+import { Mail, Lock, User, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import api from '../services/api';
 
 const Signup = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // In a real app, you would register the user here.
-        navigate('/');
+        setError('');
+        setLoading(true);
+        try {
+            await api.post('/auth/register', formData);
+            toast.success('Your account has been created successfully!');
+            navigate('/login');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to create account');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -23,6 +37,12 @@ const Signup = () => {
                         Join us and start ordering delicious food
                     </p>
                 </div>
+                {error && (
+                    <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-center gap-3 text-sm font-bold border border-red-100">
+                        <AlertCircle size={20} />
+                        {error}
+                    </div>
+                )}
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     <div className="space-y-4">
                         <div>
@@ -34,6 +54,8 @@ const Signup = () => {
                                 <input
                                     type="text"
                                     required
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-all"
                                     placeholder="John Doe"
                                 />
@@ -49,6 +71,8 @@ const Signup = () => {
                                 <input
                                     type="email"
                                     required
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                     className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-all"
                                     placeholder="you@example.com"
                                 />
@@ -64,6 +88,9 @@ const Signup = () => {
                                 <input
                                     type={showPassword ? "text" : "password"}
                                     required
+                                    minLength="6"
+                                    value={formData.password}
+                                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                     className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm transition-all"
                                     placeholder="••••••••"
                                 />
@@ -101,10 +128,11 @@ const Signup = () => {
                     <div>
                         <button
                             type="submit"
-                            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all active:scale-[0.98] shadow-md shadow-primary-500/20"
+                            disabled={loading}
+                            className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white ${loading ? 'bg-primary-400 cursor-not-allowed' : 'bg-primary-600 hover:bg-primary-700 active:scale-[0.98]'} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-all shadow-md shadow-primary-500/20`}
                         >
-                            Create Account
-                            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                            {loading ? 'Creating Account...' : 'Create Account'}
+                            {!loading && <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />}
                         </button>
                     </div>
                 </form>
