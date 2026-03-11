@@ -33,6 +33,7 @@ import AdminRestaurants from './pages/AdminRestaurants';
 import AdminOrders from './pages/AdminOrders';
 import AdminCoupons from './pages/AdminCoupons';
 import AdminNotifications from './pages/AdminNotifications';
+import AdminRiders from './pages/AdminRiders';
 import OwnerDashboard from './pages/OwnerDashboard';
 import RiderDashboard from './pages/RiderDashboard';
 
@@ -66,6 +67,7 @@ function App() {
                         <Route path="/admin" element={<DashboardLayout />}>
                             <Route index element={<AdminDashboard />} />
                             <Route path="users" element={<AdminUsers />} />
+                            <Route path="riders" element={<AdminRiders />} />
                             <Route path="restaurants" element={<AdminRestaurants />} />
                             <Route path="orders" element={<AdminOrders />} />
                             <Route path="coupons" element={<AdminCoupons />} />

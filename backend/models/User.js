@@ -32,6 +32,22 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         default: ''
+    },
+    // Rider specific details
+    riderDetails: {
+        vehicleType: {
+            type: String,
+            enum: ['Motorcycle', 'Bicycle', 'Car', 'None'],
+            default: 'None'
+        },
+        licensePlate: {
+            type: String,
+            default: ''
+        },
+        isAvailable: {
+            type: Boolean,
+            default: true
+        }
     }
 }, {
     timestamps: true

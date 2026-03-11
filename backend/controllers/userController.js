@@ -32,20 +32,26 @@ const getUsers = async (req, res) => {
 // @access  Private/Admin
 const createUser = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, riderDetails } = req.body;
 
         const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({ message: 'User already exists' });
         }
 
-        const user = await User.create({
+        const userData = {
             name,
             email,
             password,
             role: role || 'customer',
             status: 'active'
-        });
+        };
+
+        if (role === 'rider' && riderDetails) {
+            userData.riderDetails = riderDetails;
+        }
+
+        const user = await User.create(userData);
 
         if (user) {
             res.status(201).json({
@@ -53,7 +59,8 @@ const createUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
-                status: user.status
+                status: user.status,
+                riderDetails: user.riderDetails
             });
         } else {
             res.status(400).json({ message: 'Invalid user data' });

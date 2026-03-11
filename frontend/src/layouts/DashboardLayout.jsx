@@ -7,6 +7,7 @@ const ADMIN_LINKS = [
     { path: '/admin', label: 'Dashboard Overview', icon: LayoutDashboard },
     { path: '/admin/restaurants', label: 'Restaurants', icon: Store },
     { path: '/admin/users', label: 'Users', icon: Users },
+    { path: '/admin/riders', label: 'Riders', icon: Bike },
     { path: '/admin/orders', label: 'Orders', icon: ShoppingBag },
     { path: '/admin/coupons', label: 'Coupons', icon: Tag },
 ];
