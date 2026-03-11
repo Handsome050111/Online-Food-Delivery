@@ -45,9 +45,9 @@ const Restaurants = () => {
         if (searchQuery) {
             const query = searchQuery.toLowerCase();
             result = result.filter(r =>
-                r.name.toLowerCase().includes(query) ||
-                r.category.toLowerCase().includes(query) ||
-                r.tags.some(tag => tag.toLowerCase().includes(query))
+                (r.name && r.name.toLowerCase().includes(query)) ||
+                (r.category && r.category.toLowerCase().includes(query)) ||
+                (r.tags && r.tags.some(tag => tag.toLowerCase().includes(query)))
             );
         }
 
