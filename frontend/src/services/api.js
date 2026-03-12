@@ -7,4 +7,20 @@ const api = axios.create({
     }
 });
 
+api.interceptors.request.use(
+    (config) => {
+        const userInfo = localStorage.getItem('userInfo');
+        if (userInfo) {
+            const parsedInfo = JSON.parse(userInfo);
+            if (parsedInfo && parsedInfo.token) {
+                config.headers.Authorization = `Bearer ${parsedInfo.token}`;
+            }
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
+
 export default api;

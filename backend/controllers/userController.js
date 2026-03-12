@@ -148,14 +148,20 @@ const getUserProfile = async (req, res) => {
         const user = await User.findById(req.user._id);
 
         if (user) {
-            res.json({
+            const responseData = {
                 _id: user._id,
                 name: user.name,
                 email: user.email,
                 role: user.role,
                 phone: user.phone,
                 address: user.address,
-            });
+            };
+
+            if (user.role === 'rider') {
+                responseData.isAvailable = user.riderDetails?.isAvailable || false;
+            }
+
+            res.json(responseData);
         } else {
             res.status(404).json({ message: 'User not found' });
         }

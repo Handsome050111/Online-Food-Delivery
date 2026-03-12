@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Store, Search, Filter, Plus, X, AlertCircle } from 'lucide-react';
+import { Store, Search, Filter, Plus, X, AlertCircle, MapPin, User, Tag, Info, CheckCircle, ShieldAlert } from 'lucide-react';
 import api from '../services/api';
+import toast from 'react-hot-toast';
 
 const AdminRestaurants = () => {
     const [restaurants, setRestaurants] = useState([]);
@@ -9,7 +10,10 @@ const AdminRestaurants = () => {
     const [filterStatus, setFilterStatus] = useState('all');
 
     // Modal State
-    const [showModal, setShowModal] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showDetailModal, setShowDetailModal] = useState(false);
+    const [selectedRestaurant, setSelectedRestaurant] = useState(null);
+    
     const [formData, setFormData] = useState({ name: '', ownerName: '', category: '', status: 'active', address: '' });
     const [formLoading, setFormLoading] = useState(false);
     const [error, setError] = useState('');
@@ -36,9 +40,10 @@ const AdminRestaurants = () => {
         setError('');
         try {
             await api.post('/restaurants', formData);
-            setShowModal(false);
+            setShowAddModal(false);
             setFormData({ name: '', ownerName: '', category: '', status: 'active', address: '' });
             fetchRestaurants();
+            toast.success("Restaurant added successfully");
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to add restaurant');
         } finally {
@@ -49,10 +54,17 @@ const AdminRestaurants = () => {
     const handleUpdateStatus = async (id, newStatus) => {
         try {
             await api.put(`/restaurants/${id}/status`, { status: newStatus });
+            toast.success(`Restaurant ${newStatus === 'active' ? 'approved' : newStatus}`);
+            if (showDetailModal) setShowDetailModal(false);
             fetchRestaurants();
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to update restaurant status');
+            toast.error(err.response?.data?.message || 'Failed to update status');
         }
+    };
+
+    const openDetails = (restaurant) => {
+        setSelectedRestaurant(restaurant);
+        setShowDetailModal(true);
     };
 
     return (
@@ -74,7 +86,7 @@ const AdminRestaurants = () => {
                         <option value="suspended">Suspended</option>
                     </select>
                     <button
-                        onClick={() => setShowModal(true)}
+                        onClick={() => setShowAddModal(true)}
                         className="flex items-center gap-2 px-5 py-2 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 transition-colors shadow-sm"
                     >
                         <Plus size={18} />
@@ -135,15 +147,18 @@ const AdminRestaurants = () => {
                                                 {restaurant.status === 'pending' ? 'Pending Approval' : restaurant.status}
                                             </span>
                                         </td>
-                                        <td className="py-4 px-4 text-right space-x-3">
+                                        <td className="py-4 px-4 text-right space-x-2">
+                                            <button 
+                                                onClick={() => openDetails(restaurant)}
+                                                className="text-primary-600 font-bold hover:text-primary-800 text-xs px-2 py-1 bg-primary-50 rounded-lg transition-colors border border-primary-100"
+                                            >
+                                                Details
+                                            </button>
                                             {restaurant.status === 'pending' && (
-                                                <button onClick={() => handleUpdateStatus(restaurant._id, 'active')} className="text-green-600 font-bold hover:text-green-800 text-sm">Approve</button>
+                                                <button onClick={() => handleUpdateStatus(restaurant._id, 'active')} className="text-white bg-green-600 px-3 py-1 rounded-lg font-bold hover:bg-green-700 text-xs transition-colors">Approve</button>
                                             )}
                                             {restaurant.status === 'active' && (
-                                                <button onClick={() => handleUpdateStatus(restaurant._id, 'suspended')} className="text-red-500 font-bold hover:text-red-700 text-sm">Suspend</button>
-                                            )}
-                                            {restaurant.status === 'suspended' && (
-                                                <button onClick={() => handleUpdateStatus(restaurant._id, 'active')} className="text-green-600 font-bold hover:text-green-800 text-sm">Re-activate</button>
+                                                <button onClick={() => handleUpdateStatus(restaurant._id, 'suspended')} className="text-red-500 font-bold hover:text-red-700 text-xs px-2 py-1">Suspend</button>
                                             )}
                                         </td>
                                     </tr>
@@ -154,13 +169,132 @@ const AdminRestaurants = () => {
                 </div>
             </div>
 
+            {/* View Details Modal */}
+            {showDetailModal && selectedRestaurant && (
+                <div className="fixed inset-0 bg-gray-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+                    <div className="bg-white rounded-2xl shadow-xl border border-gray-100 w-full max-w-2xl animate-in zoom-in-95 duration-200">
+                        <div className="flex justify-between items-center p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl z-10">
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-primary-100 text-primary-600 rounded-lg">
+                                    <Info size={24} />
+                                </div>
+                                <h2 className="text-xl font-extrabold text-gray-900 tracking-tight">Partner Application Review</h2>
+                            </div>
+                            <button onClick={() => setShowDetailModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors p-2 bg-gray-50 rounded-full">
+                                <X size={20} />
+                            </button>
+                        </div>
+                        
+                        <div className="p-8">
+                            <div className="flex flex-col md:flex-row gap-8">
+                                <div className="w-full md:w-1/3">
+                                    <img 
+                                        src={selectedRestaurant.imageUrl} 
+                                        alt="Restaurant" 
+                                        className="w-full aspect-square object-cover rounded-2xl shadow-sm border border-gray-200" 
+                                    />
+                                    <div className="mt-4 flex flex-col gap-2">
+                                        <div className={`text-center py-2 rounded-xl font-extrabold text-sm border uppercase tracking-wider ${
+                                            selectedRestaurant.status === 'pending' ? 'bg-orange-50 text-orange-700 border-orange-200' :
+                                            selectedRestaurant.status === 'suspended' ? 'bg-red-50 text-red-700 border-red-200' :
+                                            'bg-green-50 text-green-700 border-green-200'
+                                        }`}>
+                                            {selectedRestaurant.status}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex-1 space-y-6">
+                                    <div>
+                                        <h3 className="text-2xl font-black text-gray-900 mb-1">{selectedRestaurant.name}</h3>
+                                        <p className="text-gray-500 font-medium flex items-center gap-1.5 capitalize">
+                                            <Tag size={16} className="text-primary-500" />
+                                            {selectedRestaurant.category} Cuisine
+                                        </p>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-1 gap-5 bg-gray-50 p-5 rounded-2xl border border-gray-100">
+                                        <div className="flex items-start gap-3">
+                                            <div className="p-2 bg-white rounded-lg border border-gray-200 text-gray-500">
+                                                <User size={18} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Business Owner</p>
+                                                <p className="font-bold text-gray-800">{selectedRestaurant.ownerName}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="flex items-start gap-3">
+                                            <div className="p-2 bg-white rounded-lg border border-gray-200 text-gray-500">
+                                                <MapPin size={18} />
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Operating Address</p>
+                                                <p className="font-bold text-gray-800 leading-relaxed">{selectedRestaurant.address || 'Address provided at registration'}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="flex items-center gap-6 pt-2">
+                                        <div>
+                                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Initial Rating</p>
+                                            <p className="text-lg font-black text-amber-500">{selectedRestaurant.rating} / 5.0</p>
+                                        </div>
+                                        <div className="w-px h-8 bg-gray-200"></div>
+                                        <div>
+                                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Commission</p>
+                                            <p className="text-lg font-black text-gray-800 text-primary-500">Standard 20%</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="mt-10 flex gap-4 pt-6 border-t border-gray-100">
+                                {selectedRestaurant.status === 'pending' ? (
+                                    <>
+                                        <button 
+                                            onClick={() => handleUpdateStatus(selectedRestaurant._id, 'suspended')}
+                                            className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-red-50 text-red-700 font-black rounded-2xl hover:bg-red-100 transition-all border border-red-200"
+                                        >
+                                            <ShieldAlert size={20} />
+                                            Reject Application
+                                        </button>
+                                        <button 
+                                            onClick={() => handleUpdateStatus(selectedRestaurant._id, 'active')}
+                                            className="flex-2 flex items-center justify-center gap-2 px-10 py-3.5 bg-green-600 text-white font-black rounded-2xl hover:bg-green-700 transition-all shadow-lg shadow-green-600/20 active:scale-95"
+                                        >
+                                            <CheckCircle size={20} />
+                                            Approve & Go Live
+                                        </button>
+                                    </>
+                                ) : selectedRestaurant.status === 'active' ? (
+                                    <button 
+                                        onClick={() => handleUpdateStatus(selectedRestaurant._id, 'suspended')}
+                                        className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 transition-all shadow-lg"
+                                    >
+                                        Suspend Partnership
+                                    </button>
+                                ) : (
+                                    <button 
+                                        onClick={() => handleUpdateStatus(selectedRestaurant._id, 'active')}
+                                        className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-green-600 text-white font-black rounded-2xl hover:bg-green-700 transition-all shadow-lg"
+                                    >
+                                        Lift Suspension
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Add Restaurant Modal */}
-            {showModal && (
+            {showAddModal && (
                 <div className="fixed inset-0 bg-gray-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
                     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 w-full max-w-md animate-in zoom-in-95 duration-200 my-8">
                         <div className="flex justify-between items-center p-6 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl z-10">
                             <h2 className="text-xl font-extrabold text-gray-900">Add New Restaurant</h2>
-                            <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                            <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
                                 <X size={24} />
                             </button>
                         </div>
@@ -197,7 +331,7 @@ const AdminRestaurants = () => {
                                 </div>
                             </div>
                             <div className="mt-8 flex gap-3">
-                                <button type="button" onClick={() => setShowModal(false)} className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
+                                <button type="button" onClick={() => setShowAddModal(false)} className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancel</button>
                                 <button type="submit" disabled={formLoading} className="flex-1 px-4 py-2 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition-colors disabled:opacity-70 disabled:cursor-not-allowed">
                                     {formLoading ? 'Saving...' : 'Add Restaurant'}
                                 </button>
