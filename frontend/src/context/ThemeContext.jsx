@@ -11,7 +11,9 @@ export const ThemeProvider = ({ children }) => {
         const root = window.document.documentElement;
         
         const applyTheme = () => {
+            const body = window.document.body;
             root.classList.remove('light', 'dark');
+            body.classList.remove('light', 'dark');
             
             let effectiveTheme = theme;
             if (theme === 'system') {
@@ -19,6 +21,7 @@ export const ThemeProvider = ({ children }) => {
             }
             
             root.classList.add(effectiveTheme);
+            body.classList.add(effectiveTheme);
             root.style.colorScheme = effectiveTheme;
         };
 
