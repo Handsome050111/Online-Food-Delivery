@@ -97,20 +97,6 @@ const OwnerMenu = () => {
         }
     };
 
-    if (userContext?.status === 'pending') {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center animate-in zoom-in-95 duration-500">
-                <div className="w-24 h-24 bg-orange-100 dark:bg-orange-900/40 rounded-full flex items-center justify-center mb-6 shadow-sm border border-orange-200 dark:border-orange-800">
-                    <ShieldAlert size={48} className="text-orange-500" />
-                </div>
-                <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">Feature Locked</h1>
-                <p className="text-gray-600 dark:text-gray-400 font-medium max-w-md mx-auto leading-relaxed">
-                    Menu Management is disabled because your partner application is still pending Admin verification.
-                </p>
-            </div>
-        );
-    }
-
     const filteredItems = menuItems.filter(item => 
         item.name.toLowerCase().includes(search.toLowerCase()) || 
         item.category.toLowerCase().includes(search.toLowerCase())

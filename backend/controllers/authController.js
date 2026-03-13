@@ -50,7 +50,7 @@ const registerUser = async (req, res) => {
 
         // Restrict role assignment to just customer or owner to prevent privilege escalation
         const userRole = role === 'owner' ? 'owner' : 'customer';
-        const userStatus = role === 'owner' ? 'pending' : 'active';
+        const userStatus = 'active'; // Default to active for immediate access
 
         const user = await User.create({
             name,
@@ -68,7 +68,7 @@ const registerUser = async (req, res) => {
                 ownerName: name,
                 name: restaurantName,
                 category: restaurantCategory,
-                status: 'pending'
+                status: 'active' // Set to active for immediate visibility
             });
         }
 

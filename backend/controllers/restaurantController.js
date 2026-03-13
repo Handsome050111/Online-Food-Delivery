@@ -38,7 +38,7 @@ const createRestaurant = async (req, res) => {
             name,
             ownerName,
             category,
-            status: status || 'pending',
+            status: status || 'active',
             address: address || '',
             imageUrl: imageUrl || image || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80',
             image: image || imageUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80',
