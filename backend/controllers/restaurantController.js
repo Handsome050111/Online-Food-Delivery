@@ -21,9 +21,9 @@ const getRestaurants = async (req, res) => {
         }
 
         const restaurants = await Restaurant.find(query).sort({ createdAt: -1 });
-        res.json(restaurants);
+        res.json({ success: true, count: restaurants.length, data: restaurants });
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error: error.message });
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
     }
 };
 
@@ -32,7 +32,7 @@ const getRestaurants = async (req, res) => {
 // @access  Private/Admin
 const createRestaurant = async (req, res) => {
     try {
-        const { name, ownerName, category, status, address, imageUrl } = req.body;
+        const { name, ownerName, category, status, address, imageUrl, image } = req.body;
 
         const restaurant = await Restaurant.create({
             name,
@@ -40,7 +40,8 @@ const createRestaurant = async (req, res) => {
             category,
             status: status || 'pending',
             address: address || '',
-            imageUrl: imageUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80',
+            imageUrl: imageUrl || image || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80',
+            image: image || imageUrl || 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80',
             rating: 0
         });
 

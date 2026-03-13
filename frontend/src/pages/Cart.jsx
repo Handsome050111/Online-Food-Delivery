@@ -17,9 +17,9 @@ const Cart = () => {
         <div className="bg-gray-50 min-h-screen py-10">
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="mb-8">
-                    <Link to="/restaurants/1" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary-600 transition-colors font-bold mb-4">
+                    <Link to="/restaurants" className="inline-flex items-center gap-2 text-gray-500 hover:text-primary-600 transition-colors font-bold mb-4">
                         <ArrowLeft size={18} />
-                        Back to menu
+                        Back to restaurants
                     </Link>
                     <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 flex items-center gap-3 tracking-tight">
                         <ShoppingBag className="text-primary-500" size={36} />

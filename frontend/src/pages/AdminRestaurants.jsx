@@ -128,8 +128,8 @@ const AdminRestaurants = () => {
                                     <tr key={restaurant._id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                                         <td className="py-4 px-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden">
-                                                    <img src={restaurant.imageUrl} alt="Restaurant" className="w-full h-full object-cover" />
+                                                <div className="w-12 h-12 rounded-xl bg-gray-100 overflow-hidden text-left flex items-center justify-center">
+                                                    <img src={restaurant.image || restaurant.imageUrl} alt="Restaurant" className="w-full h-full object-cover" />
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-gray-900">{restaurant.name}</p>
@@ -189,7 +189,7 @@ const AdminRestaurants = () => {
                             <div className="flex flex-col md:flex-row gap-8">
                                 <div className="w-full md:w-1/3">
                                     <img 
-                                        src={selectedRestaurant.imageUrl} 
+                                        src={selectedRestaurant.image || selectedRestaurant.imageUrl} 
                                         alt="Restaurant" 
                                         className="w-full aspect-square object-cover rounded-2xl shadow-sm border border-gray-200" 
                                     />
@@ -230,7 +230,7 @@ const AdminRestaurants = () => {
                                             </div>
                                             <div>
                                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Operating Address</p>
-                                                <p className="font-bold text-gray-800 leading-relaxed">{selectedRestaurant.address || 'Address provided at registration'}</p>
+                                                <p className="font-bold text-gray-800 leading-relaxed">{selectedRestaurant.address || 'Standard operating address'}</p>
                                             </div>
                                         </div>
                                     </div>

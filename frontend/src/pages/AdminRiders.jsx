@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bike, Search, Plus, X, AlertCircle, Car, Bip } from 'lucide-react';
+import { Bike, Search, Plus, X, AlertCircle, Car } from 'lucide-react';
 import api from '../services/api';
 
 const AdminRiders = () => {

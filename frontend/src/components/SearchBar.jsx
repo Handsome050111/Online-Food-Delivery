@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Search, MapPin, ChevronDown } from 'lucide-react';
+import { useLocation } from '../context/LocationContext';
 
 const SearchBar = ({ placeholder = "Search for restaurants or dishes...", onSearch }) => {
-    const [location, setLocation] = useState('Islamabad');
+    const { city: location, setCity: setLocation, detectLocation } = useLocation();
     const [showDropdown, setShowDropdown] = useState(false);
 
     const cities = ['Islamabad', 'Rawalpindi', 'Lahore', 'Karachi', 'Peshawar', 'Quetta'];
@@ -19,7 +20,17 @@ const SearchBar = ({ placeholder = "Search for restaurants or dishes...", onSear
             </div>
 
             {showDropdown && (
-                <div className="absolute top-[calc(100%+0.5rem)] left-0 bg-white border border-gray-100 shadow-xl rounded-xl z-50 w-48 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                <div className="absolute top-[calc(100%+0.5rem)] left-0 bg-white border border-gray-100 shadow-xl rounded-xl z-50 w-64 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                    <button 
+                        onClick={() => {
+                            detectLocation();
+                            setShowDropdown(false);
+                        }}
+                        className="w-full px-4 py-3 bg-primary-50 text-primary-700 font-bold text-sm flex items-center gap-2 hover:bg-primary-100 transition-colors border-b border-primary-100"
+                    >
+                        <Navigation size={14} fill="currentColor" />
+                        Detect My Location
+                    </button>
                     {cities.map(city => (
                         <div
                             key={city}

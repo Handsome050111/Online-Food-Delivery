@@ -19,16 +19,19 @@ const OrderCard = ({ order }) => {
     };
 
     const handleReorder = () => {
-        // Mock reorder functionality
+        if (!order || !order.items) return;
+        
         order.items.forEach(item => {
+            const itemPrice = item.price || (order.totalAmount / (order.items.length || 1));
             addToCart({ 
-                _id: Math.random().toString(), 
+                _id: item.id || `reorder-${Date.now()}`, 
                 name: item.name, 
-                price: order.total / order.items.length 
+                price: itemPrice,
+                image: order.restaurantImage || order.image
             }, { 
-                _id: 'reorder', 
+                _id: order.restaurant || order.restaurantId, 
                 name: order.restaurantName, 
-                deliveryFee: 150 
+                deliveryFee: order.deliveryFee || 0
             });
         });
         toast.success(`Items from ${order.restaurantName} added to cart`);

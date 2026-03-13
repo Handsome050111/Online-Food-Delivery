@@ -22,8 +22,13 @@ const RestaurantDetails = () => {
             try {
                 // Fetch Restaurant Metadata
                 const resResponse = await api.get(`/restaurants/${id}`);
-                if (resResponse.data.success) {
-                    setRestaurant(resResponse.data.data);
+                const resData = resResponse.data;
+                
+                if (resData.success && resData.data) {
+                    setRestaurant(resData.data);
+                } else if (resData && !resData.success && !resData.data && resData._id) {
+                    // Fallback for raw object
+                    setRestaurant(resData);
                 }
 
                 // Fetch Menu Items

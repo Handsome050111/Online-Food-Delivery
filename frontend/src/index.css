@@ -3,7 +3,11 @@
 
 @layer base {
   body {
-    @apply antialiased text-gray-800 bg-gray-50 font-sans;
+    @apply antialiased text-gray-800 bg-gray-50 font-sans transition-colors duration-300;
+  }
+
+  .dark body {
+    @apply text-gray-100 bg-gray-950;
   }
 }
 

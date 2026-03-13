@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
 import api from '../services/api';
 
 const Login = () => {
@@ -29,6 +30,25 @@ const Login = () => {
             
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to login');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleForgotPassword = async (e) => {
+        e.preventDefault();
+        if (!email) {
+            setError('Please enter your email first to reset password');
+            return;
+        }
+        
+        setLoading(true);
+        try {
+            const { data } = await api.post('/auth/forgot-password', { email });
+            toast.success(data.message || 'Reset link sent to your email');
+            setError('');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to send reset link');
         } finally {
             setLoading(false);
         }
@@ -121,9 +141,13 @@ const Login = () => {
                         </div>
 
                         <div className="text-sm">
-                            <a href="#" className="font-bold text-primary-600 hover:text-primary-500 transition-colors">
+                            <button 
+                                type="button"
+                                onClick={handleForgotPassword}
+                                className="font-bold text-primary-600 hover:text-primary-500 transition-colors"
+                            >
                                 Forgot password?
-                            </a>
+                            </button>
                         </div>
                     </div>
 

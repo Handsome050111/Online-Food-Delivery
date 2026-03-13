@@ -18,14 +18,10 @@ const RiderDashboard = () => {
             // In a full app /api/users/profile or /api/auth/me should return riderDetails.
             // Using /users/profile as per the backend we just verified.
             const userRes = await api.get('/users/profile');
-            // User schema in response does not currently populate riderDetails back via profile. Let's fix that too.
-            // But waiting for availability toggle will return the state. Let's start with local false.
+            setIsOnline(userRes.data.isAvailable || false);
             
-            // Wait, I should fetch the exact data. Let's fetch available orders anyway.
             const ordersRes = await api.get('/orders/available');
             setAvailableOrders(ordersRes.data);
-            
-            setIsOnline(userInfo.isAvailable || false); // fallback
         } catch (error) {
             console.error("Error fetching rider data:", error);
             toast.error("Failed to load dashboard data");

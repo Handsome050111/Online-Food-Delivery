@@ -67,7 +67,7 @@ const Home = () => {
             {/* Hero Section */}
             <section className="relative bg-white pt-20 pb-28 md:pt-28 md:pb-36 overflow-hidden">
                 <div className="absolute inset-0 bg-primary-50/70 -skew-y-3 origin-bottom-left transform-gpu -z-10"></div>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-30">
                     <div className="text-center max-w-4xl mx-auto">
                         <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-8 leading-[1.1]">
                             Delicious Food <br className="hidden md:block" />

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MapPin, Phone, Mail, Clock, Send } from 'lucide-react';
+import api from '../services/api';
 import toast from 'react-hot-toast';
 
 const Contact = () => {
@@ -7,10 +8,31 @@ const Contact = () => {
         firstName: '', lastName: '', email: '', subject: 'General Inquiry', message: ''
     });
 
-    const handleSubmit = (e) => {
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        toast.success("Thanks for your message! We'll get back to you soon.");
-        setFormData({ firstName: '', lastName: '', email: '', subject: 'General Inquiry', message: '' });
+        setLoading(true);
+        try {
+            const payload = {
+                name: `${formData.firstName} ${formData.lastName}`.trim(),
+                email: formData.email,
+                subject: formData.subject,
+                message: formData.message
+            };
+            
+            const { data } = await api.post('/contact', payload);
+            
+            if (data.success) {
+                toast.success(data.message || "Thanks for your message!");
+                setFormData({ firstName: '', lastName: '', email: '', subject: 'General Inquiry', message: '' });
+            }
+        } catch (error) {
+            console.error("Contact form error:", error);
+            toast.error(error.response?.data?.message || "Failed to send message. Please try again.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -104,8 +126,12 @@ const Contact = () => {
                                 <textarea required value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} rows="4" className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500 outline-none transition-all placeholder-gray-400 font-medium resize-none" placeholder="How can we help you today?"></textarea>
                             </div>
 
-                            <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md shadow-primary-500/20 active:scale-[0.98] flex items-center justify-center gap-2">
-                                <Send size={20} /> Send Message
+                            <button 
+                                type="submit" 
+                                disabled={loading}
+                                className={`w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-4 px-6 rounded-xl transition-all shadow-md shadow-primary-500/20 active:scale-[0.98] flex items-center justify-center gap-2 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                            >
+                                {loading ? 'Sending...' : <><Send size={20} /> Send Message</>}
                             </button>
                         </form>
                     </div>
