@@ -13,6 +13,19 @@ connectDB();
 const app = express();
 
 // Middleware
+// Request & Body Logger for Diagnostics
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    if (req.headers['content-type'] === 'application/json') {
+        let body = '';
+        req.on('data', chunk => { body += chunk; });
+        req.on('end', () => {
+            if (body) console.log('RAW JSON BODY:', body);
+        });
+    }
+    next();
+});
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -28,6 +41,26 @@ app.use('/api/coupons', require('./routes/couponRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 app.use('/api/contact', require('./routes/contactRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
+
+// Robust Error Handler - MUST BE LAST
+app.use((err, req, res, next) => {
+    console.error('SERVER ERROR:', err.message);
+    if (err.stack) console.error(err.stack);
+    
+    if (err instanceof SyntaxError && 'body' in err) {
+        return res.status(400).json({ 
+            message: 'Invalid JSON payload received by server', 
+            error: err.message 
+        });
+    }
+    
+    res.status(err.status || 500).json({ 
+        message: err.message || 'Internal Server Error',
+        error: process.env.NODE_ENV === 'development' ? err : {}
+    });
+});
+
+// Serve Frontend in Production
 
 // Serve Frontend in Production
 if (process.env.NODE_ENV === 'production') {
