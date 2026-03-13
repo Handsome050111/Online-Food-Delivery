@@ -72,10 +72,10 @@ const RiderDashboard = () => {
         <div>
             <div className="mb-8 flex flex-wrap justify-between items-end gap-5">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">
+                    <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">
                         {isAvailableView ? 'Available Runs' : 'Rider Overview'}
                     </h1>
-                    <p className="text-gray-500 font-medium pt-1">
+                    <p className="text-gray-500 dark:text-gray-400 font-medium pt-1">
                         {isAvailableView ? 'Find your next delivery below' : 'Looking for deliveries today?'}
                     </p>
                 </div>
@@ -99,55 +99,55 @@ const RiderDashboard = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {!isAvailableView && (
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 lg:row-span-2 flex flex-col">
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 lg:row-span-2 flex flex-col">
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-lg font-extrabold text-gray-900">Live Navigation</h2>
-                            <span className={`${isOnline ? 'bg-green-100 text-green-700 border-green-200 animate-pulse' : 'bg-gray-100 text-gray-600 border-gray-200'} text-xs font-bold px-2.5 py-1 rounded border uppercase tracking-wider`}>
+                            <h2 className="text-lg font-extrabold text-gray-900 dark:text-white">Live Navigation</h2>
+                            <span className={`${isOnline ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800 animate-pulse' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700'} text-xs font-bold px-2.5 py-1 rounded border uppercase tracking-wider`}>
                                 {isOnline ? 'Online' : 'Offline'}
                             </span>
                         </div>
-                        <div className="flex-1 flex items-center justify-center p-8 bg-gray-50 rounded-xl border border-dashed border-gray-200">
+                        <div className="flex-1 flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-800 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
                              <div className="text-center">
-                                  <Navigation size={40} className={`mx-auto mb-3 ${isOnline ? 'text-primary-500' : 'text-gray-300'}`} />
-                                  <p className="text-sm font-bold text-gray-400">Map initialization required</p>
+                                  <Navigation size={40} className={`mx-auto mb-3 ${isOnline ? 'text-primary-500' : 'text-gray-600 dark:text-gray-500'}`} />
+                                  <p className="text-sm font-bold text-gray-400 dark:text-gray-500">Map initialization required</p>
                              </div>
                         </div>
                     </div>
                 )}
 
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-lg font-extrabold text-gray-900">Available Orders</h2>
-                        <button onClick={fetchRiderData} disabled={loading} className="text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-1">
+                        <h2 className="text-lg font-extrabold text-gray-900 dark:text-white">Available Orders</h2>
+                        <button onClick={fetchRiderData} disabled={loading} className="text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors flex items-center gap-1">
                              <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> Refresh
                         </button>
                     </div>
                     <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2">
                         {loading ? (
-                            <p className="text-gray-500 font-bold text-center py-8">Loading...</p>
+                            <p className="text-gray-500 dark:text-gray-400 font-bold text-center py-8">Loading...</p>
                         ) : !isOnline ? (
-                            <p className="text-gray-500 font-bold text-center py-8">Go online to see available deliveries.</p>
+                            <p className="text-gray-500 dark:text-gray-400 font-bold text-center py-8">Go online to see available deliveries.</p>
                         ) : availableOrders.length === 0 ? (
-                            <p className="text-gray-500 font-bold text-center py-8">No deliveries available right now.</p>
+                            <p className="text-gray-500 dark:text-gray-400 font-bold text-center py-8">No deliveries available right now.</p>
                         ) : (
                             availableOrders.map(order => (
-                                <div key={order._id} className="p-4 border border-gray-100 rounded-xl hover:shadow-md transition-shadow bg-gray-50/50 flex flex-col gap-3">
+                                <div key={order._id} className="p-4 border border-gray-100 dark:border-gray-800 rounded-xl hover:shadow-md transition-shadow bg-gray-50/50 dark:bg-gray-800/50 flex flex-col gap-3">
                                      <div className="flex justify-between items-start">
                                           <div>
-                                               <span className="text-xs font-bold px-2 py-1 bg-blue-100 text-blue-700 rounded-md">#{order.orderId || order._id.slice(-6).toUpperCase()}</span>
-                                               <h3 className="font-extrabold text-gray-900 mt-1">{order.restaurantName}</h3>
+                                               <span className="text-xs font-bold px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-md border border-transparent dark:border-blue-800">#{order.orderId || order._id.slice(-6).toUpperCase()}</span>
+                                               <h3 className="font-extrabold text-gray-900 dark:text-white mt-1">{order.restaurantName}</h3>
                                           </div>
-                                          <span className="font-extrabold text-green-600 bg-green-50 px-2.5 py-1 rounded-lg">${(order.totalAmount || 0).toFixed(2)}</span>
+                                          <span className="font-extrabold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2.5 py-1 rounded-lg border border-transparent dark:border-green-800">${(order.totalAmount || 0).toFixed(2)}</span>
                                      </div>
-                                     <div className="flex items-start gap-2 text-sm text-gray-600 font-medium">
-                                          <MapPin size={16} className="text-gray-400 mt-0.5 flex-shrink-0" />
+                                     <div className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
+                                          <MapPin size={16} className="text-gray-400 dark:text-gray-500 mt-0.5 flex-shrink-0" />
                                           <p className="line-clamp-2">{order.deliveryAddress}</p>
                                      </div>
-                                     <div className="pt-2 mt-1 border-t border-gray-200 flex justify-between items-center">
-                                          <span className="text-sm font-bold text-gray-500">{order.items?.length || 0} items</span>
+                                     <div className="pt-2 mt-1 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                                          <span className="text-sm font-bold text-gray-500 dark:text-gray-400">{order.items?.length || 0} items</span>
                                           <button 
                                                onClick={() => handleAcceptOrder(order._id)}
-                                               className="bg-gray-900 hover:bg-gray-800 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all active:scale-95"
+                                               className="bg-gray-900 dark:bg-primary-600 hover:bg-gray-800 dark:hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all active:scale-95"
                                           >
                                                Accept Run
                                           </button>

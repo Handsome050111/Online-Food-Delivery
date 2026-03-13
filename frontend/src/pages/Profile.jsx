@@ -102,50 +102,50 @@ const Profile = () => {
 
     if (isLoading) {
         return (
-            <div className="bg-gray-50 min-h-screen flex items-center justify-center">
+            <div className="bg-gray-50 dark:bg-gray-950 min-h-screen flex items-center justify-center transition-colors duration-300">
                 <Loader2 className="w-10 h-10 animate-spin text-primary-500 mb-4" />
-                <p className="text-gray-500 font-medium ml-4">Loading profile...</p>
+                <p className="text-gray-500 dark:text-gray-400 font-medium ml-4">Loading profile...</p>
             </div>
         );
     }
     return (
-        <div className="bg-gray-50 min-h-screen py-10">
+        <div className="bg-gray-50 dark:bg-gray-950 min-h-screen py-10 transition-colors duration-300">
             <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-8 tracking-tight">My Profile</h1>
+                <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-8 tracking-tight">My Profile</h1>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Sidebar */}
-                    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 self-start">
-                        <div className="flex flex-col items-center text-center pb-6 border-b border-gray-100 mb-6">
-                            <div className="w-24 h-24 bg-primary-100 text-primary-600 rounded-full flex items-center justify-center mb-4 text-3xl font-bold uppercase">
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 self-start">
+                        <div className="flex flex-col items-center text-center pb-6 border-b border-gray-100 dark:border-gray-800 mb-6">
+                            <div className="w-24 h-24 bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-full flex items-center justify-center mb-4 text-3xl font-bold uppercase">
                                 {profileData.name ? profileData.name.substring(0, 2) : 'JD'}
                             </div>
-                            <h2 className="text-xl font-extrabold text-gray-900">{profileData.name || 'User Name'}</h2>
-                            <p className="text-gray-500 text-sm font-medium">{profileData.email || 'Email missing'}</p>
+                            <h2 className="text-xl font-extrabold text-gray-900 dark:text-white">{profileData.name || 'User Name'}</h2>
+                            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">{profileData.email || 'Email missing'}</p>
                         </div>
 
                         <nav className="space-y-2">
-                            <Link to="/profile" className="flex items-center gap-3 bg-primary-50 text-primary-600 font-bold px-4 py-3 rounded-xl transition-colors">
+                            <Link to="/profile" className="flex items-center gap-3 bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 font-bold px-4 py-3 rounded-xl transition-colors">
                                 <User size={20} />
                                 Personal Info
                             </Link>
-                            <Link to="/orders" className="flex items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium px-4 py-3 rounded-xl transition-colors">
+                            <Link to="/orders" className="flex items-center gap-3 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white font-medium px-4 py-3 rounded-xl transition-colors">
                                 <Package size={20} />
                                 My Orders
                             </Link>
-                            <button onClick={() => toast("Saved Addresses coming in next update!", { icon: '🚧' })} className="flex w-full items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium px-4 py-3 rounded-xl transition-colors text-left">
+                            <button onClick={() => toast("Saved Addresses coming in next update!", { icon: '🚧' })} className="flex w-full items-center gap-3 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white font-medium px-4 py-3 rounded-xl transition-colors text-left">
                                 <MapPin size={20} />
                                 Saved Addresses
                             </button>
-                            <button onClick={() => toast("Payment Methods coming in next update!", { icon: '🚧' })} className="flex w-full items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium px-4 py-3 rounded-xl transition-colors text-left">
+                            <button onClick={() => toast("Payment Methods coming in next update!", { icon: '🚧' })} className="flex w-full items-center gap-3 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white font-medium px-4 py-3 rounded-xl transition-colors text-left">
                                 <CreditCard size={20} />
                                 Payment Methods
                             </button>
-                            <button onClick={() => toast("Settings coming in next update!", { icon: '🚧' })} className="flex w-full items-center gap-3 text-gray-600 hover:bg-gray-50 hover:text-gray-900 font-medium px-4 py-3 rounded-xl transition-colors text-left">
+                            <button onClick={() => toast("Settings coming in next update!", { icon: '🚧' })} className="flex w-full items-center gap-3 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white font-medium px-4 py-3 rounded-xl transition-colors text-left">
                                 <Settings size={20} />
                                 Settings
                             </button>
-                            <button onClick={handleLogout} className="flex w-full items-center gap-3 text-red-500 hover:bg-red-50 font-bold px-4 py-3 rounded-xl transition-colors text-left mt-8">
+                            <button onClick={handleLogout} className="flex w-full items-center gap-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 font-bold px-4 py-3 rounded-xl transition-colors text-left mt-8">
                                 <LogOut size={20} />
                                 Logout
                             </button>
@@ -154,25 +154,25 @@ const Profile = () => {
 
                     {/* Main Content Area */}
                     <div className="md:col-span-3 space-y-6">
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
-                            <h2 className="text-xl font-extrabold text-gray-900 mb-6 border-b border-gray-100 pb-4">Personal Information</h2>
-                            <form onSubmit={handleProfileSubmit} className="space-y-6 border-b border-gray-100 pb-8">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 sm:p-8">
+                            <h2 className="text-xl font-extrabold text-gray-900 dark:text-white mb-6 border-b border-gray-100 dark:border-gray-800 pb-4">Personal Information</h2>
+                            <form onSubmit={handleProfileSubmit} className="space-y-6 border-b border-gray-100 dark:border-gray-800 pb-8">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="md:col-span-2">
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
-                                        <input type="text" value={profileData.name} onChange={(e) => setProfileData({...profileData, name: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-medium" />
+                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
+                                        <input type="text" value={profileData.name} onChange={(e) => setProfileData({...profileData, name: e.target.value})} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 dark:focus:border-primary-400 focus:ring-1 focus:ring-primary-500 font-medium text-gray-900 dark:text-white" />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
-                                        <input type="email" value={profileData.email} onChange={(e) => setProfileData({...profileData, email: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-medium" />
+                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
+                                        <input type="email" value={profileData.email} onChange={(e) => setProfileData({...profileData, email: e.target.value})} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 dark:focus:border-primary-400 focus:ring-1 focus:ring-primary-500 font-medium text-gray-900 dark:text-white" />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Phone Number</label>
-                                        <input type="tel" value={profileData.phone} onChange={(e) => setProfileData({...profileData, phone: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-medium" />
+                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Phone Number</label>
+                                        <input type="tel" value={profileData.phone} onChange={(e) => setProfileData({...profileData, phone: e.target.value})} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 dark:focus:border-primary-400 focus:ring-1 focus:ring-primary-500 font-medium text-gray-900 dark:text-white" />
                                     </div>
                                     <div className="md:col-span-2">
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Delivery Address</label>
-                                        <textarea value={profileData.address} onChange={(e) => setProfileData({...profileData, address: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-medium" rows="2"></textarea>
+                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Delivery Address</label>
+                                        <textarea value={profileData.address} onChange={(e) => setProfileData({...profileData, address: e.target.value})} className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 dark:focus:border-primary-400 focus:ring-1 focus:ring-primary-500 font-medium text-gray-900 dark:text-white" rows="2"></textarea>
                                     </div>
                                 </div>
                                 <div className="flex justify-end pt-4">
@@ -184,25 +184,25 @@ const Profile = () => {
 
                             {/* Password Section */}
                             <div className="pt-8">
-                                <h2 className="text-xl font-extrabold text-gray-900 mb-6">Change Password</h2>
+                                <h2 className="text-xl font-extrabold text-gray-900 dark:text-white mb-6">Change Password</h2>
                                 {passError && (
-                                    <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-center gap-3 text-sm font-bold border border-red-100 mb-6">
+                                    <div className="bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 p-4 rounded-xl flex items-center gap-3 text-sm font-bold border border-red-100 dark:border-red-900/30 mb-6">
                                         <AlertCircle size={20} />
                                         {passError}
                                     </div>
                                 )}
                                 <form onSubmit={handlePasswordSubmit} className="space-y-6">
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Current Password</label>
-                                        <input type="password" required minLength="6" value={passwordData.currentPassword} onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})} placeholder="••••••••" className="w-full md:w-1/2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-medium" />
+                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Current Password</label>
+                                        <input type="password" required minLength="6" value={passwordData.currentPassword} onChange={(e) => setPasswordData({...passwordData, currentPassword: e.target.value})} placeholder="••••••••" className="w-full md:w-1/2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 dark:focus:border-primary-400 focus:ring-1 focus:ring-primary-500 font-medium text-gray-900 dark:text-white" />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">New Password</label>
-                                        <input type="password" required minLength="6" value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})} placeholder="••••••••" className="w-full md:w-1/2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-medium" />
+                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">New Password</label>
+                                        <input type="password" required minLength="6" value={passwordData.password} onChange={(e) => setPasswordData({...passwordData, password: e.target.value})} placeholder="••••••••" className="w-full md:w-1/2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 dark:focus:border-primary-400 focus:ring-1 focus:ring-primary-500 font-medium text-gray-900 dark:text-white" />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 mb-2">Confirm New Password</label>
-                                        <input type="password" required minLength="6" value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})} placeholder="••••••••" className="w-full md:w-1/2 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-medium" />
+                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">Confirm New Password</label>
+                                        <input type="password" required minLength="6" value={passwordData.confirmPassword} onChange={(e) => setPasswordData({...passwordData, confirmPassword: e.target.value})} placeholder="••••••••" className="w-full md:w-1/2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 dark:focus:border-primary-400 focus:ring-1 focus:ring-primary-500 font-medium text-gray-900 dark:text-white" />
                                     </div>
                                     <div className="flex justify-start pt-2">
                                         <button type="submit" disabled={isSaving} className={`bg-gray-900 hover:bg-black text-white font-bold px-8 py-3 rounded-xl transition-all shadow-sm ${isSaving ? 'opacity-70 cursor-not-allowed' : 'active:scale-95'}`}>

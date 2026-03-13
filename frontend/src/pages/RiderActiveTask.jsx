@@ -38,35 +38,35 @@ const RiderActiveTask = () => {
     };
 
     if (loading) {
-        return <div className="p-8 text-center text-gray-500 font-bold">Loading active tasks...</div>;
+        return <div className="p-8 text-center text-gray-500 dark:text-gray-400 font-bold">Loading active tasks...</div>;
     }
 
     return (
         <div className="animate-in fade-in duration-500">
             <div className="mb-8">
-                <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Active Tasks</h1>
-                <p className="text-gray-500 font-medium pt-1">Manage your current deliveries</p>
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Active Tasks</h1>
+                <p className="text-gray-500 dark:text-gray-400 font-medium pt-1">Manage your current deliveries</p>
             </div>
 
             {activeOrders.length === 0 ? (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-12 text-center">
-                    <Navigation size={48} className="mx-auto text-gray-300 mb-4" />
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">No Active Deliveries</h2>
-                    <p className="text-gray-500 font-medium">Head back to the dashboard to find available runs.</p>
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-12 text-center">
+                    <Navigation size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No Active Deliveries</h2>
+                    <p className="text-gray-500 dark:text-gray-400 font-medium">Head back to the dashboard to find available runs.</p>
                 </div>
             ) : (
                 <div className="space-y-6">
                     {activeOrders.map(order => (
-                        <div key={order._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                            <div className="bg-blue-600 p-4 sm:p-6 text-white flex justify-between items-start">
+                        <div key={order._id} className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+                            <div className="bg-blue-600 dark:bg-blue-700 p-4 sm:p-6 text-white flex justify-between items-start">
                                 <div>
-                                    <span className="bg-white/20 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase mb-2 inline-block">Order Run</span>
+                                    <span className="bg-white/20 dark:bg-white/10 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase mb-2 inline-block">Order Run</span>
                                     <h3 className="text-xl font-extrabold">{order.restaurantName}</h3>
-                                    <p className="text-blue-100 font-medium mt-1">Order #{order.orderId}</p>
+                                    <p className="text-blue-100 dark:text-blue-200 font-medium mt-1">Order #{order.orderId}</p>
                                 </div>
                                 <div className="text-right">
                                     <span className="text-2xl font-extrabold">${order.totalAmount.toFixed(2)}</span>
-                                    <p className="text-blue-100 text-sm font-medium">{order.items.length} Items</p>
+                                    <p className="text-blue-100 dark:text-blue-200 text-sm font-medium">{order.items.length} Items</p>
                                 </div>
                             </div>
                             
@@ -74,33 +74,33 @@ const RiderActiveTask = () => {
                                 <div className="flex flex-col sm:flex-row gap-6">
                                     <div className="flex-1 space-y-4">
                                         <div className="flex items-start gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0 text-orange-600">
+                                            <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center flex-shrink-0 text-orange-600 dark:text-orange-400">
                                                 <MapPin size={20} />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-gray-500 mb-1">Pickup Location</p>
-                                                <p className="font-bold text-gray-900">{order.restaurantName}</p>
+                                                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-1">Pickup Location</p>
+                                                <p className="font-bold text-gray-900 dark:text-white">{order.restaurantName}</p>
                                             </div>
                                         </div>
                                         
-                                        <div className="ml-5 border-l-2 border-dashed border-gray-200 h-8"></div>
+                                        <div className="ml-5 border-l-2 border-dashed border-gray-200 dark:border-gray-800 h-8"></div>
                                         
                                         <div className="flex items-start gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 text-green-600">
+                                            <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0 text-green-600 dark:text-green-400">
                                                 <Navigation size={20} />
                                             </div>
                                             <div>
-                                                <p className="text-sm font-bold text-gray-500 mb-1">Delivery Drop-off</p>
-                                                <p className="font-bold text-gray-900">{order.customerName}</p>
-                                                <p className="text-gray-600 text-sm font-medium">{order.deliveryAddress}</p>
+                                                <p className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-1">Delivery Drop-off</p>
+                                                <p className="font-bold text-gray-900 dark:text-white">{order.customerName}</p>
+                                                <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">{order.deliveryAddress}</p>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <div className="sm:w-64 bg-gray-50 rounded-xl p-4 flex flex-col justify-between">
+                                    <div className="sm:w-64 bg-gray-50 dark:bg-gray-800 rounded-xl p-4 flex flex-col justify-between">
                                         <div className="space-y-3 mb-6">
-                                            <h4 className="font-bold text-gray-900">Customer Details</h4>
-                                            <div className="flex items-center gap-2 text-sm text-gray-600 font-medium">
+                                            <h4 className="font-bold text-gray-900 dark:text-white">Customer Details</h4>
+                                            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
                                                 <Phone size={16} />
                                                 Contact feature required
                                             </div>

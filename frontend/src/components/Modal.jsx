@@ -21,12 +21,12 @@ const Modal = ({ isOpen, onClose, title, children }) => {
                 className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
                 onClick={onClose}
             ></div>
-            <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg z-10 overflow-hidden transform transition-all flex flex-col max-h-[90vh] animate-in fade-in zoom-in duration-200">
-                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-                    <h3 className="text-lg font-bold text-gray-900">{title}</h3>
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl w-full max-w-lg z-10 overflow-hidden transform transition-all flex flex-col max-h-[90vh] animate-in fade-in zoom-in duration-200">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white">{title}</h3>
                     <button
                         onClick={onClose}
-                        className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-full transition-colors focus:outline-none"
+                        className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded-full transition-colors focus:outline-none"
                     >
                         <X size={20} />
                     </button>

@@ -9,24 +9,24 @@ const SearchBar = ({ placeholder = "Search for restaurants or dishes...", onSear
     const cities = ['Islamabad', 'Rawalpindi', 'Lahore', 'Karachi', 'Peshawar', 'Quetta'];
 
     return (
-        <div className="flex w-full items-center bg-white rounded-full p-2 shadow-lg max-w-2xl mx-auto border border-gray-100 transition-shadow focus-within:shadow-xl focus-within:border-primary-300 relative z-50">
+        <div className="flex w-full items-center bg-white dark:bg-gray-900 rounded-full p-2 shadow-lg max-w-2xl mx-auto border border-gray-100 dark:border-gray-800 transition-all focus-within:shadow-xl focus-within:border-primary-300 dark:focus-within:border-primary-700 relative z-50">
             <div
-                className="hidden sm:flex items-center pl-4 pr-3 text-gray-400 border-r border-gray-200 cursor-pointer hover:bg-gray-50 rounded-l-full py-1 transition-colors relative"
+                className="hidden sm:flex items-center pl-4 pr-3 text-gray-400 dark:text-gray-500 border-r border-gray-200 dark:border-gray-800 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 rounded-l-full py-1 transition-colors relative"
                 onClick={() => setShowDropdown(!showDropdown)}
             >
                 <MapPin size={20} className="mr-2 text-primary-500" />
-                <span className="text-sm font-medium text-gray-700 whitespace-nowrap">{location}</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">{location}</span>
                 <ChevronDown size={16} className="ml-1 text-gray-400" />
             </div>
 
             {showDropdown && (
-                <div className="absolute top-[calc(100%+0.5rem)] left-0 bg-white border border-gray-100 shadow-xl rounded-xl z-50 w-64 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                <div className="absolute top-[calc(100%+0.5rem)] left-0 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl rounded-xl z-50 w-64 overflow-hidden animate-in fade-in slide-in-from-top-2">
                     <button 
                         onClick={() => {
                             detectLocation();
                             setShowDropdown(false);
                         }}
-                        className="w-full px-4 py-3 bg-primary-50 text-primary-700 font-bold text-sm flex items-center gap-2 hover:bg-primary-100 transition-colors border-b border-primary-100"
+                        className="w-full px-4 py-3 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 font-bold text-sm flex items-center gap-2 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors border-b border-primary-100 dark:border-primary-800"
                     >
                         <Navigation size={14} fill="currentColor" />
                         Detect My Location
@@ -34,7 +34,7 @@ const SearchBar = ({ placeholder = "Search for restaurants or dishes...", onSear
                     {cities.map(city => (
                         <div
                             key={city}
-                            className={`px-4 py-2.5 text-sm cursor-pointer transition-colors text-left ${location === city ? 'bg-primary-50 text-primary-700 font-bold' : 'text-gray-700 hover:bg-gray-50'}`}
+                            className={`px-4 py-2.5 text-sm cursor-pointer transition-colors text-left ${location === city ? 'bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 font-bold' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'}`}
                             onClick={() => {
                                 setLocation(city);
                                 setShowDropdown(false);
@@ -51,7 +51,7 @@ const SearchBar = ({ placeholder = "Search for restaurants or dishes...", onSear
                 <input
                     type="text"
                     placeholder={placeholder}
-                    className="w-full bg-transparent border-none focus:outline-none text-gray-700 placeholder-gray-400 text-sm sm:text-base py-1.5"
+                    className="w-full bg-transparent border-none focus:outline-none text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base py-1.5"
                     onChange={(e) => onSearch && onSearch(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' && onSearch) {

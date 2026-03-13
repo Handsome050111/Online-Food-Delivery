@@ -1,9 +1,27 @@
 @import "tailwindcss";
-@config "../tailwind.config.js";
+
+@theme {
+  --font-sans: "Inter", "system-ui", "sans-serif";
+  
+  --color-primary-50: #fff7ed;
+  --color-primary-100: #ffedd5;
+  --color-primary-200: #fed7aa;
+  --color-primary-300: #fdba74;
+  --color-primary-400: #fb923c;
+  --color-primary-500: #f97316;
+  --color-primary-600: #ea580c;
+  --color-primary-700: #c2410c;
+  --color-primary-800: #9a3412;
+  --color-primary-900: #7c2d12;
+  --color-primary-950: #431407;
+}
+
+/* Enable class-based dark mode in Tailwind 4 */
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   body {
-    @apply antialiased text-gray-800 bg-gray-50 dark:text-gray-100 dark:bg-gray-950 font-sans transition-colors duration-300;
+    @apply antialiased text-gray-800 bg-white dark:text-gray-100 dark:bg-gray-950 font-sans transition-colors duration-300;
   }
 }
 

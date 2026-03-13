@@ -55,11 +55,11 @@ const OwnerAnalytics = () => {
     if (userContext?.status === 'pending') {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center animate-in zoom-in-95 duration-500">
-                <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-sm border border-orange-200">
+                <div className="w-24 h-24 bg-orange-100 dark:bg-orange-900/40 rounded-full flex items-center justify-center mb-6 shadow-sm border border-orange-200 dark:border-orange-800">
                     <ShieldAlert size={48} className="text-orange-500" />
                 </div>
-                <h1 className="text-3xl font-extrabold text-gray-900 mb-4 tracking-tight">Feature Locked</h1>
-                <p className="text-gray-600 font-medium max-w-md mx-auto leading-relaxed">
+                <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">Feature Locked</h1>
+                <p className="text-gray-600 dark:text-gray-400 font-medium max-w-md mx-auto leading-relaxed">
                     Financial Analytics are disabled because your partner application is still pending Admin verification.
                 </p>
             </div>
@@ -87,8 +87,8 @@ const OwnerAnalytics = () => {
         <div className="animate-in fade-in duration-500">
             <div className="flex flex-col sm:flex-row justify-between items-end gap-4 mb-8">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Financial Analytics</h1>
-                    <p className="text-gray-500 font-medium pt-1">Track your restaurant's revenue and order volume.</p>
+                    <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Financial Analytics</h1>
+                    <p className="text-gray-500 dark:text-gray-400 font-medium pt-1">Track your restaurant's revenue and order volume.</p>
                 </div>
             </div>
 
@@ -121,19 +121,19 @@ const OwnerAnalytics = () => {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* Status Distribution */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                            <h2 className="text-lg font-extrabold text-gray-900 mb-6 flex items-center gap-2">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
+                            <h2 className="text-lg font-extrabold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                                 <Package className="text-gray-400" size={20} />
                                 Order Pipeline
                             </h2>
                             <div className="space-y-4">
                                 {['pending', 'preparing', 'ready', 'out_for_delivery', 'delivered', 'cancelled'].map(status => (
-                                    <div key={status} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100">
-                                        <span className="font-bold text-gray-700 capitalize flex items-center gap-2">
+                                    <div key={status} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
+                                        <span className="font-bold text-gray-700 dark:text-gray-300 capitalize flex items-center gap-2">
                                             {status === 'delivered' ? <CheckCircle size={16} className="text-green-500" /> : <Clock size={16} className="text-gray-400" />}
                                             {status.replace('_', ' ')}
                                         </span>
-                                        <span className="font-extrabold text-gray-900 bg-white px-3 py-1 rounded-lg border border-gray-200">
+                                        <span className="font-extrabold text-gray-900 dark:text-white bg-white dark:bg-gray-900 px-3 py-1 rounded-lg border border-gray-200 dark:border-gray-700">
                                             {statusCounts[status] || 0}
                                         </span>
                                     </div>
@@ -142,8 +142,8 @@ const OwnerAnalytics = () => {
                         </div>
 
                         {/* Recent Transactions */}
-                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                            <h2 className="text-lg font-extrabold text-gray-900 mb-6 flex items-center gap-2">
+                        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
+                            <h2 className="text-lg font-extrabold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
                                 <DollarSign className="text-gray-400" size={20} />
                                 Recent Transactions
                             </h2>
@@ -152,14 +152,14 @@ const OwnerAnalytics = () => {
                                     <p className="text-center text-gray-500 font-bold py-8">No recent sales.</p>
                                 ) : (
                                     recentSales.map(order => (
-                                        <div key={order._id} className="flex items-center justify-between border-b border-gray-100 pb-4 last:border-0 last:pb-0">
+                                        <div key={order._id} className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 pb-4 last:border-0 last:pb-0">
                                             <div>
-                                                <p className="font-extrabold text-gray-900">{order.customerName}</p>
-                                                <p className="text-xs font-bold text-gray-500 mt-0.5">{order.orderId}</p>
+                                                <p className="font-extrabold text-gray-900 dark:text-white">{order.customerName}</p>
+                                                <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mt-0.5">{order.orderId}</p>
                                             </div>
                                             <div className="text-right">
-                                                <span className="font-extrabold text-green-600">+${order.totalAmount.toFixed(2)}</span>
-                                                <p className="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-wider">{new Date(order.createdAt).toLocaleDateString()}</p>
+                                                <span className="font-extrabold text-green-600 dark:text-green-400">+${order.totalAmount.toFixed(2)}</span>
+                                                <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-wider">{new Date(order.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         </div>
                                     ))

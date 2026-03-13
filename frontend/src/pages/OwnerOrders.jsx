@@ -80,11 +80,11 @@ const OwnerOrders = () => {
     if (userContext?.status === 'pending') {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center animate-in zoom-in-95 duration-500">
-                <div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center mb-6 shadow-sm border border-orange-200">
+                <div className="w-24 h-24 bg-orange-100 dark:bg-orange-900/40 rounded-full flex items-center justify-center mb-6 shadow-sm border border-orange-200 dark:border-orange-800">
                     <ShieldAlert size={48} className="text-orange-500" />
                 </div>
-                <h1 className="text-3xl font-extrabold text-gray-900 mb-4 tracking-tight">Feature Locked</h1>
-                <p className="text-gray-600 font-medium max-w-md mx-auto leading-relaxed">
+                <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">Feature Locked</h1>
+                <p className="text-gray-600 dark:text-gray-400 font-medium max-w-md mx-auto leading-relaxed">
                     Live Orders are hidden because your partner application is still pending Admin verification.
                 </p>
             </div>
@@ -103,25 +103,25 @@ const OwnerOrders = () => {
         <div className="animate-in fade-in duration-500">
             <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-8">
                 <div>
-                    <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Live Orders</h1>
-                    <p className="text-gray-500 font-medium pt-1">Manage new tickets and update kitchen status.</p>
+                    <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">Live Orders</h1>
+                    <p className="text-gray-500 dark:text-gray-400 font-medium pt-1">Manage new tickets and update kitchen status.</p>
                 </div>
-                <div className="flex items-center gap-2 bg-green-50 text-green-700 px-3.5 py-1.5 rounded-lg border border-green-200 shadow-sm">
+                <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-3.5 py-1.5 rounded-lg border border-green-200 dark:border-green-800 shadow-sm">
                     <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse shadow-sm shadow-green-500"></div>
                     <span className="text-sm font-bold tracking-wide">RECEIVING TICKETS</span>
                 </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-4 border-b border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row gap-4 items-center justify-between">
-                    <div className="flex items-center bg-white rounded-xl px-4 py-2 border border-gray-200 focus-within:ring-2 focus-within:ring-primary-100 focus-within:border-primary-400 transition-all w-full max-w-md shadow-sm">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+                <div className="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                    <div className="flex items-center bg-white dark:bg-gray-900 rounded-xl px-4 py-2 border border-gray-200 dark:border-gray-800 focus-within:ring-2 focus-within:ring-primary-100 dark:focus-within:ring-primary-900/30 focus-within:border-primary-400 transition-all w-full max-w-md shadow-sm">
                         <Search size={18} className="text-gray-400" />
                         <input
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search by Order ID or Customer..."
-                            className="bg-transparent border-none focus:outline-none px-3 py-1 w-full text-sm font-bold text-gray-700"
+                            className="bg-transparent border-none focus:outline-none px-3 py-1 w-full text-sm font-bold text-gray-700 dark:text-gray-300"
                         />
                     </div>
                     
@@ -130,7 +130,7 @@ const OwnerOrders = () => {
                         <select 
                             value={filterStatus}
                             onChange={(e) => setFilterStatus(e.target.value)}
-                            className="w-full sm:w-48 bg-white border border-gray-200 text-gray-700 text-sm font-bold rounded-xl focus:ring-2 focus:ring-primary-100 focus:border-primary-400 outline-none px-3 py-2.5 shadow-sm appearance-none cursor-pointer"
+                            className="w-full sm:w-48 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 text-sm font-bold rounded-xl focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900/30 focus:border-primary-400 outline-none px-3 py-2.5 shadow-sm appearance-none cursor-pointer"
                         >
                             <option value="all">All Statuses</option>
                             <option value="pending">Pending</option>
@@ -145,7 +145,7 @@ const OwnerOrders = () => {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[1000px]">
                         <thead>
-                            <tr className="text-gray-500 text-sm border-b border-gray-100 bg-white">
+                            <tr className="text-gray-500 dark:text-gray-400 text-sm border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
                                 <th className="py-4 px-6 font-bold uppercase tracking-wider text-xs">Order Details</th>
                                 <th className="py-4 px-6 font-bold uppercase tracking-wider text-xs">Items</th>
                                 <th className="py-4 px-6 font-bold uppercase tracking-wider text-xs">Customer</th>
@@ -161,26 +161,26 @@ const OwnerOrders = () => {
                                 <tr><td colSpan="6" className="text-center py-12 text-gray-500 font-bold">No orders found matching criteria.</td></tr>
                             ) : (
                                 filteredOrders.map((order) => (
-                                    <tr key={order._id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                                    <tr key={order._id} className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                         <td className="py-4 px-6">
-                                            <p className="font-extrabold text-primary-600 font-mono tracking-tight">{order.orderId}</p>
-                                            <p className="text-xs font-bold text-gray-500 mt-0.5">${order.totalAmount.toFixed(2)} • {order.paymentMethod}</p>
+                                            <p className="font-extrabold text-primary-600 dark:text-primary-400 font-mono tracking-tight">{order.orderId}</p>
+                                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mt-0.5">${order.totalAmount.toFixed(2)} • {order.paymentMethod}</p>
                                         </td>
                                         <td className="py-4 px-6">
                                             <div className="flex flex-col gap-1 max-w-[200px]">
                                                 {order.items.map((item, idx) => (
-                                                    <div key={idx} className="flex items-start text-xs font-bold text-gray-700 leading-tight">
-                                                        <span className="text-gray-400 mr-1.5">{item.quantity}x</span>
+                                                    <div key={idx} className="flex items-start text-xs font-bold text-gray-700 dark:text-gray-300 leading-tight">
+                                                        <span className="text-gray-400 dark:text-gray-500 mr-1.5">{item.quantity}x</span>
                                                         <span className="line-clamp-1">{item.name}</span>
                                                     </div>
                                                 ))}
                                             </div>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <p className="font-bold text-gray-900">{order.customerName}</p>
+                                            <p className="font-bold text-gray-900 dark:text-white">{order.customerName}</p>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <div className="flex items-center gap-1.5 text-gray-500 font-medium">
+                                            <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 font-medium">
                                                 <Clock size={14} />
                                                 {new Date(order.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                             </div>
@@ -195,7 +195,7 @@ const OwnerOrders = () => {
                                                 <select 
                                                     value={order.status}
                                                     onChange={(e) => handleUpdateStatus(order._id, e.target.value)}
-                                                    className="bg-white border flex items-center border-gray-200 text-gray-700 text-xs font-bold rounded-lg focus:ring-2 focus:ring-primary-100 outline-none px-2 py-1.5 shadow-sm cursor-pointer"
+                                                    className="bg-white dark:bg-gray-800 border flex items-center border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 text-xs font-bold rounded-lg focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900/30 outline-none px-2 py-1.5 shadow-sm cursor-pointer"
                                                 >
                                                     <option value="pending" disabled>Pending</option>
                                                     <option value="preparing">Set: Preparing</option>

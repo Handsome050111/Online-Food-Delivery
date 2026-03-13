@@ -5,7 +5,7 @@ const StatsCard = ({ title, value, icon: Icon, trend, trendValue, colorClass }) 
     const isPositive = trend === 'up';
 
     return (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
+        <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start mb-4">
                 <div className={`p-4 rounded-xl ${colorClass}`}>
                     <Icon size={24} />
@@ -18,8 +18,8 @@ const StatsCard = ({ title, value, icon: Icon, trend, trendValue, colorClass }) 
                 )}
             </div>
             <div>
-                <h3 className="text-gray-500 font-bold mb-1">{title}</h3>
-                <p className="text-3xl font-extrabold text-gray-900 tracking-tight">{value}</p>
+                <h3 className="text-gray-500 dark:text-gray-400 font-bold mb-1">{title}</h3>
+                <p className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">{value}</p>
             </div>
         </div>
     );

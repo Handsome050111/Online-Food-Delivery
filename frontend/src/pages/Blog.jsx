@@ -42,18 +42,18 @@ const BLOG_POSTS = [
 
 const Blog = () => {
     return (
-        <div className="bg-gray-50 min-h-screen py-16 px-4 sm:px-6 lg:px-8">
+        <div className="bg-gray-50 dark:bg-gray-950 min-h-screen py-16 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="text-center mb-16">
-                    <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 mb-4">The FoodExpress Blog</h1>
-                    <p className="text-lg font-medium text-gray-500 max-w-2xl mx-auto">
+                    <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4">The FoodExpress Blog</h1>
+                    <p className="text-lg font-medium text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
                         Stories, recipes, company news, and local restaurant highlights from our community.
                     </p>
                 </div>
 
                 {/* Featured Post */}
-                <div className="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-16 flex flex-col lg:flex-row cursor-pointer group">
+                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 overflow-hidden mb-16 flex flex-col lg:flex-row cursor-pointer group">
                     <div className="lg:w-1/2 overflow-hidden">
                         <img
                             src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=80"
@@ -63,18 +63,18 @@ const Blog = () => {
                     </div>
                     <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
                         <div className="flex items-center gap-2 mb-4">
-                            <span className="px-3 py-1 bg-primary-100 text-primary-700 text-xs font-bold uppercase tracking-wider rounded-full">Featured</span>
-                            <span className="text-sm font-bold text-gray-400 flex items-center gap-1"><Calendar size={14} /> Oct 15, 2026</span>
+                            <span className="px-3 py-1 bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 text-xs font-bold uppercase tracking-wider rounded-full">Featured</span>
+                            <span className="text-sm font-bold text-gray-400 dark:text-gray-500 flex items-center gap-1"><Calendar size={14} /> Oct 15, 2026</span>
                         </div>
-                        <h2 className="text-3xl font-extrabold text-gray-900 mb-4 group-hover:text-primary-600 transition-colors">The Best Comfort Food For Cold Autumn Nights</h2>
-                        <p className="text-lg text-gray-600 font-medium mb-8 leading-relaxed">
+                        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-4 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">The Best Comfort Food For Cold Autumn Nights</h2>
+                        <p className="text-lg text-gray-600 dark:text-gray-400 font-medium mb-8 leading-relaxed">
                             As the weather gets chilly, nothing beats a warm, hearty meal delivered straight to your couch. We've rounded up the coziest, most satisfying comfort foods available on FoodExpress right now.
                         </p>
                         <div className="flex items-center justify-between mt-auto">
-                            <div className="flex items-center gap-2 text-sm font-bold text-gray-900">
-                                <User size={16} className="text-gray-400" /> Editorial Team
+                            <div className="flex items-center gap-2 text-sm font-bold text-gray-900 dark:text-white">
+                                <User size={16} className="text-gray-400 dark:text-gray-500" /> Editorial Team
                             </div>
-                            <button className="text-primary-600 font-bold hover:text-primary-700 flex items-center gap-2 transition-colors">
+                            <button className="text-primary-600 dark:text-primary-400 font-bold hover:text-primary-700 dark:hover:text-primary-300 flex items-center gap-2 transition-colors">
                                 Read Article <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                             </button>
                         </div>
@@ -84,23 +84,23 @@ const Blog = () => {
                 {/* Post Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 line-clamp-2">
                     {BLOG_POSTS.map(post => (
-                        <div key={post.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
+                        <div key={post.id} className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden group cursor-pointer hover:shadow-lg transition-shadow">
                             <div className="h-64 overflow-hidden relative">
                                 <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                <div className="absolute top-4 left-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">
                                     {post.category}
                                 </div>
                             </div>
                             <div className="p-8 pb-6">
-                                <div className="flex items-center gap-4 text-xs font-bold text-gray-500 mb-4">
+                                <div className="flex items-center gap-4 text-xs font-bold text-gray-500 dark:text-gray-400 mb-4">
                                     <span className="flex items-center gap-1"><Calendar size={14} /> {post.date}</span>
                                     <span className="flex items-center gap-1"><User size={14} /> {post.author}</span>
                                 </div>
-                                <h3 className="text-xl font-extrabold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors line-clamp-2">{post.title}</h3>
-                                <p className="text-gray-600 font-medium leading-relaxed mb-6 line-clamp-3">
+                                <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-3 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors line-clamp-2">{post.title}</h3>
+                                <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed mb-6 line-clamp-3">
                                     {post.excerpt}
                                 </p>
-                                <button className="text-primary-600 font-bold hover:text-primary-700 flex items-center gap-2 transition-colors mt-auto w-full group/btn">
+                                <button className="text-primary-600 dark:text-primary-400 font-bold hover:text-primary-700 dark:hover:text-primary-300 flex items-center gap-2 transition-colors mt-auto w-full group/btn">
                                     Read Article <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                                 </button>
                             </div>
@@ -110,7 +110,7 @@ const Blog = () => {
 
                 {/* Load More */}
                 <div className="mt-16 text-center">
-                    <button className="bg-white border-2 border-gray-200 text-gray-900 hover:border-primary-600 hover:text-primary-600 font-bold py-3 px-8 rounded-xl transition-colors active:scale-95 shadow-sm">
+                    <button className="bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white hover:border-primary-600 dark:hover:border-primary-400 hover:text-primary-600 dark:hover:text-primary-400 font-bold py-3 px-8 rounded-xl transition-colors active:scale-95 shadow-sm">
                         Load More Articles
                     </button>
                 </div>

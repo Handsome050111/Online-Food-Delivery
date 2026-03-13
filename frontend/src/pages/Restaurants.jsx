@@ -91,18 +91,18 @@ const Restaurants = () => {
     };
 
     return (
-        <div className="bg-gray-50 min-h-screen py-10">
+        <div className="bg-gray-50 dark:bg-gray-950 min-h-screen py-10 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header & Search */}
                 <div className="mb-10">
-                    <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 font-sans tracking-tight">All Restaurants</h1>
+                    <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-6 font-sans tracking-tight">All Restaurants</h1>
                     <div className="flex gap-4 items-center">
                         <div className="flex-grow">
                             <SearchBar placeholder="Search for restaurants or cuisines..." onSearch={(val) => setSearchQuery(val)} />
                         </div>
                         <button
                             onClick={() => setShowMobileFilters(!showMobileFilters)}
-                            className="lg:hidden flex items-center justify-center p-3.5 bg-white border border-gray-200 rounded-full shadow-sm text-gray-600 hover:text-primary-500 hover:border-primary-500 transition-colors"
+                            className="lg:hidden flex items-center justify-center p-3.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-full shadow-sm text-gray-600 dark:text-gray-400 hover:text-primary-500 hover:border-primary-500 transition-colors"
                         >
                             <SlidersHorizontal size={22} />
                         </button>
@@ -120,11 +120,11 @@ const Restaurants = () => {
                     {/* Restaurant Grid */}
                     <div className="flex-grow">
                         <div className="flex justify-between items-center mb-6">
-                            <p className="text-gray-600 font-medium">Showing <span className="font-bold text-gray-900">{filteredRestaurants.length}</span> restaurants</p>
+                            <p className="text-gray-600 dark:text-gray-400 font-medium">Showing <span className="font-bold text-gray-900 dark:text-white">{filteredRestaurants.length}</span> restaurants</p>
                             <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-500 font-medium">Sort by:</span>
+                                <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">Sort by:</span>
                                 <select
-                                    className="bg-transparent border-none text-sm font-bold text-gray-900 focus:ring-0 cursor-pointer outline-none pl-1 pr-6 py-0 focus:outline-none appearance-none hover:text-primary-600 transition-colors"
+                                    className="bg-transparent border-none text-sm font-bold text-gray-900 dark:text-white focus:ring-0 cursor-pointer outline-none pl-1 pr-6 py-0 focus:outline-none appearance-none hover:text-primary-600 transition-colors"
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value)}
                                 >
@@ -144,7 +144,7 @@ const Restaurants = () => {
                             <>
                                 <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 transition-opacity duration-300 ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
                                     {filteredRestaurants.length === 0 ? (
-                                        <div className="col-span-full py-16 text-center text-gray-500 font-bold">No restaurants found matching your criteria.</div>
+                                        <div className="col-span-full py-16 text-center text-gray-500 dark:text-gray-400 font-bold">No restaurants found matching your criteria.</div>
                                     ) : filteredRestaurants.slice(0, visibleCount).map(restaurant => (
                                         <RestaurantCard key={restaurant._id} restaurant={restaurant} />
                                     ))}
@@ -154,7 +154,7 @@ const Restaurants = () => {
                                     <div className="mt-12 text-center">
                                         <button
                                             onClick={() => setVisibleCount(prev => prev + 6)}
-                                            className="bg-white text-gray-800 font-bold border border-gray-200 px-10 py-3.5 rounded-full shadow-sm hover:shadow-md hover:border-gray-300 transition-all active:scale-95"
+                                            className="bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 font-bold border border-gray-200 dark:border-gray-700 px-10 py-3.5 rounded-full shadow-sm hover:shadow-md hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-all active:scale-95"
                                         >
                                             Load More
                                         </button>

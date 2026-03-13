@@ -63,17 +63,17 @@ const Home = () => {
     };
 
     return (
-        <div className="bg-gray-50 flex flex-col w-full overflow-hidden">
+        <div className="bg-gray-50 dark:bg-gray-950 flex flex-col w-full overflow-hidden transition-colors duration-300">
             {/* Hero Section */}
-            <section className="relative bg-white pt-20 pb-28 md:pt-28 md:pb-36 overflow-hidden">
-                <div className="absolute inset-0 bg-primary-50/70 -skew-y-3 origin-bottom-left transform-gpu -z-10"></div>
+            <section className="relative bg-white dark:bg-gray-900 pt-20 pb-28 md:pt-28 md:pb-36 overflow-hidden">
+                <div className="absolute inset-0 bg-primary-50/70 dark:bg-primary-900/10 -skew-y-3 origin-bottom-left transform-gpu -z-10"></div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-30">
                     <div className="text-center max-w-4xl mx-auto">
-                        <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-8 leading-[1.1]">
+                        <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-8 leading-[1.1]">
                             Delicious Food <br className="hidden md:block" />
                             <span className="text-primary-500">Delivered To Your Door</span>
                         </h1>
-                        <p className="text-lg md:text-2xl text-gray-600 mb-12 font-medium max-w-3xl mx-auto">
+                        <p className="text-lg md:text-2xl text-gray-600 dark:text-gray-400 mb-12 font-medium max-w-3xl mx-auto">
                             Choose from thousands of local restaurants and get your favorite meals delivered fast and fresh.
                         </p>
                         <div className="animate-in slide-in-from-bottom flex justify-center fade-in duration-700 delay-100">
@@ -84,41 +84,41 @@ const Home = () => {
             </section>
 
             {/* Platform Features */}
-            <section className="py-20 bg-white border-y border-gray-100 shadow-sm relative z-20 -mt-8">
+            <section className="py-20 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800 shadow-sm relative z-20 -mt-8">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                         <div className="flex flex-col items-center text-center p-6 group">
-                            <div className="bg-primary-50 text-primary-600 p-5 rounded-full mb-6 group-hover:scale-110 group-hover:bg-primary-500 group-hover:text-white transition-all duration-300">
+                            <div className="bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 p-5 rounded-full mb-6 group-hover:scale-110 group-hover:bg-primary-500 group-hover:text-white transition-all duration-300">
                                 <Clock size={36} />
                             </div>
-                            <h3 className="text-xl font-bold mb-3 text-gray-900">Fast Delivery</h3>
-                            <p className="text-gray-500 leading-relaxed text-base">Get your food delivered in under 30 minutes with our lightning-fast riders.</p>
+                            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Fast Delivery</h3>
+                            <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-base">Get your food delivered in under 30 minutes with our lightning-fast riders.</p>
                         </div>
                         <div className="flex flex-col items-center text-center p-6 group">
-                            <div className="bg-primary-50 text-primary-600 p-5 rounded-full mb-6 group-hover:scale-110 group-hover:bg-primary-500 group-hover:text-white transition-all duration-300">
+                            <div className="bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 p-5 rounded-full mb-6 group-hover:scale-110 group-hover:bg-primary-500 group-hover:text-white transition-all duration-300">
                                 <ShieldCheck size={36} />
                             </div>
-                            <h3 className="text-xl font-bold mb-3 text-gray-900">Live Tracking</h3>
-                            <p className="text-gray-500 leading-relaxed text-base">Track your order in real-time from the restaurant directly to your doorstep.</p>
+                            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Live Tracking</h3>
+                            <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-base">Track your order in real-time from the restaurant directly to your doorstep.</p>
                         </div>
                         <div className="flex flex-col items-center text-center p-6 group">
-                            <div className="bg-primary-50 text-primary-600 p-5 rounded-full mb-6 group-hover:scale-110 group-hover:bg-primary-500 group-hover:text-white transition-all duration-300">
+                            <div className="bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 p-5 rounded-full mb-6 group-hover:scale-110 group-hover:bg-primary-500 group-hover:text-white transition-all duration-300">
                                 <Wallet size={36} />
                             </div>
-                            <h3 className="text-xl font-bold mb-3 text-gray-900">Secure Payments</h3>
-                            <p className="text-gray-500 leading-relaxed text-base">Pay securely with multiple options including cards, digital wallets, or COD.</p>
+                            <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">Secure Payments</h3>
+                            <p className="text-gray-500 dark:text-gray-400 leading-relaxed text-base">Pay securely with multiple options including cards, digital wallets, or COD.</p>
                         </div>
                     </div>
                 </div>
             </section>
 
             {/* Popular Restaurants */}
-            <section className="py-20 bg-gray-50">
+            <section className="py-20 bg-gray-50 dark:bg-gray-950">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-end mb-10">
                         <div>
-                            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">Popular Restaurants</h2>
-                            <p className="text-gray-500 text-lg">Discover the best places to eat around you</p>
+                            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3 tracking-tight">Popular Restaurants</h2>
+                            <p className="text-gray-500 dark:text-gray-400 text-lg">Discover the best places to eat around you</p>
                         </div>
                         <Link to="/restaurants" className="hidden sm:inline-flex items-center text-primary-600 font-bold hover:text-primary-700 transition-colors group">
                             See all
@@ -131,7 +131,7 @@ const Home = () => {
                                 <Loader2 className="w-10 h-10 animate-spin mb-4 text-primary-500" />
                             </div>
                         ) : popularRestaurants.length === 0 ? (
-                            <div className="col-span-full flex flex-col items-center justify-center text-gray-500 font-bold py-10 bg-white rounded-2xl border border-dashed border-gray-300">
+                            <div className="col-span-full flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 font-bold py-10 bg-white dark:bg-gray-900 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700">
                                 <p>No popular restaurants available right now.</p>
                             </div>
                         ) : popularRestaurants.map(restaurant => (
@@ -139,7 +139,7 @@ const Home = () => {
                         ))}
                     </div>
                     <div className="mt-10 text-center sm:hidden">
-                        <Link to="/restaurants" className="inline-block bg-white text-gray-800 font-bold border border-gray-200 px-8 py-3 rounded-full shadow-sm">
+                        <Link to="/restaurants" className="inline-block bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 font-bold border border-gray-200 dark:border-gray-700 px-8 py-3 rounded-full shadow-sm hover:bg-gray-50 dark:hover:bg-gray-700 transition-all">
                             See all restaurants
                         </Link>
                     </div>
@@ -147,11 +147,11 @@ const Home = () => {
             </section>
 
             {/* Popular Dishes */}
-            <section className="py-20 bg-white border-y border-gray-100">
+            <section className="py-20 bg-white dark:bg-gray-900 border-y border-gray-100 dark:border-gray-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="mb-10 text-center sm:text-left">
-                        <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">Popular Dishes Near You</h2>
-                        <p className="text-gray-500 text-lg">Trending food items available for prompt delivery</p>
+                        <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mb-3 tracking-tight">Popular Dishes Near You</h2>
+                        <p className="text-gray-500 dark:text-gray-400 text-lg">Trending food items available for prompt delivery</p>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 min-h-[200px]">
                         {isLoadingDishes ? (
@@ -159,7 +159,7 @@ const Home = () => {
                                 <Loader2 className="w-10 h-10 animate-spin mb-4 text-primary-500" />
                             </div>
                         ) : popularDishes.length === 0 ? (
-                            <div className="col-span-full flex flex-col items-center justify-center text-gray-500 font-bold py-10 bg-white rounded-2xl border border-dashed border-gray-300">
+                            <div className="col-span-full flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 font-bold py-10 bg-white dark:bg-gray-900 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700">
                                 <p>No popular dishes available right now.</p>
                             </div>
                         ) : popularDishes.map(dish => (

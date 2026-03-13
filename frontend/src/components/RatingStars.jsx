@@ -14,14 +14,14 @@ const RatingStars = ({ rating = 0, count = 0, showCount = true }) => {
                 ))}
                 {hasHalfStar && <StarHalf size={16} fill="currentColor" strokeWidth={0} />}
                 {[...Array(Math.max(0, emptyStars))].map((_, i) => (
-                    <Star key={`empty-${i}`} size={16} className="text-gray-300" strokeWidth={1} />
+                    <Star key={`empty-${i}`} size={16} className="text-gray-300 dark:text-gray-600" strokeWidth={1} />
                 ))}
             </div>
             {showCount && count > 0 && (
-                <span className="text-xs text-gray-500 font-medium">({count})</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">({count})</span>
             )}
             {!showCount && typeof rating === 'number' && (
-                <span className="text-xs font-bold text-gray-800 ml-0.5">{rating.toFixed(1)}</span>
+                <span className="text-xs font-bold text-gray-800 dark:text-gray-200 ml-0.5">{rating.toFixed(1)}</span>
             )}
         </div>
     );
