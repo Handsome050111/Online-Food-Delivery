@@ -10,11 +10,11 @@ export const ThemeProvider = ({ children }) => {
     useEffect(() => {
         const root = window.document.documentElement;
         
-        const applyTheme = (mode) => {
+        const applyTheme = () => {
             root.classList.remove('light', 'dark');
             
-            let effectiveTheme = mode;
-            if (mode === 'system') {
+            let effectiveTheme = theme;
+            if (theme === 'system') {
                 effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
             }
             
@@ -22,16 +22,19 @@ export const ThemeProvider = ({ children }) => {
             root.style.colorScheme = effectiveTheme;
         };
 
-        applyTheme(theme);
+        applyTheme();
         localStorage.setItem('app-theme', theme);
 
         // Listener for system preference changes
-        if (theme === 'system') {
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            const handleChange = () => applyTheme('system');
-            mediaQuery.addEventListener('change', handleChange);
-            return () => mediaQuery.removeEventListener('change', handleChange);
-        }
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleChange = () => {
+            if (theme === 'system') {
+                applyTheme();
+            }
+        };
+
+        mediaQuery.addEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener('change', handleChange);
     }, [theme]);
 
     return (

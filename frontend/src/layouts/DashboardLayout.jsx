@@ -58,7 +58,7 @@ const DashboardLayout = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 flex font-sans">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex font-sans transition-colors duration-300">
             {sidebarOpen && (
                 <div
                     className="fixed inset-0 bg-gray-900/60 z-40 lg:hidden backdrop-blur-sm transition-opacity"
@@ -71,28 +71,28 @@ const DashboardLayout = () => {
             </div>
 
             <div className="flex-1 flex flex-col lg:pl-64 min-w-0 transition-all duration-300">
-                <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 sm:px-6 z-30 sticky top-0 shadow-sm">
+                <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between px-4 sm:px-6 z-30 sticky top-0 shadow-sm">
                     <div className="flex items-center gap-4">
                         <button
                             onClick={() => setSidebarOpen(true)}
-                            className="lg:hidden p-2 -ml-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-full focus:outline-none transition-colors"
+                            className="lg:hidden p-2 -ml-2 text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full focus:outline-none transition-colors"
                         >
                             <Menu size={24} />
                         </button>
                         <button
                             onClick={() => navigate(-1)}
-                            className="p-1.5 text-gray-500 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors hidden sm:block"
+                            className="p-1.5 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors hidden sm:block"
                             title="Go Back"
                         >
                             <ArrowLeft size={20} />
                         </button>
-                        <h1 className="text-xl font-extrabold text-gray-900 hidden sm:block tracking-tight">{roleTitle}</h1>
+                        <h1 className="text-xl font-extrabold text-gray-900 dark:text-white hidden sm:block tracking-tight">{roleTitle}</h1>
                     </div>
 
                     <div className="flex items-center gap-5">
-                        <div className="hidden md:flex items-center bg-gray-50 rounded-full px-4 py-2 border border-gray-200 focus-within:ring-2 focus-within:ring-primary-100 focus-within:border-primary-400 transition-all">
+                        <div className="hidden md:flex items-center bg-gray-50 dark:bg-gray-800/50 rounded-full px-4 py-2 border border-gray-200 dark:border-gray-700 focus-within:ring-2 focus-within:ring-primary-100 dark:focus-within:ring-primary-900/30 focus-within:border-primary-400 transition-all">
                             <Search size={16} className="text-gray-400" />
-                            <input type="text" placeholder="Search..." className="bg-transparent border-none focus:outline-none px-2 text-sm w-48 font-bold text-gray-700" />
+                            <input type="text" placeholder="Search..." className="bg-transparent border-none focus:outline-none px-2 text-sm w-48 font-bold text-gray-700 dark:text-gray-300" />
                         </div>
 
                         <Link to={`${basePath}/notifications`} className="relative p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors active:scale-95 block">
@@ -100,32 +100,32 @@ const DashboardLayout = () => {
                             {/* Removed hardcoded notification dot */}
                         </Link>
 
-                        <div className="h-8 w-px bg-gray-200 mx-1"></div>
+                        <div className="h-8 w-px bg-gray-200 dark:bg-gray-800 mx-1"></div>
 
                         <div className="relative">
                             <button
                                 onClick={() => setProfileOpen(!profileOpen)}
-                                className="flex items-center gap-3 hover:bg-gray-50 p-1.5 rounded-xl transition-colors active:scale-95 text-left"
+                                className="flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-800 p-1.5 rounded-xl transition-colors active:scale-95 text-left"
                             >
                                 <UserCircle size={32} className="text-gray-400" />
                                 <div className="hidden sm:block pr-2">
-                                    <p className="text-sm font-bold text-gray-900 leading-none mb-1">
+                                    <p className="text-sm font-bold text-gray-900 dark:text-white leading-none mb-1">
                                         {userInfo ? userInfo.name : 'Unknown User'}
                                     </p>
-                                    <p className="text-xs text-gray-500 font-bold leading-none capitalize">
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 font-bold leading-none capitalize">
                                         {userInfo ? userInfo.role : 'Guest'}
                                     </p>
                                 </div>
                             </button>
 
                             {profileOpen && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-xl shadow-lg py-1 z-50">
+                                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl shadow-lg py-1 z-50">
                                     <button
                                         onClick={() => {
                                             localStorage.removeItem('userInfo');
                                             navigate('/login');
                                         }}
-                                        className="w-full text-left px-4 py-2 text-sm text-red-600 font-bold hover:bg-red-50 flex items-center gap-2 transition-colors"
+                                        className="w-full text-left px-4 py-2 text-sm text-red-600 font-bold hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2 transition-colors"
                                     >
                                         <LogOut size={16} />
                                         Log Out

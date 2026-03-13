@@ -58,7 +58,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-gray-100">
+        <nav className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm border-b border-gray-100 dark:border-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">
                     {/* Logo & Location */}
@@ -67,21 +67,21 @@ const Navbar = () => {
                             <div className="bg-primary-500 text-white p-1.5 rounded-lg group-hover:bg-primary-600 transition-colors">
                                 <UtensilsCrossed size={24} />
                             </div>
-                            <span className="text-xl font-bold text-gray-900 tracking-tight">Food<span className="text-primary-500">Express</span></span>
+                            <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Food<span className="text-primary-500">Express</span></span>
                         </Link>
 
-                        <div className={`hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 border border-gray-100 rounded-full hover:bg-gray-100 transition-colors cursor-pointer group`} onClick={handleDetectLocation}>
+                        <div className={`hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer group`} onClick={handleDetectLocation}>
                             <MapPin size={16} className="text-primary-500" />
-                            <span className="text-sm font-medium text-gray-700">{city}</span>
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{city}</span>
                             <Locate size={14} className="text-gray-400 group-hover:text-primary-500 transition-colors" />
                         </div>
                     </div>
 
                     {/* Desktop Nav */}
                     <div className={`hidden md:flex items-center space-x-8 ${isSearchOpen ? 'md:hidden' : ''}`}>
-                        <Link to="/" className="text-gray-600 hover:text-primary-500 font-medium transition-colors">Home</Link>
-                        <Link to="/restaurants" className="text-gray-600 hover:text-primary-500 font-medium transition-colors">Restaurants</Link>
-                        <Link to="/orders" className="text-gray-600 hover:text-primary-500 font-medium transition-colors">Orders</Link>
+                        <Link to="/" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 font-medium transition-colors">Home</Link>
+                        <Link to="/restaurants" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 font-medium transition-colors">Restaurants</Link>
+                        <Link to="/orders" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 font-medium transition-colors">Orders</Link>
                     </div>
 
                     {/* Search Bar (Expanded) */}
@@ -153,14 +153,14 @@ const Navbar = () => {
                                 </span>
                             )}
                         </Link>
-                        <div className="hidden sm:flex items-center gap-3 border-l border-gray-200 pl-4 ml-2">
+                        <div className="hidden sm:flex items-center gap-3 border-l border-gray-200 dark:border-gray-800 pl-4 ml-2">
                             {userInfo ? (
                                 <div className="flex items-center gap-4">
                                     <Link 
                                         to={getDashboardLink()} 
-                                        className="flex items-center gap-2 text-gray-700 hover:text-primary-600 font-bold transition-colors"
+                                        className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-bold transition-colors"
                                     >
-                                        <div className="w-8 h-8 rounded-full bg-primary-100 flex items-center justify-center text-primary-600">
+                                        <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400">
                                             <User size={18} />
                                         </div>
                                         <span className="hidden lg:block">{userInfo.name?.split(' ')[0]}</span>
@@ -175,7 +175,7 @@ const Navbar = () => {
                                 </div>
                             ) : (
                                 <>
-                                    <Link to="/login" className="text-gray-600 hover:text-primary-500 font-medium px-2 py-1 transition-colors">Log in</Link>
+                                    <Link to="/login" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors px-2 py-1 font-medium">Log in</Link>
                                     <Link to="/signup" className="bg-primary-500 hover:bg-primary-600 text-white px-5 py-2 rounded-full font-medium transition-all shadow-sm hover:shadow-md active:scale-95">Sign Up</Link>
                                 </>
                             )}
