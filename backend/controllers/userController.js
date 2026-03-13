@@ -179,12 +179,22 @@ const updateRiderAvailability = async (req, res) => {
 
         if (user && user.role === 'rider') {
             if (!user.riderDetails) {
-                 user.riderDetails = { isAvailable: false, vehicleType: 'Motorcycle', licensePlate: 'N/A' };
+                 user.riderDetails = { 
+                     isAvailable: false, 
+                     vehicleType: 'None', 
+                     licensePlate: 'N/A' 
+                 };
             }
             
-            user.riderDetails.isAvailable = typeof req.body.isAvailable !== 'undefined' 
+            const newValue = typeof req.body.isAvailable !== 'undefined' 
                 ? req.body.isAvailable 
                 : !user.riderDetails.isAvailable;
+            
+            // Set values directly on riderDetails
+            user.riderDetails.isAvailable = newValue;
+            
+            // Explicitly mark riderDetails as modified for Mongoose visibility
+            user.markModified('riderDetails');
                 
             const updatedUser = await user.save();
 
@@ -197,6 +207,8 @@ const updateRiderAvailability = async (req, res) => {
             res.status(404).json({ message: 'Rider not found or invalid role' });
         }
     } catch (error) {
+        console.error('Rider Availability Update Error:', error.message);
+        if (error.stack) console.error(error.stack);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
