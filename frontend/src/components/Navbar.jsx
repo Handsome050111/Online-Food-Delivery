@@ -103,7 +103,7 @@ const Navbar = () => {
                     )}
 
                     {/* Right actions */}
-                    <div className="flex items-center space-x-2 sm:space-x-4">
+                    <div className="flex items-center space-x-2">
                         {!isSearchOpen && (
                             <button onClick={() => setIsSearchOpen(true)} className="flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-primary-500 transition-colors">
                                 <Search size={22} />
@@ -152,7 +152,7 @@ const Navbar = () => {
                                 </span>
                             )}
                         </Link>
-                        <div className="hidden sm:flex items-center gap-3 border-l border-gray-200 dark:border-gray-800 pl-4 ml-2">
+                        <div className="hidden md:flex items-center gap-3 border-l border-gray-200 dark:border-gray-800 pl-4 ml-2">
                             {userInfo ? (
                                 <div className="flex items-center gap-4">
                                     <Link 
