@@ -1,17 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Tag, ShoppingBag } from 'lucide-react';
+import { ArrowLeft, Tag, ShoppingBag, X } from 'lucide-react';
 import CartItem from '../components/CartItem';
 import { useCart } from '../context/CartContext';
+import api from '../services/api';
+import toast from 'react-hot-toast';
 
 const Cart = () => {
-    const { cart } = useCart();
+    const { cart, applyCoupon, removeCoupon } = useCart();
+    const [couponCode, setCouponCode] = useState('');
+    const [isApplying, setIsApplying] = useState(false);
     const cartItems = cart.items || [];
 
     const subtotal = cartItems.reduce((sum, item) => sum + ((item.price || 0) * item.quantity), 0);
     const deliveryFee = cart.restaurant ? (cart.restaurant.deliveryFee || 0) : 0;
     const tax = subtotal * 0.08;
-    const total = subtotal + deliveryFee + tax;
+    
+    // Coupon logic
+    const discount = cart.coupon ? cart.coupon.discountAmount : 0;
+    const total = subtotal + deliveryFee + tax - discount;
+
+    const handleApplyCoupon = async () => {
+        if (!couponCode) return;
+        setIsApplying(true);
+        try {
+            const { data } = await api.post('/coupons/validate', {
+                code: couponCode,
+                cartTotal: subtotal
+            });
+            applyCoupon(data);
+            setCouponCode('');
+            toast.success('Coupon applied successfully!');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Invalid coupon code');
+        } finally {
+            setIsApplying(false);
+        }
+    };
 
     return (
         <div className="bg-gray-50 dark:bg-gray-950 min-h-screen py-10 transition-colors duration-300">
@@ -64,9 +89,36 @@ const Cart = () => {
                                     <div className="pl-4 flex items-center text-gray-400 dark:text-gray-500">
                                         <Tag size={18} />
                                     </div>
-                                    <input type="text" placeholder="Promo code" className="w-full bg-transparent border-none focus:outline-none px-3 text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400" />
-                                    <button className="bg-gray-900 hover:bg-black text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-colors active:scale-95">Apply</button>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Promo code" 
+                                        value={couponCode}
+                                        onChange={(e) => setCouponCode(e.target.value)}
+                                        className="w-full bg-transparent border-none focus:outline-none px-3 text-sm font-bold text-gray-700 dark:text-gray-200 placeholder-gray-400 uppercase" 
+                                    />
+                                    <button 
+                                        onClick={handleApplyCoupon}
+                                        disabled={isApplying || cartItems.length === 0}
+                                        className="bg-gray-900 hover:bg-black text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-colors active:scale-95 disabled:opacity-50"
+                                    >
+                                        {isApplying ? '...' : 'Apply'}
+                                    </button>
                                 </div>
+
+                                {cart.coupon && (
+                                    <div className="flex justify-between items-center bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 p-3 rounded-lg mb-6 border border-green-100 dark:border-green-800 animate-in fade-in slide-in-from-top-2 duration-300">
+                                        <div className="flex items-center gap-2">
+                                            <Tag size={16} />
+                                            <span className="text-xs font-extrabold uppercase tracking-widest">{cart.coupon.code}</span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <span className="text-xs font-bold">-Rs. {cart.coupon.discountAmount.toFixed(0)}</span>
+                                            <button onClick={removeCoupon} className="text-gray-400 hover:text-red-500 transition-colors">
+                                                <X size={14} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
 
                                 <div className="space-y-4 pb-6 border-b border-dashed border-gray-200 dark:border-gray-700">
                                     <div className="flex justify-between text-gray-500 dark:text-gray-400 font-medium text-sm">
@@ -81,6 +133,12 @@ const Cart = () => {
                                         <span>Tax</span>
                                         <span className="text-gray-900 dark:text-white">Rs. {tax.toFixed(0)}</span>
                                     </div>
+                                    {cart.coupon && (
+                                        <div className="flex justify-between text-green-600 dark:text-green-400 font-bold text-sm">
+                                            <span>Discount</span>
+                                            <span>-Rs. {discount.toFixed(0)}</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="flex justify-between items-center py-6">

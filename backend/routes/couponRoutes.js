@@ -9,4 +9,6 @@ router.route('/')
 router.route('/:id/toggle')
     .put(toggleCouponStatus);
 
+router.post('/validate', validateCoupon);
+
 module.exports = router;

@@ -1,11 +1,12 @@
 const Order = require('../models/Order');
+const socketService = require('../utils/socketService');
 
 // @desc    Create new order
 // @route   POST /api/orders
 // @access  Private
 const createOrder = async (req, res) => {
     try {
-        const { orderItems, deliveryAddress, paymentMethod, totalAmount, restaurantId, restaurantName } = req.body;
+        const { orderItems, deliveryAddress, paymentMethod, totalAmount, restaurantId, restaurantName, couponCode, discountAmount } = req.body;
 
         if (orderItems && orderItems.length === 0) {
             return res.status(400).json({ message: 'No order items' });
@@ -20,11 +21,19 @@ const createOrder = async (req, res) => {
             restaurantName: restaurantName || 'Unknown Restaurant',
             deliveryAddress,
             paymentMethod,
+            couponCode,
+            discountAmount: discountAmount || 0,
             totalAmount,
             status: 'pending'
         });
 
         const createdOrder = await order.save();
+        
+        // Notify restaurant owner
+        socketService.emitToRoom(`restaurant_${restaurantId}`, 'new_order', createdOrder);
+        // Notify all rounds and specific riders could be done here too
+        socketService.emitToRole('rider', 'available_order', createdOrder);
+
         res.status(201).json(createdOrder);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -85,6 +94,10 @@ const updateOrderStatus = async (req, res) => {
         if (order) {
             order.status = status;
             const updatedOrder = await order.save();
+            
+            // Notify customer
+            socketService.emitToRoom(`user_${order.user}`, 'order_status_update', updatedOrder);
+            
             res.json(updatedOrder);
         } else {
             res.status(404).json({ message: 'Order not found' });
@@ -147,6 +160,12 @@ const acceptOrder = async (req, res) => {
         order.status = 'out_for_delivery';
         
         const updatedOrder = await order.save();
+        
+        // Notify customer that rider is on the way
+        socketService.emitToRoom(`user_${order.user}`, 'order_status_update', updatedOrder);
+        // Notify restaurant that rider has been assigned
+        socketService.emitToRoom(`restaurant_${order.restaurant}`, 'rider_assigned', updatedOrder);
+
         res.json(updatedOrder);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });

@@ -69,8 +69,63 @@ const toggleCouponStatus = async (req, res) => {
     }
 };
 
+// @desc    Validate a coupon code
+// @route   POST /api/coupons/validate
+// @access  Private
+const validateCoupon = async (req, res) => {
+    try {
+        const { code, cartTotal } = req.body;
+
+        if (!code) {
+            return res.status(400).json({ message: 'Coupon code is required' });
+        }
+
+        const coupon = await Coupon.findOne({ code: code.toUpperCase(), status: 'active' });
+
+        if (!coupon) {
+            return res.status(404).json({ message: 'Invalid or inactive coupon code' });
+        }
+
+        // Check expiry
+        if (new Date(coupon.validUntil) < new Date()) {
+            coupon.status = 'expired';
+            await coupon.save();
+            return res.status(400).json({ message: 'This coupon has expired' });
+        }
+
+        // Check min order amount
+        if (cartTotal < coupon.minOrderAmount) {
+            return res.status(400).json({ 
+                message: `Minimum order amount for this coupon is Rs. ${coupon.minOrderAmount}` 
+            });
+        }
+
+        // Calculate discount
+        let discount = 0;
+        if (coupon.discountType === 'percentage') {
+            discount = (cartTotal * coupon.discountValue) / 100;
+            if (coupon.maxDiscountAmount && discount > coupon.maxDiscountAmount) {
+                discount = coupon.maxDiscountAmount;
+            }
+        } else {
+            discount = coupon.discountValue;
+        }
+
+        res.json({
+            code: coupon.code,
+            discountType: coupon.discountType,
+            discountValue: coupon.discountValue,
+            discountAmount: discount,
+            message: 'Coupon applied successfully'
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 module.exports = {
     getCoupons,
     createCoupon,
-    toggleCouponStatus
+    toggleCouponStatus,
+    validateCoupon
 };

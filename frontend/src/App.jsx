@@ -45,6 +45,7 @@ import OwnerAnalytics from './pages/OwnerAnalytics';
 import RiderDashboard from './pages/RiderDashboard';
 import RiderActiveTask from './pages/RiderActiveTask';
 import RiderHistory from './pages/RiderHistory';
+import LiveTracking from './pages/LiveTracking';
 
 function App() {
     return (
@@ -67,6 +68,7 @@ function App() {
                                     <Route path="/cart" element={<Cart />} />
                                     <Route path="/checkout" element={<Checkout />} />
                                     <Route path="/orders" element={<Orders />} />
+                                    <Route path="/order-tracking/:orderId" element={<LiveTracking />} />
                                     <Route path="/profile" element={<Profile />} />
                                     <Route path="/login" element={<Login />} />
                                     <Route path="/signup" element={<Signup />} />

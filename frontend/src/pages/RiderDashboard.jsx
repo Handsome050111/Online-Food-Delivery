@@ -4,9 +4,11 @@ import { Bike, Navigation, CheckCircle2, DollarSign, MapPin, RefreshCw } from 'l
 import StatsCard from '../components/StatsCard';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useSocket } from '../context/SocketContext';
 
 const RiderDashboard = () => {
     const location = useLocation();
+    const socket = useSocket();
     const isAvailableView = location.pathname.includes('/available');
     const [isOnline, setIsOnline] = useState(false);
     const [availableOrders, setAvailableOrders] = useState([]);
@@ -30,7 +32,18 @@ const RiderDashboard = () => {
 
     useEffect(() => {
         fetchRiderData();
-    }, []);
+
+        if (socket) {
+            socket.on('available_order', (newOrder) => {
+                if (isOnline) {
+                    toast.success(`New order available: ${newOrder.restaurantName}`, { icon: '🚴' });
+                    setAvailableOrders(prev => [newOrder, ...prev]);
+                }
+            });
+
+            return () => socket.off('available_order');
+        }
+    }, [isOnline, socket]);
 
     const toggleStatus = async () => {
         try {

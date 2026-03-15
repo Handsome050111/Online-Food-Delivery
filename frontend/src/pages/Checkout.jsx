@@ -31,7 +31,10 @@ const Checkout = () => {
     const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     const deliveryFee = cartItems.length > 0 ? (cart?.restaurant?.deliveryFee || 250) : 0;
     const tax = Math.round(subtotal * 0.08); // 8% tax example
-    const totalAmount = subtotal + deliveryFee + tax;
+    
+    // Coupon logic
+    const discount = cart.coupon ? cart.coupon.discountAmount : 0;
+    const totalAmount = subtotal + deliveryFee + tax - discount;
 
     const handleSocialLogin = (provider) => {
         // Redirect to actual backend OAuth endpoints
@@ -100,16 +103,18 @@ const Checkout = () => {
                 paymentMethod: paymentMethod === 'card' ? 'Credit/Debit Card' : 'Cash on Delivery',
                 totalAmount: totalAmount,
                 restaurantId: cart.restaurant?._id,
-                restaurantName: cart.restaurant?.name
+                restaurantName: cart.restaurant?.name,
+                couponCode: cart.coupon?.code,
+                discountAmount: discount
             };
 
-            await api.post('/orders', orderPayload);
+            const { data: createdOrder } = await api.post('/orders', orderPayload);
             
             clearCart();
             setOrderPlaced(true);
             
             setTimeout(() => {
-                navigate('/orders');
+                navigate(`/order-tracking/${createdOrder._id}`);
             }, 3000);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to process order. Please try again.');
@@ -330,6 +335,12 @@ const Checkout = () => {
                                     <span>Tax (8%)</span>
                                     <span className="text-gray-900 dark:text-white">Rs. {tax}</span>
                                 </div>
+                                {cart.coupon && (
+                                    <div className="flex justify-between text-green-600 dark:text-green-400 font-bold text-sm">
+                                        <span>Discount ({cart.coupon.code})</span>
+                                        <span>-Rs. {discount}</span>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex justify-between items-center py-6">

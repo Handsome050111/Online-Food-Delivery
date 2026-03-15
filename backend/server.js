@@ -3,6 +3,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const path = require('path');
+const http = require('http');
+const socketService = require('./utils/socketService');
 
 // Load env vars
 dotenv.config();
@@ -11,6 +13,10 @@ dotenv.config();
 connectDB();
 
 const app = express();
+const server = http.createServer(app);
+
+// Initialize Socket.io
+socketService.init(server);
 
 app.use(cors());
 app.use(express.json());
@@ -73,6 +79,6 @@ if (process.env.NODE_ENV === 'production') {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });

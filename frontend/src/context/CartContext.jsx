@@ -14,14 +14,14 @@ export const CartProvider = ({ children }) => {
                 const parsed = JSON.parse(savedCart);
                 // If it's the old mock array format or corrupted, dump it
                 if (Array.isArray(parsed) || !parsed.items) {
-                    return { items: [], restaurant: null };
+                    return { items: [], restaurant: null, coupon: null };
                 }
                 return parsed;
             }
         } catch (e) {
             console.error("Failed to parse cart from local storage", e);
         }
-        return { items: [], restaurant: null };
+        return { items: [], restaurant: null, coupon: null };
     });
 
     // Save cart to localStorage whenever it changes
@@ -84,13 +84,21 @@ export const CartProvider = ({ children }) => {
         });
     };
 
+    const applyCoupon = (couponData) => {
+        setCart(prev => ({ ...prev, coupon: couponData }));
+    };
+
+    const removeCoupon = () => {
+        setCart(prev => ({ ...prev, coupon: null }));
+    };
+
     const clearCart = () => {
-        setCart({ items: [], restaurant: null });
+        setCart({ items: [], restaurant: null, coupon: null });
         toast.success("Cart cleared");
     };
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart }}>
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, applyCoupon, removeCoupon }}>
             {children}
         </CartContext.Provider>
     );
