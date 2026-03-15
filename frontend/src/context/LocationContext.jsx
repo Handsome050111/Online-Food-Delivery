@@ -7,6 +7,7 @@ export const LocationProvider = ({ children }) => {
         return localStorage.getItem('userCity') || 'Islamabad';
     });
 
+    const [isDetecting, setIsDetecting] = useState(false);
     const [locationError, setLocationError] = useState(null);
 
     useEffect(() => {
@@ -14,39 +15,56 @@ export const LocationProvider = ({ children }) => {
     }, [city]);
 
     const detectLocation = () => {
-        if (!navigator.geolocation) {
-            setLocationError("Geolocation is not supported by your browser");
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            async (position) => {
-                const { latitude, longitude } = position.coords;
-                try {
-                    // Using a free reverse geocoding API (BigDataCloud) for demonstration
-                    // In production, you would use Google Maps or Mapbox
-                    const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
-                    const data = await response.json();
-                    
-                    if (data && data.city) {
-                        setCity(data.city);
-                    } else if (data && data.locality) {
-                        setCity(data.locality);
-                    }
-                } catch (error) {
-                    console.error("Error reverse geocoding:", error);
-                    setLocationError("Failed to identify your city");
-                }
-            },
-            (error) => {
-                console.error("Geolocation error:", error);
-                setLocationError("Location access denied");
+        return new Promise((resolve, reject) => {
+            if (!navigator.geolocation) {
+                const err = "Geolocation is not supported by your browser";
+                setLocationError(err);
+                reject(err);
+                return;
             }
-        );
+
+            setIsDetecting(true);
+            setLocationError(null);
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    const { latitude, longitude } = position.coords;
+                    try {
+                        const response = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`);
+                        const data = await response.json();
+                        
+                        let detectedCity = 'Islamabad'; // Default fallback
+
+                        if (data) {
+                            detectedCity = data.city || data.locality || data.principalSubdivision || 'Islamabad';
+                        }
+                        
+                        setCity(detectedCity);
+                        setIsDetecting(false);
+                        resolve(detectedCity);
+                    } catch (error) {
+                        console.error("Error reverse geocoding:", error);
+                        const err = "Failed to identify your city";
+                        setLocationError(err);
+                        setIsDetecting(false);
+                        reject(err);
+                    }
+                },
+                (error) => {
+                    console.error("Geolocation error:", error);
+                    let err = "Location access denied";
+                    if (error.code === error.TIMEOUT) err = "Location detection timed out";
+                    setLocationError(err);
+                    setIsDetecting(false);
+                    reject(err);
+                },
+                { timeout: 10000 }
+            );
+        });
     };
 
     return (
-        <LocationContext.Provider value={{ city, setCity, detectLocation, locationError }}>
+        <LocationContext.Provider value={{ city, setCity, detectLocation, locationError, isDetecting }}>
             {children}
         </LocationContext.Provider>
     );

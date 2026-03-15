@@ -90,7 +90,7 @@ const RiderDashboard = () => {
 
             {!isAvailableView && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <StatsCard title="Today's Earnings" value="$0.00" icon={DollarSign} colorClass="text-green-600 bg-green-100" />
+                    <StatsCard title="Today's Earnings" value="Rs. 0.00" icon={DollarSign} colorClass="text-green-600 bg-green-100" />
                     <StatsCard title="Deliveries Done" value="0" icon={CheckCircle2} colorClass="text-blue-600 bg-blue-100" />
                     <StatsCard title="Active Time" value="0h 0m" icon={Bike} colorClass="text-purple-600 bg-purple-100" />
                     <StatsCard title="Total Distance" value="0 km" icon={Navigation} colorClass="text-orange-600 bg-orange-100" />
@@ -137,7 +137,7 @@ const RiderDashboard = () => {
                                                <span className="text-xs font-bold px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-md border border-transparent dark:border-blue-800">#{order.orderId || order._id.slice(-6).toUpperCase()}</span>
                                                <h3 className="font-extrabold text-gray-900 dark:text-white mt-1">{order.restaurantName}</h3>
                                           </div>
-                                          <span className="font-extrabold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2.5 py-1 rounded-lg border border-transparent dark:border-green-800">${(order.totalAmount || 0).toFixed(2)}</span>
+                                          <span className="font-extrabold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2.5 py-1 rounded-lg border border-transparent dark:border-green-800">Rs. {(order.totalAmount || 0).toFixed(2)}</span>
                                      </div>
                                      <div className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
                                           <MapPin size={16} className="text-gray-400 dark:text-gray-500 mt-0.5 flex-shrink-0" />

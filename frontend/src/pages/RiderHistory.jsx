@@ -12,7 +12,8 @@ const RiderHistory = () => {
             setLoading(true);
             const res = await api.get('/orders/rider');
             // Filter strictly for orders assigned to this rider that are finished or cancelled
-            const history = res.data.filter(o => o.status === 'delivered' || o.status === 'cancelled');
+            const data = Array.isArray(res.data) ? res.data : (res.data?.success ? res.data.data : []);
+            const history = Array.isArray(data) ? data.filter(o => o.status === 'delivered' || o.status === 'cancelled') : [];
             setHistoryOrders(history);
         } catch (error) {
             console.error("Error fetching history:", error);
@@ -27,7 +28,7 @@ const RiderHistory = () => {
     }, []);
 
     if (loading) {
-        return <div className="p-8 text-center text-gray-500 dark:text-gray-400 font-bold">Loading history...</div>;
+        return <div className="p-8 text-center text-gray-500 dark:text-gray-400 font-bold font-sans">Loading history...</div>;
     }
 
     return (
@@ -39,7 +40,7 @@ const RiderHistory = () => {
 
             {historyOrders.length === 0 ? (
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-12 text-center">
-                    <History size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
+                    <ClipboardList size={48} className="mx-auto text-gray-300 dark:text-gray-700 mb-4" />
                     <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">No History Yet</h2>
                     <p className="text-gray-500 dark:text-gray-400 font-medium">Completed deliveries will appear here.</p>
                 </div>
@@ -65,7 +66,7 @@ const RiderHistory = () => {
                              </div>
                              <div className="bg-gray-50 dark:bg-gray-800 rounded-xl px-6 py-4 border border-gray-100 dark:border-gray-700 text-right w-full sm:w-auto">
                                   <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">Earned</p>
-                                  <p className="text-2xl font-extrabold text-green-600 dark:text-green-400">${order.totalAmount.toFixed(2)}</p>
+                                  <p className="text-2xl font-extrabold text-green-600 dark:text-green-400">Rs. {order.totalAmount.toFixed(2)}</p>
                                   <p className="text-xs font-medium text-gray-400 dark:text-gray-500 mt-1">{new Date(order.createdAt).toLocaleDateString()}</p>
                              </div>
                         </div>

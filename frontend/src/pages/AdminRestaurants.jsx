@@ -22,7 +22,9 @@ const AdminRestaurants = () => {
         setLoading(true);
         try {
             const { data } = await api.get(`/restaurants?search=${search}&status=${filterStatus}`);
-            setRestaurants(data);
+            // Handle both direct array or wrapped object { data: [...] }
+            const restaurantList = Array.isArray(data) ? data : (data.data || []);
+            setRestaurants(restaurantList);
         } catch (error) {
             console.error('Error fetching restaurants:', error);
         } finally {

@@ -15,7 +15,8 @@ const RestaurantDetails = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('All');
 
-    const { cartItems, addToCart } = useCart();
+    const { cart, addToCart } = useCart();
+    const cartItems = cart?.items || [];
 
     useEffect(() => {
         const fetchRestaurantData = async () => {
@@ -128,7 +129,7 @@ const RestaurantDetails = () => {
                                         </div>
                                         <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300 font-bold bg-gray-50 dark:bg-gray-800 px-3.5 py-1.5 rounded-full">
                                             <Navigation size={16} className="text-primary-500" />
-                                            <span>{(restaurant.deliveryFee || 0) === 0 ? 'Free Delivery' : `Rs. ${(restaurant.deliveryFee || 0).toFixed(0)} delivery`}</span>
+                                            <span>{(typeof restaurant.deliveryFee === 'number' ? restaurant.deliveryFee : 0) === 0 ? 'Free Delivery' : `Rs. ${restaurant.deliveryFee.toFixed(0)} delivery`}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -200,7 +201,7 @@ const RestaurantDetails = () => {
                                             <span className="font-bold text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-2.5 py-0.5 rounded text-xs">{item.quantity}x</span>
                                             <span className="text-gray-700 dark:text-gray-300 font-bold">{item.name}</span>
                                         </div>
-                                        <span className="font-bold text-gray-900 dark:text-white">Rs. {(item.price * item.quantity).toFixed(0)}</span>
+                                        <span className="font-bold text-gray-900 dark:text-white">Rs. {(typeof item.price === 'number' && typeof item.quantity === 'number' ? item.price * item.quantity : 0).toFixed(0)}</span>
                                     </div>
                                 ))}
                             </div>
@@ -212,11 +213,15 @@ const RestaurantDetails = () => {
                                 </div>
                                 <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 font-medium">
                                     <span>Delivery Fee</span>
-                                    <span className="text-gray-900 dark:text-white">Rs. {deliveryFee.toFixed(0)}</span>
+                                    <span className="text-gray-900 dark:text-white">Rs. {(typeof deliveryFee === 'number' ? deliveryFee : 0).toFixed(0)}</span>
+                                </div>
+                                <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                    <span>Tax (8%)</span>
+                                    <span className="text-gray-900 dark:text-white">Rs. {(cartTotal * 0.08).toFixed(0)}</span>
                                 </div>
                                 <div className="flex justify-between text-lg font-extrabold text-gray-900 dark:text-white pt-3 border-t border-gray-100 dark:border-gray-800">
                                     <span>Total</span>
-                                    <span className="text-primary-600 dark:text-primary-400">Rs. {(cartTotal + deliveryFee).toFixed(0)}</span>
+                                    <span className="text-primary-600 dark:text-primary-400">Rs. {(cartTotal * 1.08 + (typeof deliveryFee === 'number' ? deliveryFee : 0)).toFixed(0)}</span>
                                 </div>
                             </div>
 
@@ -235,7 +240,7 @@ const RestaurantDetails = () => {
                         <span className="bg-white/20 w-8 h-8 flex items-center justify-center rounded-full text-sm">{cartItems.length}</span>
                         <span className="text-lg">View Cart</span>
                     </div>
-                    <span className="text-lg">Rs. {(cartTotal + deliveryFee).toFixed(0)}</span>
+                    <span className="text-lg">Rs. {(cartTotal * 1.08 + deliveryFee).toFixed(0)}</span>
                 </Link>
             </div>
 

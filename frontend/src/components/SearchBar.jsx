@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Search, MapPin, ChevronDown } from 'lucide-react';
+import { Search, MapPin, ChevronDown, Navigation, Loader2 } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 import { useLocation } from '../context/LocationContext';
 
 const SearchBar = ({ placeholder = "Search for restaurants or dishes...", onSearch }) => {
-    const { city: location, setCity: setLocation, detectLocation } = useLocation();
+    const { city: location, setCity: setLocation, detectLocation, isDetecting } = useLocation();
     const [showDropdown, setShowDropdown] = useState(false);
 
     const cities = ['Islamabad', 'Rawalpindi', 'Lahore', 'Karachi', 'Peshawar', 'Quetta'];
@@ -22,14 +23,21 @@ const SearchBar = ({ placeholder = "Search for restaurants or dishes...", onSear
             {showDropdown && (
                 <div className="absolute top-[calc(100%+0.5rem)] left-0 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-xl rounded-xl z-50 w-64 overflow-hidden animate-in fade-in slide-in-from-top-2">
                     <button 
-                        onClick={() => {
-                            detectLocation();
-                            setShowDropdown(false);
+                        disabled={isDetecting}
+                        onClick={async () => {
+                            try {
+                                const toastId = toast.loading('Detecting your location...');
+                                await detectLocation();
+                                toast.success('Location updated!', { id: toastId });
+                                setShowDropdown(false);
+                            } catch (err) {
+                                toast.error(err || 'Could not detect location');
+                            }
                         }}
-                        className="w-full px-4 py-3 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 font-bold text-sm flex items-center gap-2 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors border-b border-primary-100 dark:border-primary-800"
+                        className={`w-full px-4 py-3 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400 font-bold text-sm flex items-center gap-2 hover:bg-primary-100 dark:hover:bg-primary-900/30 transition-colors border-b border-primary-100 dark:border-primary-800 ${isDetecting ? 'opacity-70 cursor-not-allowed' : ''}`}
                     >
-                        <Navigation size={14} fill="currentColor" />
-                        Detect My Location
+                        {isDetecting ? <Loader2 size={14} className="animate-spin" /> : <Navigation size={14} fill="currentColor" />}
+                        {isDetecting ? 'Detecting...' : 'Detect My Location'}
                     </button>
                     {cities.map(city => (
                         <div

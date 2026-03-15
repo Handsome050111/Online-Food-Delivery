@@ -9,6 +9,12 @@ const api = axios.create({
 
 api.interceptors.request.use(
     (config) => {
+        // STEP 1 - JSON REQUEST BODY VALIDATION
+        // Ensure POST/PUT requests always have a body to prevent backend parser crashes
+        if ((config.method === 'post' || config.method === 'put') && !config.data) {
+            config.data = {};
+        }
+
         const userInfo = localStorage.getItem('userInfo');
         if (userInfo) {
             const parsedInfo = JSON.parse(userInfo);

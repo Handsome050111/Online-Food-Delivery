@@ -3,15 +3,19 @@ import SearchBar from '../components/SearchBar';
 import FilterSidebar from '../components/FilterSidebar';
 import RestaurantCard from '../components/RestaurantCard';
 import { SlidersHorizontal, Loader2 } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import { toast } from 'react-hot-toast';
 
 const Restaurants = () => {
+    const [searchParams] = useSearchParams();
+    const urlSearch = searchParams.get('search') || '';
+
     const [restaurants, setRestaurants] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [showMobileFilters, setShowMobileFilters] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(urlSearch);
     const [sortBy, setSortBy] = useState('Recommended');
     const [isUpdating, setIsUpdating] = useState(false);
     const [activeFilters, setActiveFilters] = useState({});
@@ -63,10 +67,10 @@ const Restaurants = () => {
             result = result.filter(r => r.deliveryTime <= maxMins);
         }
         if (activeFilters.price) {
-            if (activeFilters.price.includes('Under')) result = result.filter(r => r.deliveryFee < 150);
-            else if (activeFilters.price.includes('500 - 1000')) result = result.filter(r => r.deliveryFee >= 150 && r.deliveryFee < 250);
-            else if (activeFilters.price.includes('1000 - 2000')) result = result.filter(r => r.deliveryFee >= 250 && r.deliveryFee < 400);
-            else result = result.filter(r => r.deliveryFee >= 400);
+            if (activeFilters.price === '< 500') result = result.filter(r => r.deliveryFee < 500);
+            else if (activeFilters.price === '500 - 1000') result = result.filter(r => r.deliveryFee >= 500 && r.deliveryFee < 1000);
+            else if (activeFilters.price === '1000 - 1500') result = result.filter(r => r.deliveryFee >= 1000 && r.deliveryFee < 1500);
+            else result = result.filter(r => r.deliveryFee >= 1500);
         }
 
         // Apply Sorting
@@ -77,7 +81,7 @@ const Restaurants = () => {
         }
 
         return result;
-    }, [searchQuery, sortBy]);
+    }, [restaurants, searchQuery, activeFilters, sortBy]);
 
     const handleApplyFilters = (filters) => {
         setIsUpdating(true);

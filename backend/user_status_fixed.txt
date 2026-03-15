@@ -1,0 +1,8 @@
+﻿[dotenv@17.3.1] injecting env (4) from .env -- tip: ≡ƒ¢í∩╕Å auth for agents: https://vestauth.com
+USER_LIST_START
+Email: admin@fooddelivery.com | Status: active | Role: admin
+Email: khaista@gmail.com | Status: active | Role: customer
+Email: rider@gmail.com | Status: active | Role: rider
+Email: partner@gmail.com | Status: active | Role: owner
+Email: Gelato@gmail.com | Status: pending | Role: owner
+USER_LIST_END

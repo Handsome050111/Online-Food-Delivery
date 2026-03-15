@@ -101,7 +101,7 @@ const OwnerAnalytics = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         <StatsCard 
                             title="Total Sales Revenue" 
-                            value={`$${totalRevenue.toFixed(2)}`} 
+                            value={`Rs. ${totalRevenue.toFixed(2)}`} 
                             icon={DollarSign} 
                             colorClass="text-green-600 bg-green-100" 
                         />
@@ -113,7 +113,7 @@ const OwnerAnalytics = () => {
                         />
                         <StatsCard 
                             title="Average Ticket Size" 
-                            value={`$${averageOrderValue.toFixed(2)}`} 
+                            value={`Rs. ${averageOrderValue.toFixed(2)}`} 
                             icon={TrendingUp} 
                             colorClass="text-purple-600 bg-purple-100" 
                         />
@@ -158,7 +158,7 @@ const OwnerAnalytics = () => {
                                                 <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mt-0.5">{order.orderId}</p>
                                             </div>
                                             <div className="text-right">
-                                                <span className="font-extrabold text-green-600 dark:text-green-400">+${order.totalAmount.toFixed(2)}</span>
+                                                <span className="font-extrabold text-green-600 dark:text-green-400">+Rs. {order.totalAmount.toFixed(2)}</span>
                                                 <p className="text-[10px] font-bold text-gray-400 dark:text-gray-500 mt-1 uppercase tracking-wider">{new Date(order.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         </div>

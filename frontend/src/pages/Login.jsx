@@ -54,14 +54,34 @@ const Login = () => {
         }
     };
 
+    // Read query parameters for email pre-filling or provider hints
+    React.useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const emailParam = params.get('email');
+        const providerParam = params.get('provider');
+        
+        if (emailParam) {
+            setEmail(emailParam);
+        }
+        
+        if (providerParam) {
+            toast(`Continuing with ${providerParam[0].toUpperCase() + providerParam.slice(1)}...`, {
+                icon: '🔑',
+            });
+        }
+    }, []);
+
     // Auto-redirect if user hits the back button to /login but is still logged in
     React.useEffect(() => {
         const userInfoContext = JSON.parse(localStorage.getItem('userInfo'));
         if (userInfoContext) {
-             if (userInfoContext.role === 'admin') navigate('/admin');
-             else if (userInfoContext.role === 'rider') navigate('/rider');
-             else if (userInfoContext.role === 'owner') navigate('/owner');
-             else navigate('/');
+             const params = new URLSearchParams(window.location.search);
+             const redirect = params.get('redirect') || '/';
+             
+             if (userInfoContext.role === 'admin' && !redirect.includes('checkout')) navigate('/admin');
+             else if (userInfoContext.role === 'rider' && !redirect.includes('checkout')) navigate('/rider');
+             else if (userInfoContext.role === 'owner' && !redirect.includes('checkout')) navigate('/owner');
+             else navigate(redirect);
         }
     }, [navigate]);
 

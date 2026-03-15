@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import ScrollToTop from './components/ScrollToTop';
 
 // Context Providers
 import { CartProvider } from './context/CartContext';
@@ -51,6 +52,7 @@ function App() {
             <LocationProvider>
                 <CartProvider>
                     <Router>
+                        <ScrollToTop />
                         <div className="min-h-screen relative font-sans text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 selection:bg-primary-100 selection:text-primary-900 transition-colors duration-300">
                             <Toaster position="top-right" />
                             <Routes>

@@ -19,7 +19,7 @@ const FoodCard = ({ food, onAddToCart }) => {
             <div className="p-4 flex flex-col flex-grow pt-5">
                 <div className="flex justify-between items-start mb-1 gap-2">
                     <h3 className="font-bold text-gray-900 dark:text-white leading-tight">{food.name}</h3>
-                    <span className="font-bold text-primary-600 dark:text-primary-400 flex-shrink-0">Rs. {food.price.toFixed(0)}</span>
+                    <span className="font-bold text-primary-600 dark:text-primary-400 flex-shrink-0">Rs. {typeof food.price === 'number' ? food.price.toFixed(0) : '0'}</span>
                 </div>
                 <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 line-clamp-2 text-ellipsis flex-grow">{food.description}</p>
                 <button

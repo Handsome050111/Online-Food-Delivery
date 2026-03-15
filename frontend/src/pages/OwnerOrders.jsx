@@ -164,7 +164,7 @@ const OwnerOrders = () => {
                                     <tr key={order._id} className="border-b border-gray-50 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                         <td className="py-4 px-6">
                                             <p className="font-extrabold text-primary-600 dark:text-primary-400 font-mono tracking-tight">{order.orderId}</p>
-                                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mt-0.5">${order.totalAmount.toFixed(2)} • {order.paymentMethod}</p>
+                                            <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mt-0.5">Rs. {order.totalAmount.toFixed(2)} • {order.paymentMethod}</p>
                                         </td>
                                         <td className="py-4 px-6">
                                             <div className="flex flex-col gap-1 max-w-[200px]">

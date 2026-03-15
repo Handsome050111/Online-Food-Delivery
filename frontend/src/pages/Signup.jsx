@@ -26,6 +26,15 @@ const Signup = () => {
         }
     };
 
+    // Read query parameters for email pre-filling
+    React.useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const emailParam = params.get('email');
+        if (emailParam) {
+            setFormData(prev => ({ ...prev, email: emailParam }));
+        }
+    }, []);
+
     // Auto-redirect if user hits the back button to /signup but is still logged in
     React.useEffect(() => {
         const userInfoContext = JSON.parse(localStorage.getItem('userInfo'));

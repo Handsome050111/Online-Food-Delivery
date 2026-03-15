@@ -12,7 +12,8 @@ const RiderActiveTask = () => {
             setLoading(true);
             const res = await api.get('/orders/rider');
             // Filter strictly for orders assigned to this rider that aren't finished or cancelled
-            const active = res.data.filter(o => o.status === 'out_for_delivery' || o.status === 'preparing');
+            const data = Array.isArray(res.data) ? res.data : (res.data?.success ? res.data.data : []);
+            const active = Array.isArray(data) ? data.filter(o => o.status === 'out_for_delivery' || o.status === 'preparing') : [];
             setActiveOrders(active);
         } catch (error) {
             console.error("Error fetching active tasks:", error);
@@ -65,8 +66,8 @@ const RiderActiveTask = () => {
                                     <p className="text-blue-100 dark:text-blue-200 font-medium mt-1">Order #{order.orderId}</p>
                                 </div>
                                 <div className="text-right">
-                                    <span className="text-2xl font-extrabold">${order.totalAmount.toFixed(2)}</span>
-                                    <p className="text-blue-100 dark:text-blue-200 text-sm font-medium">{order.items.length} Items</p>
+                                    <span className="text-2xl font-extrabold">Rs. {order.totalAmount.toFixed(2)}</span>
+                                    <p className="text-blue-100 dark:text-blue-200 text-sm font-medium">{order.items?.length || 0} Items</p>
                                 </div>
                             </div>
                             

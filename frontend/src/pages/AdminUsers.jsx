@@ -18,7 +18,8 @@ const AdminUsers = () => {
         setLoading(true);
         try {
             const { data } = await api.get(`/users?search=${search}&role=${filterRole}`);
-            setUsers(data);
+            const userList = Array.isArray(data) ? data : (data.data || []);
+            setUsers(userList);
         } catch (error) {
             console.error('Error fetching users:', error);
         } finally {

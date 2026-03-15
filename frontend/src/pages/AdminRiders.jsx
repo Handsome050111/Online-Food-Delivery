@@ -27,7 +27,8 @@ const AdminRiders = () => {
         setLoading(true);
         try {
             const { data } = await api.get(`/users?search=${search}&role=rider`);
-            setRiders(data);
+            const riderList = Array.isArray(data) ? data : (data.data || []);
+            setRiders(riderList);
         } catch (error) {
             console.error('Error fetching riders:', error);
         } finally {

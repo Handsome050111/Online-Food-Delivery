@@ -12,23 +12,18 @@ connectDB();
 
 const app = express();
 
-// Middleware
-// Request & Body Logger for Diagnostics
-app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-    if (req.headers['content-type'] === 'application/json') {
-        let body = '';
-        req.on('data', chunk => { body += chunk; });
-        req.on('end', () => {
-            if (body) console.log('RAW JSON BODY:', body);
-        });
-    }
-    next();
-});
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Request & Body Logger for Diagnostics (Moved after express.json to avoid stream consumption issues)
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    if (req.body && Object.keys(req.body).length > 0) {
+        console.log('REQUEST BODY:', JSON.stringify(req.body, null, 2));
+    }
+    next();
+});
 
 // Routes
 app.use('/api/test', require('./routes/testRoutes'));

@@ -62,6 +62,13 @@ const updateRestaurantStatus = async (req, res) => {
         if (restaurant) {
             restaurant.status = status;
             const updatedRestaurant = await restaurant.save();
+
+            // Also update the owner's status to active if they are pending and restaurant is being activated
+            if (status === 'active' && restaurant.owner) {
+                const User = require('../models/User');
+                await User.findByIdAndUpdate(restaurant.owner, { status: 'active' });
+            }
+
             res.json(updatedRestaurant);
         } else {
             res.status(404).json({ message: 'Restaurant not found' });

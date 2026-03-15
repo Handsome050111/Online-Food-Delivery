@@ -26,8 +26,25 @@ const OwnerDashboard = () => {
             }
         };
 
-        if (userContext && userContext.status !== 'pending') {
-            fetchRestaurant();
+        const checkUserStatus = async () => {
+            try {
+                const { data } = await api.get('/users/profile');
+                if (data.status === 'active') {
+                    const updatedInfo = { ...userContext, status: 'active' };
+                    localStorage.setItem('userInfo', JSON.stringify(updatedInfo));
+                    setUserContext(updatedInfo);
+                }
+            } catch (error) {
+                console.error("Error checking user status:", error);
+            }
+        };
+
+        if (userContext) {
+            if (userContext.status === 'pending') {
+                checkUserStatus();
+            } else {
+                fetchRestaurant();
+            }
         }
     }, [userContext]);
 
@@ -64,10 +81,10 @@ const OwnerDashboard = () => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <StatsCard title="Today's Sales" value="$0" icon={DollarSign} colorClass="text-green-600 bg-green-100" />
+                <StatsCard title="Today's Sales" value="Rs 0" icon={DollarSign} colorClass="text-green-600 bg-green-100" />
                 <StatsCard title="Orders Today" value="0" icon={ShoppingBag} colorClass="text-blue-600 bg-blue-100" />
                 <StatsCard title="Average Rating" value="0.0" icon={Star} colorClass="text-amber-500 bg-amber-100" />
-                <StatsCard title="Revenue (Month)" value="$0" icon={TrendingUp} colorClass="text-purple-600 bg-purple-100" />
+                <StatsCard title="Revenue (Month)" value="Rs 0" icon={TrendingUp} colorClass="text-purple-600 bg-purple-100" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

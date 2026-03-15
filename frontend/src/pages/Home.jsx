@@ -65,7 +65,7 @@ const Home = () => {
     return (
         <div className="bg-gray-50 dark:bg-gray-950 flex flex-col w-full overflow-hidden transition-colors duration-300">
             {/* Hero Section */}
-            <section className="relative bg-white dark:bg-gray-900 pt-20 pb-28 md:pt-28 md:pb-36 overflow-hidden">
+            <section className="relative bg-white dark:bg-gray-900 pt-20 pb-28 md:pt-28 md:pb-36">
                 <div className="absolute inset-0 bg-primary-50/70 dark:bg-primary-900/10 -skew-y-3 origin-bottom-left transform-gpu -z-10"></div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-30">
                     <div className="text-center max-w-4xl mx-auto">

@@ -12,6 +12,7 @@ const OwnerMenu = () => {
 
     // Modal state
     const [showModal, setShowModal] = useState(false);
+    const [editingItemId, setEditingItemId] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -47,7 +48,7 @@ const OwnerMenu = () => {
             }
         };
 
-        if (userContext && userContext.status !== 'pending') {
+        if (userContext && (userContext.role === 'owner' || userContext.role === 'admin')) {
             fetchInitialData();
         } else {
             setLoading(false);
@@ -65,24 +66,58 @@ const OwnerMenu = () => {
         }
     };
 
-    const handleAddItem = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (!restaurant?._id) {
+            toast.error("Restaurant details not found. Please refresh the page.");
+            return;
+        }
+
         setFormLoading(true);
         try {
-            await api.post('/menu', {
+            const payload = {
                 ...formData,
                 price: Number(formData.price),
                 restaurantId: restaurant._id
-            });
-            toast.success("Menu item added successfully!");
+            };
+
+            if (editingItemId) {
+                await api.put(`/menu/${editingItemId}`, payload);
+                toast.success("Menu item updated successfully!");
+            } else {
+                await api.post('/menu', payload);
+                toast.success("Menu item added successfully!");
+            }
+            
             setShowModal(false);
+            setEditingItemId(null);
             setFormData({ name: '', description: '', price: '', category: '', image: '', popular: false });
             fetchMenuItems(restaurant._id);
         } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to add menu item");
+            toast.error(error.response?.data?.message || `Failed to ${editingItemId ? 'update' : 'add'} menu item`);
         } finally {
             setFormLoading(false);
         }
+    };
+
+    const openAddModal = () => {
+        setEditingItemId(null);
+        setFormData({ name: '', description: '', price: '', category: '', image: '', popular: false });
+        setShowModal(true);
+    };
+
+    const openEditModal = (item) => {
+        setEditingItemId(item._id);
+        setFormData({
+            name: item.name,
+            description: item.description,
+            price: item.price.toString(),
+            category: item.category,
+            image: item.image || '',
+            popular: item.popular || false
+        });
+        setShowModal(true);
     };
 
     const handleDeleteItem = async (itemId) => {
@@ -110,7 +145,7 @@ const OwnerMenu = () => {
                     <p className="text-gray-500 dark:text-gray-400 font-medium pt-1">Create, update, and organize your dishes.</p>
                 </div>
                 <button
-                    onClick={() => setShowModal(true)}
+                    onClick={openAddModal}
                     className="flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 transition-all shadow-sm active:scale-95"
                 >
                     <Plus size={18} strokeWidth={2.5} />
@@ -167,7 +202,7 @@ const OwnerMenu = () => {
                                                 {item.category}
                                             </span>
                                         </td>
-                                        <td className="py-4 px-6 font-extrabold text-gray-900 dark:text-white border-none">${item.price.toFixed(2)}</td>
+                                        <td className="py-4 px-6 font-extrabold text-gray-900 dark:text-white border-none">Rs. {item.price.toFixed(2)}</td>
                                         <td className="py-4 px-6">
                                             {item.popular ? (
                                                 <span className="text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-900/20 px-2.5 py-1 rounded-lg text-xs border border-amber-200 dark:border-amber-800">Popular</span>
@@ -177,7 +212,10 @@ const OwnerMenu = () => {
                                         </td>
                                         <td className="py-4 px-6 text-right">
                                             <div className="flex justify-end gap-2">
-                                                <button onClick={() => handleDeleteItem(item._id)} className="p-2 text-red-400 dark:text-red-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors">
+                                                <button onClick={() => openEditModal(item)} className="p-2 text-primary-500 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors" title="Edit Item">
+                                                    <Edit size={18} strokeWidth={2.5} />
+                                                </button>
+                                                <button onClick={() => handleDeleteItem(item._id)} className="p-2 text-red-400 dark:text-red-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors" title="Delete Item">
                                                     <Trash2 size={18} strokeWidth={2.5} />
                                                 </button>
                                             </div>
@@ -194,14 +232,14 @@ const OwnerMenu = () => {
             {showModal && (
                 <div className="fixed inset-0 bg-gray-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
                     <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 w-full max-w-lg animate-in zoom-in-95 duration-200 my-8">
-                        <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-gray-800 sticky top-0 bg-white dark:bg-gray-900 rounded-t-2xl z-10">
-                            <h2 className="text-xl font-extrabold text-gray-900 dark:text-white tracking-tight">Add Menu Item</h2>
+                        <div className="flex justify-between items-center p-6 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-t-2xl">
+                            <h2 className="text-xl font-extrabold text-gray-900 dark:text-white tracking-tight">{editingItemId ? 'Edit Menu Item' : 'Add Menu Item'}</h2>
                             <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 p-2 rounded-full transition-colors">
                                 <X size={20} className="stroke-2" />
                             </button>
                         </div>
                         
-                        <form onSubmit={handleAddItem} className="p-6">
+                        <form onSubmit={handleSubmit} className="p-6">
                             <div className="space-y-4">
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Item Name</label>
@@ -227,7 +265,7 @@ const OwnerMenu = () => {
                                 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Price ($)</label>
+                                        <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Price (Rs.)</label>
                                         <input 
                                             type="number" step="0.01" required 
                                             value={formData.price} 
@@ -281,7 +319,7 @@ const OwnerMenu = () => {
                                     Cancel
                                 </button>
                                 <button type="submit" disabled={formLoading} className="px-6 py-2.5 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed shadow-sm">
-                                    {formLoading ? 'Adding...' : 'Add to Menu'}
+                                    {formLoading ? (editingItemId ? 'Updating...' : 'Adding...') : (editingItemId ? 'Update Item' : 'Add to Menu')}
                                 </button>
                             </div>
                         </form>

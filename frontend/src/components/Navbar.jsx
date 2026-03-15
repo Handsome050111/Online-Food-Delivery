@@ -35,16 +35,14 @@ const Navbar = () => {
         }
     };
 
-    const handleDetectLocation = () => {
-        detectLocation();
-        toast.promise(
-            new Promise((resolve) => setTimeout(resolve, 1500)),
-            {
-                loading: 'Detecting location...',
-                success: 'Location updated!',
-                error: 'Could not detect location'
-            }
-        );
+    const handleDetectLocation = async () => {
+        const toastId = toast.loading('Detecting location...');
+        try {
+            await detectLocation();
+            toast.success('Location updated!', { id: toastId });
+        } catch (err) {
+            toast.error(err || 'Could not detect location', { id: toastId });
+        }
     };
 
     const getDashboardLink = () => {

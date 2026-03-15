@@ -1,0 +1,25 @@
+﻿[dotenv@17.3.1] injecting env (4) from .env -- tip: ≡ƒöÉ prevent building .env in docker: https://dotenvx.com/prebuild
+
+--- RESTAURANT ACCOUNTS ---
+
+Restaurant Name: Gelato House
+Owner Name:     Khaista
+Owner Email:    NOT LINKED
+Status:         active
+---------------------------
+Restaurant Name: Gelato
+Owner Name:     Gelato
+Owner Email:    Gelato@gmail.com
+Status:         active
+---------------------------
+
+--- ALL USER ACCOUNTS ---
+
+Email: admin@fooddelivery.com         | Role: admin      | Name: Khaista Rehman
+Email: khaista@gmail.com              | Role: customer   | Name: khaista
+Email: rider@gmail.com                | Role: rider      | Name: rider
+Email: partner@gmail.com              | Role: owner      | Name: partner
+Email: Gelato@gmail.com               | Role: owner      | Name: Gelato
+
+NOTE: Passwords are encrypted (hashed) and cannot be displayed in plain text.
+If you forgotten your password, type "admin123" if it was a default, or I can help you reset it.
