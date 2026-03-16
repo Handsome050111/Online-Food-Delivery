@@ -4,6 +4,8 @@ import { Package, Truck, CheckCircle2, Clock, MapPin, Phone, ArrowLeft, RefreshC
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { useSocket } from '../context/SocketContext';
+import { useLocation } from '../context/LocationContext';
+import { getCityCoordinates } from '../utils/mapUtils';
 import api from '../services/api';
 
 const defaultIcon = L.icon({
@@ -57,6 +59,9 @@ const LiveTracking = () => {
         { key: 'out_for_delivery', label: 'Out for Delivery', icon: Truck, description: 'Your rider is on the way to you.' },
         { key: 'delivered', label: 'Delivered', icon: CheckCircle2, description: 'Enjoy your meal!' }
     ];
+
+    const { city } = useLocation();
+    const mapCenter = getCityCoordinates(city);
 
     if (loading) {
         return (
@@ -167,12 +172,13 @@ const LiveTracking = () => {
                                 </div>
                             </div>
                         </div>
+
                         <div>
                             <h4 className="text-gray-400 dark:text-gray-500 uppercase tracking-widest text-xs font-black mb-4">Live Map</h4>
                             <div className="h-64 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-inner">
-                                <MapContainer center={[33.6844, 73.0479]} zoom={15} style={{ height: '100%', width: '100%' }}>
+                                <MapContainer center={mapCenter} zoom={15} style={{ height: '100%', width: '100%' }}>
                                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                    <Marker position={[33.6844, 73.0479]}>
+                                    <Marker position={mapCenter}>
                                         <Popup>Your Ride is here!</Popup>
                                     </Marker>
                                 </MapContainer>

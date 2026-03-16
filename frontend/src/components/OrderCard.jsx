@@ -74,7 +74,7 @@ const OrderCard = ({ order }) => {
                     </div>
                 </div>
                 <div className="flex gap-3 w-full sm:w-auto">
-                    <button onClick={() => toast("Live tracking module coming soon!", { icon: '🗺️' })} className="flex-1 sm:flex-none text-center bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 font-bold py-2 px-4 rounded-lg transition-colors">
+                    <button onClick={() => navigate(`/order-tracking/${order.id || order._id}`)} className="flex-1 sm:flex-none text-center bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 font-bold py-2 px-4 rounded-lg transition-colors">
                         Track Details
                     </button>
                     <button onClick={handleReorder} className="flex-1 sm:flex-none bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 hover:bg-primary-500 hover:text-white font-bold py-2 px-4 rounded-lg transition-colors">

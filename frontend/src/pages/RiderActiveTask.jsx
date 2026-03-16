@@ -1,6 +1,8 @@
 import { Navigation, MapPin, CheckCircle2, Phone } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
+import { useLocation } from '../context/LocationContext';
+import { getCityCoordinates } from '../utils/mapUtils';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 
@@ -13,6 +15,7 @@ const defaultIcon = L.icon({
 L.Marker.prototype.options.icon = defaultIcon;
 
 const RiderActiveTask = () => {
+    const { city } = useLocation();
     const [activeOrders, setActiveOrders] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -111,12 +114,12 @@ const RiderActiveTask = () => {
                                         <div className="space-y-3 mb-6">
                                             <h4 className="font-bold text-gray-900 dark:text-white">Customer Details</h4>
                                         <div className="h-64 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 mb-4">
-                                            <MapContainer center={[33.6844, 73.0479]} zoom={14} style={{ height: '100%', width: '100%' }}>
+                                            <MapContainer center={getCityCoordinates(city)} zoom={14} style={{ height: '100%', width: '100%' }}>
                                                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                                <Marker position={[33.6844, 73.0479]}>
+                                                <Marker position={getCityCoordinates(city)}>
                                                     <Popup>Restaurant: {order.restaurantName}</Popup>
                                                 </Marker>
-                                                <Marker position={[33.6944, 73.0579]}>
+                                                <Marker position={[getCityCoordinates(city)[0] + 0.01, getCityCoordinates(city)[1] + 0.01]}>
                                                     <Popup>Customer: {order.customerName}</Popup>
                                                 </Marker>
                                             </MapContainer>

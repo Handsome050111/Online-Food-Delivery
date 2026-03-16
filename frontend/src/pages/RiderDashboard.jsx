@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { Bike, Navigation, CheckCircle2, DollarSign, MapPin, RefreshCw } from 'lucide-react';
+import { Link, useLocation as useLocationPath } from 'react-router-dom';
+import { Bike, CheckCircle2, DollarSign, Navigation, Activity, ChevronRight, Package, MapPin, Search } from 'lucide-react';
 import StatsCard from '../components/StatsCard';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useSocket } from '../context/SocketContext';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
+import { useLocation } from '../context/LocationContext';
+import { getCityCoordinates } from '../utils/mapUtils';
 
 // Fix for default marker icons in React Leaflet
 const defaultIcon = L.icon({
@@ -18,7 +20,8 @@ const defaultIcon = L.icon({
 L.Marker.prototype.options.icon = defaultIcon;
 
 const RiderDashboard = () => {
-    const location = useLocation();
+    const { city } = useLocation();
+    const location = useLocationPath();
     const socket = useSocket();
     const isAvailableView = location.pathname.includes('/available');
     const [isOnline, setIsOnline] = useState(false);
@@ -130,46 +133,47 @@ const RiderDashboard = () => {
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {!isAvailableView && (
-                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 lg:row-span-2 flex flex-col">
-                        <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-lg font-extrabold text-gray-900 dark:text-white">Live Navigation</h2>
-                            <span className={`${isOnline ? 'bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800 animate-pulse' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700'} text-xs font-bold px-2.5 py-1 rounded border uppercase tracking-wider`}>
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden flex flex-col h-[500px]">
+                    <div className="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 flex flex-col sm:flex-row justify-between items-center gap-3">
+                        <div className="flex items-center gap-3">
+                            <Navigation size={20} className="text-primary-500" />
+                            <h2 className="font-extrabold text-gray-900 dark:text-white tracking-tight">Available Delivery Runs</h2>
+                            <span className={`px-2.5 py-1 rounded-lg text-xs font-bold ${isOnline ? 'bg-green-100 text-green-700 animate-pulse' : 'bg-gray-200 text-gray-500'}`}>
                                 {isOnline ? 'Online' : 'Offline'}
                             </span>
                         </div>
-                        <div className="flex-1 h-[400px] bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
-                             <MapContainer center={[33.6844, 73.0479]} zoom={13} style={{ height: '100%', width: '100%' }}>
-                                 <TileLayer
-                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                 />
-                                 {availableOrders.map((order, idx) => (
-                                     <Marker 
-                                        key={order._id} 
-                                        position={[
-                                            33.6844 + (idx * 0.01) - 0.02, 
-                                            73.0479 + (idx * 0.01) - 0.02
-                                        ]}
-                                    >
-                                         <Popup>
-                                             <div className="p-1">
-                                                 <h4 className="font-bold">{order.restaurantName}</h4>
-                                                 <p className="text-xs">Rs. {order.totalAmount}</p>
-                                                 <button 
-                                                    onClick={() => handleAcceptOrder(order._id)}
-                                                    className="mt-2 bg-primary-500 text-white text-[10px] px-2 py-1 rounded font-bold"
-                                                >
-                                                    Accept
-                                                </button>
-                                             </div>
-                                         </Popup>
-                                     </Marker>
-                                 ))}
-                             </MapContainer>
-                        </div>
                     </div>
-                )}
+                    <div className="flex-1 h-[400px] bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                         <MapContainer center={getCityCoordinates(city)} zoom={13} style={{ height: '100%', width: '100%' }}>
+                             <TileLayer
+                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                             />
+                             {availableOrders.map((order, idx) => (
+                                 <Marker 
+                                    key={order._id} 
+                                    position={[
+                                        getCityCoordinates(city)[0] + (idx * 0.01) - 0.02, 
+                                        getCityCoordinates(city)[1] + (idx * 0.01) - 0.02
+                                    ]}
+                                >
+                                     <Popup>
+                                         <div className="p-1">
+                                             <h4 className="font-bold">{order.restaurantName}</h4>
+                                             <p className="text-xs">Rs. {order.totalAmount}</p>
+                                             <button 
+                                                onClick={() => handleAcceptOrder(order._id)}
+                                                className="mt-2 bg-primary-500 text-white text-[10px] px-2 py-1 rounded font-bold"
+                                            >
+                                                Accept
+                                            </button>
+                                         </div>
+                                     </Popup>
+                                 </Marker>
+                             ))}
+                         </MapContainer>
+                    </div>
+                </div>
 
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
                     <div className="flex justify-between items-center mb-6">
