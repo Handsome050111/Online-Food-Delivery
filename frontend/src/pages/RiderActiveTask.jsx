@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { Navigation, MapPin, CheckCircle2, Phone } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';

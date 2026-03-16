@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation as useLocationPath } from 'react-router-dom';
-import { Bike, CheckCircle2, DollarSign, Navigation, Activity, ChevronRight, Package, MapPin, Search } from 'lucide-react';
+import { Bike, CheckCircle2, DollarSign, Navigation, Activity, ChevronRight, Package, MapPin, Search, RefreshCw } from 'lucide-react';
 import StatsCard from '../components/StatsCard';
 import api from '../services/api';
 import toast from 'react-hot-toast';
