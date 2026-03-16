@@ -1,7 +1,16 @@
-import React, { useState, useEffect } from 'react';
 import { Navigation, MapPin, CheckCircle2, Phone } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+
+const defaultIcon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+});
+L.Marker.prototype.options.icon = defaultIcon;
 
 const RiderActiveTask = () => {
     const [activeOrders, setActiveOrders] = useState([]);
@@ -101,10 +110,21 @@ const RiderActiveTask = () => {
                                     <div className="sm:w-64 bg-gray-50 dark:bg-gray-800 rounded-xl p-4 flex flex-col justify-between">
                                         <div className="space-y-3 mb-6">
                                             <h4 className="font-bold text-gray-900 dark:text-white">Customer Details</h4>
-                                            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
-                                                <Phone size={16} />
-                                                Contact feature required
-                                            </div>
+                                        <div className="h-64 bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 mb-4">
+                                            <MapContainer center={[33.6844, 73.0479]} zoom={14} style={{ height: '100%', width: '100%' }}>
+                                                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                                <Marker position={[33.6844, 73.0479]}>
+                                                    <Popup>Restaurant: {order.restaurantName}</Popup>
+                                                </Marker>
+                                                <Marker position={[33.6944, 73.0579]}>
+                                                    <Popup>Customer: {order.customerName}</Popup>
+                                                </Marker>
+                                            </MapContainer>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
+                                            <Phone size={16} />
+                                            +92 300 1234567
+                                        </div>
                                         </div>
                                         
                                         <button 

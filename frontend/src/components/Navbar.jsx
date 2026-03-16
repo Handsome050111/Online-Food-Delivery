@@ -62,7 +62,7 @@ const Navbar = () => {
                 <div className="flex justify-between h-16 items-center">
                     {/* Logo & Location */}
                     <div className="flex items-center gap-6">
-                        <Link to="/" className={`flex items-center gap-2 group ${isSearchOpen ? 'hidden sm:flex' : 'flex'}`}>
+                        <Link to={getDashboardLink()} className={`flex items-center gap-2 group ${isSearchOpen ? 'hidden sm:flex' : 'flex'}`}>
                             <div className="bg-primary-500 text-white p-1.5 rounded-lg group-hover:bg-primary-600 transition-colors">
                                 <UtensilsCrossed size={24} />
                             </div>
@@ -195,7 +195,7 @@ const Navbar = () => {
                     <div className="flex flex-col h-full bg-white dark:bg-gray-900">
                         {/* Mobile Menu Header */}
                         <div className="flex justify-between items-center h-16 px-4 border-b border-gray-100 dark:border-gray-800">
-                            <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2">
+                            <Link to={getDashboardLink()} onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2">
                                 <UtensilsCrossed size={24} className="text-primary-500" />
                                 <span className="text-xl font-bold dark:text-white text-gray-900">Food<span className="text-primary-500">Express</span></span>
                             </Link>

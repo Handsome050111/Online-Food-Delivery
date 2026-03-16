@@ -5,6 +5,17 @@ import StatsCard from '../components/StatsCard';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 import { useSocket } from '../context/SocketContext';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+
+// Fix for default marker icons in React Leaflet
+const defaultIcon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+});
+L.Marker.prototype.options.icon = defaultIcon;
 
 const RiderDashboard = () => {
     const location = useLocation();
@@ -12,6 +23,12 @@ const RiderDashboard = () => {
     const isAvailableView = location.pathname.includes('/available');
     const [isOnline, setIsOnline] = useState(false);
     const [availableOrders, setAvailableOrders] = useState([]);
+    const [stats, setStats] = useState({
+        todayEarnings: '0.00',
+        totalDeliveries: '0',
+        activeTime: '0h 0m',
+        totalDistance: '0 km'
+    });
     const [loading, setLoading] = useState(true);
 
     const fetchRiderData = async () => {
@@ -22,9 +39,11 @@ const RiderDashboard = () => {
             
             const ordersRes = await api.get('/orders/available');
             setAvailableOrders(ordersRes.data);
+
+            const statsRes = await api.get('/dashboard/rider');
+            setStats(statsRes.data);
         } catch (error) {
             console.error("Error fetching rider data:", error);
-            // toast.error("Failed to load dashboard data");
         } finally {
             setLoading(false);
         }
@@ -103,10 +122,10 @@ const RiderDashboard = () => {
 
             {!isAvailableView && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <StatsCard title="Today's Earnings" value="Rs. 0.00" icon={DollarSign} colorClass="text-green-600 bg-green-100" />
-                    <StatsCard title="Deliveries Done" value="0" icon={CheckCircle2} colorClass="text-blue-600 bg-blue-100" />
-                    <StatsCard title="Active Time" value="0h 0m" icon={Bike} colorClass="text-purple-600 bg-purple-100" />
-                    <StatsCard title="Total Distance" value="0 km" icon={Navigation} colorClass="text-orange-600 bg-orange-100" />
+                    <StatsCard title="Today's Earnings" value={`Rs. ${stats.todayEarnings}`} icon={DollarSign} colorClass="text-green-600 bg-green-100" />
+                    <StatsCard title="Deliveries Done" value={stats.totalDeliveries} icon={CheckCircle2} colorClass="text-blue-600 bg-blue-100" />
+                    <StatsCard title="Active Time" value={stats.activeTime} icon={Bike} colorClass="text-purple-600 bg-purple-100" />
+                    <StatsCard title="Total Distance" value={stats.totalDistance} icon={Navigation} colorClass="text-orange-600 bg-orange-100" />
                 </div>
             )}
 
@@ -119,11 +138,35 @@ const RiderDashboard = () => {
                                 {isOnline ? 'Online' : 'Offline'}
                             </span>
                         </div>
-                        <div className="flex-1 flex items-center justify-center p-8 bg-gray-50 dark:bg-gray-800 rounded-xl border border-dashed border-gray-200 dark:border-gray-700">
-                             <div className="text-center">
-                                  <Navigation size={40} className={`mx-auto mb-3 ${isOnline ? 'text-primary-500' : 'text-gray-600 dark:text-gray-500'}`} />
-                                  <p className="text-sm font-bold text-gray-400 dark:text-gray-500">Map initialization required</p>
-                             </div>
+                        <div className="flex-1 h-[400px] bg-gray-50 dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                             <MapContainer center={[33.6844, 73.0479]} zoom={13} style={{ height: '100%', width: '100%' }}>
+                                 <TileLayer
+                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                 />
+                                 {availableOrders.map((order, idx) => (
+                                     <Marker 
+                                        key={order._id} 
+                                        position={[
+                                            33.6844 + (idx * 0.01) - 0.02, 
+                                            73.0479 + (idx * 0.01) - 0.02
+                                        ]}
+                                    >
+                                         <Popup>
+                                             <div className="p-1">
+                                                 <h4 className="font-bold">{order.restaurantName}</h4>
+                                                 <p className="text-xs">Rs. {order.totalAmount}</p>
+                                                 <button 
+                                                    onClick={() => handleAcceptOrder(order._id)}
+                                                    className="mt-2 bg-primary-500 text-white text-[10px] px-2 py-1 rounded font-bold"
+                                                >
+                                                    Accept
+                                                </button>
+                                             </div>
+                                         </Popup>
+                                     </Marker>
+                                 ))}
+                             </MapContainer>
                         </div>
                     </div>
                 )}

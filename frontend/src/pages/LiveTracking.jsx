@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Package, Truck, CheckCircle2, Clock, MapPin, Phone, ArrowLeft, RefreshCw } from 'lucide-react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 import { useSocket } from '../context/SocketContext';
 import api from '../services/api';
+
+const defaultIcon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+});
+L.Marker.prototype.options.icon = defaultIcon;
 
 const LiveTracking = () => {
     const { orderId } = useParams();
@@ -155,6 +165,17 @@ const LiveTracking = () => {
                                     <h4 className="text-xl font-black text-gray-900 dark:text-white">{order.restaurantName}</h4>
                                     <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Estimated arrival: 30-45 mins</p>
                                 </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="text-gray-400 dark:text-gray-500 uppercase tracking-widest text-xs font-black mb-4">Live Map</h4>
+                            <div className="h-64 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-inner">
+                                <MapContainer center={[33.6844, 73.0479]} zoom={15} style={{ height: '100%', width: '100%' }}>
+                                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                    <Marker position={[33.6844, 73.0479]}>
+                                        <Popup>Your Ride is here!</Popup>
+                                    </Marker>
+                                </MapContainer>
                             </div>
                         </div>
                     </div>

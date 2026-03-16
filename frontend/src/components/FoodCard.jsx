@@ -6,9 +6,10 @@ const FoodCard = ({ food, onAddToCart }) => {
         <div className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow border border-gray-100 dark:border-gray-800 flex flex-col h-full group">
             <div className="relative h-40 overflow-hidden flex-shrink-0">
                 <img
-                    src={food.image}
+                    src={food.image || 'https://images.unsplash.com/photo-1571091718767-18b5c1457add?w=500&q=80'}
                     alt={food.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1571091718767-18b5c1457add?w=500&q=80' }}
                 />
                 {food.popular && (
                     <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-0.5 rounded text-xs font-bold shadow-sm">

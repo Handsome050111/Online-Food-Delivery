@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { getAdminDashboardData } = require('../controllers/dashboardController');
+const { getAdminDashboardData, getRiderStats } = require('../controllers/dashboardController');
+const { protect, admin, rider } = require('../middleware/authMiddleware');
 
-router.get('/admin', getAdminDashboardData);
+router.get('/admin', protect, admin, getAdminDashboardData);
+router.get('/rider', protect, rider, getRiderStats);
 
 module.exports = router;

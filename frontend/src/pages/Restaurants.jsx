@@ -21,6 +21,11 @@ const Restaurants = () => {
     const [activeFilters, setActiveFilters] = useState({});
     const [visibleCount, setVisibleCount] = useState(6);
 
+    // Sync search query with URL params
+    useEffect(() => {
+        setSearchQuery(urlSearch);
+    }, [urlSearch]);
+
     // Fetch live restaurants on mount
     useEffect(() => {
         const fetchRestaurants = async () => {

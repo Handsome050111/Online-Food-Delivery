@@ -189,7 +189,7 @@ const OwnerMenu = () => {
                                         <td className="py-4 px-6">
                                             <div className="flex items-center gap-4">
                                                 <div className="w-14 h-14 rounded-xl bg-gray-100 dark:bg-gray-800 overflow-hidden flex-shrink-0 shadow-sm border border-gray-200 dark:border-gray-700 group-hover:border-primary-200 dark:group-hover:border-primary-800 transition-colors">
-                                                    <img src={item.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&q=80'} alt={item.name} className="w-full h-full object-cover" />
+                                                    <img src={item.image || 'https://images.unsplash.com/photo-1571091718767-18b5c1457add?w=500&q=80'} alt={item.name} className="w-full h-full object-cover" />
                                                 </div>
                                                 <div>
                                                     <p className="font-bold text-gray-900 dark:text-white text-base">{item.name}</p>

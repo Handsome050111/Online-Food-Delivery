@@ -21,6 +21,35 @@ const Checkout = () => {
         phone: ''
     });
 
+    const [cardDetails, setCardDetails] = useState({
+        number: '',
+        expiry: '',
+        cvc: ''
+    });
+
+    const handlePhoneChange = (e) => {
+        const val = e.target.value.replace(/\D/g, '');
+        if (val.length <= 11) {
+            setFormData({ ...formData, phone: val });
+        }
+    };
+
+    const handleCardChange = (e, field, max) => {
+        const val = e.target.value.replace(/\D/g, '');
+        if (val.length <= max) {
+            setCardDetails({ ...cardDetails, [field]: val });
+        }
+    };
+
+    const formatCardNumber = (num) => {
+        return num.replace(/\s?/g, '').replace(/(\d{4})/g, '$1 ').trim();
+    };
+
+    const formatExpiry = (exp) => {
+        if (exp.length <= 2) return exp;
+        return exp.slice(0, 2) + '/' + exp.slice(2, 4);
+    };
+
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -179,7 +208,7 @@ const Checkout = () => {
                                         </div>
                                         <div>
                                             <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Phone Number *</label>
-                                            <input type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" placeholder="+92 300 1234567" />
+                                            <input type="tel" value={formData.phone} onChange={handlePhoneChange} className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" placeholder="03001234567" />
                                         </div>
                                     </form>
                                 </div>
@@ -219,16 +248,16 @@ const Checkout = () => {
                                         <div className="mt-6 space-y-4 animate-in fade-in duration-300 slide-in-from-top-4">
                                             <div>
                                                 <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Card Number</label>
-                                                <input type="text" placeholder="0000 0000 0000 0000" className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-mono tracking-widest" />
+                                                <input type="text" value={formatCardNumber(cardDetails.number)} onChange={(e) => handleCardChange(e, 'number', 16)} placeholder="0000 0000 0000 0000" className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-mono tracking-widest" />
                                             </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
                                                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Expiry Date</label>
-                                                    <input type="text" placeholder="MM/YY" className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-mono tracking-widest" />
+                                                    <input type="text" value={formatExpiry(cardDetails.expiry)} onChange={(e) => handleCardChange(e, 'expiry', 4)} placeholder="MM/YY" className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-mono tracking-widest" />
                                                 </div>
                                                 <div>
                                                     <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">CVC</label>
-                                                    <input type="text" placeholder="123" className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-mono tracking-widest" />
+                                                    <input type="password" value={cardDetails.cvc} onChange={(e) => handleCardChange(e, 'cvc', 3)} placeholder="123" className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 font-mono tracking-widest" />
                                                 </div>
                                             </div>
                                         </div>
