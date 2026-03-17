@@ -132,6 +132,39 @@ const deleteRestaurant = async (req, res) => {
     }
 };
 
+// @desc    Update owner's restaurant
+// @route   PUT /api/restaurants/my-restaurant
+// @access  Private/Owner
+const updateMyRestaurant = async (req, res) => {
+    try {
+        const { name, category, address, description, deliveryTime, deliveryFee, minOrder, image } = req.body;
+        
+        const restaurant = await Restaurant.findOne({ owner: req.user._id });
+
+        if (restaurant) {
+            restaurant.name = name || restaurant.name;
+            restaurant.category = category || restaurant.category;
+            restaurant.address = address || restaurant.address;
+            restaurant.description = description || restaurant.description;
+            restaurant.deliveryTime = deliveryTime || restaurant.deliveryTime;
+            restaurant.deliveryFee = deliveryFee || restaurant.deliveryFee;
+            restaurant.minOrder = minOrder || restaurant.minOrder;
+            
+            if (image) {
+                restaurant.image = image;
+                restaurant.imageUrl = image;
+            }
+
+            const updatedRestaurant = await restaurant.save();
+            res.json({ success: true, data: updatedRestaurant });
+        } else {
+            res.status(404).json({ success: false, message: 'Restaurant not found for this owner.' });
+        }
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Server error', error: error.message });
+    }
+};
+
 module.exports = {
     getRestaurants,
     getRestaurantById,
