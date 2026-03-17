@@ -110,10 +110,33 @@ const getMyRestaurant = async (req, res) => {
     }
 };
 
+// @desc    Delete restaurant
+// @route   DELETE /api/restaurants/:id
+// @access  Private/Admin
+const deleteRestaurant = async (req, res) => {
+    try {
+        const restaurant = await Restaurant.findById(req.params.id);
+
+        if (restaurant) {
+            // Cascade delete associated menu items
+            const MenuItem = require('../models/MenuItem');
+            await MenuItem.deleteMany({ restaurant: restaurant._id });
+            
+            await restaurant.deleteOne();
+            res.json({ message: 'Restaurant and its menu items removed' });
+        } else {
+            res.status(404).json({ message: 'Restaurant not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 module.exports = {
     getRestaurants,
     getRestaurantById,
     createRestaurant,
     updateRestaurantStatus,
-    getMyRestaurant
+    getMyRestaurant,
+    deleteRestaurant
 };

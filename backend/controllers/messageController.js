@@ -25,7 +25,7 @@ const getChatHistory = async (req, res) => {
 
         const messages = await Message.find({ orderId })
             .sort({ createdAt: 1 })
-            .populate('sender', 'name');
+            .populate('sender', 'name phone');
 
         res.json(messages);
     } catch (error) {
@@ -52,7 +52,7 @@ const sendMessage = async (req, res) => {
             text
         });
 
-        const populatedMessage = await message.populate('sender', 'name');
+        const populatedMessage = await message.populate('sender', 'name phone');
 
         res.status(201).json(populatedMessage);
     } catch (error) {

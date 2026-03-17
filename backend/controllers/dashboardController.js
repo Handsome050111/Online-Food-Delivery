@@ -52,12 +52,18 @@ const getRiderStats = async (req, res) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
+        console.log('Fetching stats for rider:', req.user._id);
         const deliveredOrders = await Order.find({
             rider: req.user._id,
             status: 'delivered'
         });
+        console.log('Delivered orders count:', deliveredOrders.length);
 
-        const todayDelivered = deliveredOrders.filter(o => new Date(o.updatedAt) >= today);
+        const todayDelivered = deliveredOrders.filter(o => {
+            const updatedAt = new Date(o.updatedAt);
+            return updatedAt >= today;
+        });
+        console.log('Today delivered orders count:', todayDelivered.length);
 
         // Standard commission for riders: e.g., 20% of the totalAmount or a flat fee
         // Here we'll sum totalAmount * 0.1 as a sample earning logic

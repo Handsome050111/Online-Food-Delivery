@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { getUsers, createUser, toggleUserStatus, updateUserProfile, getUserProfile, updateRiderAvailability } = require('../controllers/userController');
-const { protect } = require('../middleware/authMiddleware');
+const { getUsers, createUser, toggleUserStatus, updateUserProfile, getUserProfile, updateRiderAvailability, deleteUser } = require('../controllers/userController');
+const { protect, admin } = require('../middleware/authMiddleware');
 
 router.route('/profile')
     .get(protect, getUserProfile)
@@ -10,12 +10,14 @@ router.route('/profile')
 router.route('/availability')
     .put(protect, updateRiderAvailability);
 
-// TODO: Add protect & admin middleware for real production
 router.route('/')
-    .get(getUsers)
-    .post(createUser);
+    .get(protect, admin, getUsers)
+    .post(protect, admin, createUser);
+
+router.route('/:id')
+    .delete(protect, admin, deleteUser);
 
 router.route('/:id/suspend')
-    .put(toggleUserStatus);
+    .put(protect, admin, toggleUserStatus);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Bike, Search, Plus, X, AlertCircle, Car } from 'lucide-react';
+import { Bike, Search, Plus, X, AlertCircle, Car, Trash2 } from 'lucide-react';
 import api from '../services/api';
+import toast from 'react-hot-toast';
 
 const AdminRiders = () => {
     const [riders, setRiders] = useState([]);
@@ -52,6 +53,7 @@ const AdminRiders = () => {
                 riderDetails: { vehicleType: 'Motorcycle', licensePlate: '', isAvailable: true }
             });
             fetchRiders();
+            toast.success("Rider registered successfully");
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to add rider');
         } finally {
@@ -64,8 +66,21 @@ const AdminRiders = () => {
             try {
                 await api.put(`/users/${id}/suspend`);
                 fetchRiders();
+                toast.success("Rider status updated");
             } catch (err) {
-                alert(err.response?.data?.message || 'Failed to update rider status');
+                toast.error(err.response?.data?.message || 'Failed to update rider status');
+            }
+        }
+    };
+
+    const handleDeleteRider = async (id) => {
+        if (window.confirm('CRITICAL: Are you sure you want to PERMANENTLY DELETE this rider? This cannot be undone.')) {
+            try {
+                await api.delete(`/users/${id}`);
+                fetchRiders();
+                toast.success("Rider permanently deleted");
+            } catch (err) {
+                toast.error(err.response?.data?.message || 'Failed to delete rider');
             }
         }
     };
@@ -146,12 +161,19 @@ const AdminRiders = () => {
                                                 {rider.status === 'suspended' ? 'Suspended' : (rider.riderDetails?.isAvailable ? 'Available' : 'Offline')}
                                             </span>
                                         </td>
-                                        <td className="py-4 px-4 text-right">
+                                        <td className="py-4 px-4 text-right flex items-center justify-end gap-2">
                                             <button
                                                 onClick={() => handleSuspendRider(rider._id)}
-                                                className={`font-bold text-sm ${rider.status === 'suspended' ? 'text-green-600 hover:text-green-800' : 'text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300'}`}
+                                                className={`font-bold text-xs px-2.5 py-1.5 rounded-lg border transition-all ${rider.status === 'suspended' ? 'bg-green-50 text-green-700 border-green-100 hover:bg-green-100' : 'bg-orange-50 text-orange-700 border-orange-100 hover:bg-orange-100'}`}
                                             >
                                                 {rider.status === 'suspended' ? 'Activate' : 'Suspend'}
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteRider(rider._id)}
+                                                className="p-2 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                                                title="Delete Rider"
+                                            >
+                                                <Trash2 size={16} />
                                             </button>
                                         </td>
                                     </tr>

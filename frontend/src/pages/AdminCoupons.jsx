@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Tag, Search, Plus, Ticket, AlertCircle, X } from 'lucide-react';
+import { Tag, Search, Plus, Ticket, AlertCircle, X, Trash2 } from 'lucide-react';
 import api from '../services/api';
+import toast from 'react-hot-toast';
 
 const AdminCoupons = () => {
     const [coupons, setCoupons] = useState([]);
@@ -45,6 +46,7 @@ const AdminCoupons = () => {
             setShowModal(false);
             setFormData({ code: '', discountType: 'percentage', discountValue: '', minOrderAmount: '', validUntil: '' });
             fetchCoupons();
+            toast.success("Coupon created successfully");
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to create coupon');
         } finally {
@@ -56,8 +58,21 @@ const AdminCoupons = () => {
         try {
             await api.put(`/coupons/${id}/toggle`);
             fetchCoupons();
+            toast.success("Coupon status updated");
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to update coupon status');
+            toast.error(err.response?.data?.message || 'Failed to update coupon status');
+        }
+    };
+
+    const handleDeleteCoupon = async (id) => {
+        if (window.confirm('Are you sure you want to PERMANENTLY DELETE this coupon?')) {
+            try {
+                await api.delete(`/coupons/${id}`);
+                fetchCoupons();
+                toast.success("Coupon permanently deleted");
+            } catch (err) {
+                toast.error(err.response?.data?.message || 'Failed to delete coupon');
+            }
         }
     };
 
@@ -122,12 +137,21 @@ const AdminCoupons = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    <button
-                                        onClick={() => handleToggleStatus(coupon._id)}
-                                        className="text-gray-400 hover:text-gray-900 dark:hover:text-white p-1.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors font-bold text-sm"
-                                    >
-                                        {coupon.status === 'active' ? 'Disable' : 'Enable'}
-                                    </button>
+                                    <div className="flex items-center gap-1">
+                                        <button
+                                            onClick={() => handleToggleStatus(coupon._id)}
+                                            className="text-gray-400 hover:text-gray-900 dark:hover:text-white p-1.5 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors font-bold text-sm"
+                                        >
+                                            {coupon.status === 'active' ? 'Disable' : 'Enable'}
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteCoupon(coupon._id)}
+                                            className="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                                            title="Delete Coupon"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div className="space-y-3 relative z-10">

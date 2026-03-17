@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Users, Search, Filter, Plus, X, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Users, Search, Filter, Plus, X, AlertCircle, CheckCircle2, Trash2 } from 'lucide-react';
 import api from '../services/api';
+import toast from 'react-hot-toast';
 
 const AdminUsers = () => {
     const [users, setUsers] = useState([]);
@@ -40,6 +41,7 @@ const AdminUsers = () => {
             setShowModal(false);
             setFormData({ name: '', email: '', password: '', role: 'customer' });
             fetchUsers();
+            toast.success("User added successfully");
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to add user');
         } finally {
@@ -52,8 +54,21 @@ const AdminUsers = () => {
             try {
                 await api.put(`/users/${id}/suspend`);
                 fetchUsers();
+                toast.success("User status updated");
             } catch (err) {
-                alert(err.response?.data?.message || 'Failed to update user status');
+                toast.error(err.response?.data?.message || 'Failed to update user status');
+            }
+        }
+    };
+
+    const handleDeleteUser = async (id) => {
+        if (window.confirm('CRITICAL: Are you sure you want to PERMANENTLY DELETE this user? This action cannot be undone.')) {
+            try {
+                await api.delete(`/users/${id}`);
+                fetchUsers();
+                toast.success("User permanently deleted");
+            } catch (err) {
+                toast.error(err.response?.data?.message || 'Failed to delete user');
             }
         }
     };
@@ -147,13 +162,21 @@ const AdminUsers = () => {
                                                 {user.status || 'Active'}
                                             </span>
                                         </td>
-                                        <td className="py-4 px-4 text-right">
+                                        <td className="py-4 px-4 text-right flex items-center justify-end gap-2">
                                             <button
                                                 onClick={() => handleSuspendUser(user._id)}
                                                 disabled={user.email === 'admin@fooddelivery.com'}
-                                                className={`font-bold text-sm ${user.status === 'suspended' ? 'text-green-600 hover:text-green-800' : 'text-red-500 hover:text-red-700'} ${user.email === 'admin@fooddelivery.com' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                className={`font-bold text-xs px-2.5 py-1.5 rounded-lg border transition-all ${user.status === 'suspended' ? 'bg-green-50 text-green-700 border-green-100 hover:bg-green-100' : 'bg-orange-50 text-orange-700 border-orange-100 hover:bg-orange-100'} ${user.email === 'admin@fooddelivery.com' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                             >
                                                 {user.status === 'suspended' ? 'Activate' : 'Suspend'}
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteUser(user._id)}
+                                                disabled={user.email === 'admin@fooddelivery.com'}
+                                                className={`p-2 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-600 hover:text-white transition-all ${user.email === 'admin@fooddelivery.com' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                title="Delete User"
+                                            >
+                                                <Trash2 size={16} />
                                             </button>
                                         </td>
                                     </tr>

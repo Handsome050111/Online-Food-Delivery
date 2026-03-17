@@ -128,8 +128,13 @@ const RiderActiveTask = () => {
                                                 </Marker>
                                             </MapContainer>
                                         </div>
-                                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
-                                            <Phone size={16} />
+                                        <div className="flex flex-col gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
+                                            {order.user && order.user.phone && (
+                                                <div className="flex items-center gap-2">
+                                                    <Phone size={16} />
+                                                    <span className="font-bold text-gray-900 dark:text-white">{order.user.phone}</span>
+                                                </div>
+                                            )}
                                             <button 
                                                 onClick={() => {
                                                     setActiveOrderId(order._id);
@@ -145,7 +150,7 @@ const RiderActiveTask = () => {
                                         
                                         <Chat 
                                             orderId={activeOrderId} 
-                                            recipientName="Customer" 
+                                            recipientName={order.customerName || "Customer"} 
                                             isOpen={isChatOpen && activeOrderId === order._id} 
                                             onClose={() => setIsChatOpen(false)} 
                                         />

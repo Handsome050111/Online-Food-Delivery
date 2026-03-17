@@ -12,6 +12,6 @@ router.route('/rider').get(protect, getRiderOrders);
 router.route('/myorders').get(protect, getMyOrders);
 
 router.route('/:id/accept').put(protect, acceptOrder);
-router.route('/:id/status').put(updateOrderStatus);
+router.route('/:id/status').put(protect, updateOrderStatus);
 
 module.exports = router;

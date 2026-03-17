@@ -10,7 +10,16 @@ const Chat = ({ orderId, recipientName, isOpen, onClose }) => {
     const [loading, setLoading] = useState(false);
     const socket = useSocket();
     const messagesEndRef = useRef(null);
-    const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+    
+    // Robustly retrieve user info
+    const [userInfo] = useState(() => {
+        try {
+            return JSON.parse(localStorage.getItem('userInfo') || '{}');
+        } catch (e) {
+            console.error('Error parsing userInfo:', e);
+            return {};
+        }
+    });
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -66,6 +75,7 @@ const Chat = ({ orderId, recipientName, isOpen, onClose }) => {
 
             const res = await api.post('/messages', messageData);
             const savedMessage = res.data;
+            console.log('Message saved successfully:', savedMessage);
 
             // Update local state
             setMessages(prev => [...prev, savedMessage]);
@@ -110,20 +120,22 @@ const Chat = ({ orderId, recipientName, isOpen, onClose }) => {
                     <div className="flex items-center justify-center h-full">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
                     </div>
-                ) : messages.length === 0 ? (
+                ) : !Array.isArray(messages) || messages.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full text-center p-6">
                         <MessageSquare size={48} className="text-gray-200 dark:text-gray-700 mb-4" />
                         <p className="text-gray-500 dark:text-gray-400 font-bold text-sm">No messages yet. Send a message to start chatting!</p>
                     </div>
                 ) : (
                     messages.map((msg, index) => {
-                        const isOwn = msg.sender._id === userInfo._id;
+                        if (!msg || !msg.sender) return null;
+                        const senderId = typeof msg.sender === 'object' ? msg.sender._id : msg.sender;
+                        const isOwn = senderId?.toString() === userInfo?._id?.toString();
                         return (
-                            <div key={index} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
+                            <div key={msg._id || index} className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
                                 <div className={`max-w-[80%] rounded-2xl px-4 py-2 text-sm font-medium shadow-sm ${isOwn ? 'bg-primary-500 text-white rounded-tr-none' : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-tl-none border border-gray-100 dark:border-gray-700'}`}>
                                     <p>{msg.text}</p>
                                     <p className={`text-[10px] mt-1 ${isOwn ? 'text-primary-100' : 'text-gray-400'}`}>
-                                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-numeric', minute: '2-numeric' })}
+                                        {msg.createdAt ? new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Just now'}
                                     </p>
                                 </div>
                             </div>

@@ -1,14 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const { getCoupons, createCoupon, toggleCouponStatus, validateCoupon } = require('../controllers/couponController');
+const { protect, admin } = require('../middleware/authMiddleware');
+const { getCoupons, createCoupon, toggleCouponStatus, validateCoupon, deleteCoupon } = require('../controllers/couponController');
 
 router.route('/')
-    .get(getCoupons)
-    .post(createCoupon);
+    .get(protect, admin, getCoupons)
+    .post(protect, admin, createCoupon);
 
 router.route('/:id/toggle')
-    .put(toggleCouponStatus);
+    .put(protect, admin, toggleCouponStatus);
 
-router.post('/validate', validateCoupon);
+router.route('/:id')
+    .delete(protect, admin, deleteCoupon);
+
+router.post('/validate', protect, validateCoupon);
 
 module.exports = router;

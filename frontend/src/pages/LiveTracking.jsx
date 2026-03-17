@@ -156,13 +156,18 @@ const LiveTracking = () => {
                                     </div>
                                     <div>
                                         <p className="font-bold text-gray-900 dark:text-white">Contact No.</p>
-                                        <button 
-                                            onClick={() => setIsChatOpen(true)}
-                                            className="text-sm text-primary-600 dark:text-primary-400 font-black flex items-center gap-1.5 mt-1 hover:underline"
-                                        >
-                                            <MessageSquare size={16} />
-                                            Message Rider
-                                        </button>
+                                        <div className="flex flex-col gap-1 mt-1">
+                                            {order.rider && order.rider.phone && (
+                                                <p className="text-sm font-black text-gray-900 dark:text-white">{order.rider.phone}</p>
+                                            )}
+                                            <button 
+                                                onClick={() => setIsChatOpen(true)}
+                                                className="text-sm text-primary-600 dark:text-primary-400 font-black flex items-center gap-1.5 hover:underline"
+                                            >
+                                                <MessageSquare size={16} />
+                                                Message Rider
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -170,7 +175,7 @@ const LiveTracking = () => {
 
                         <Chat 
                             orderId={order._id} 
-                            recipientName="Your Rider" 
+                            recipientName={order.rider?.name || "Your Rider"} 
                             isOpen={isChatOpen} 
                             onClose={() => setIsChatOpen(false)} 
                         />

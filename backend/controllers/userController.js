@@ -213,11 +213,34 @@ const updateRiderAvailability = async (req, res) => {
     }
 };
 
+// @desc    Delete user
+// @route   DELETE /api/users/:id
+// @access  Private/Admin
+const deleteUser = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (user) {
+            if (user.role === 'admin' && user.email === 'admin@fooddelivery.com') {
+                return res.status(400).json({ message: 'Cannot delete the master admin account' });
+            }
+
+            await user.deleteOne();
+            res.json({ message: 'User removed' });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 module.exports = {
     getUsers,
     createUser,
     toggleUserStatus,
     updateUserProfile,
     getUserProfile,
-    updateRiderAvailability
+    updateRiderAvailability,
+    deleteUser
 };

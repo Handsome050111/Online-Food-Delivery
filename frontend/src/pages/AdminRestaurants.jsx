@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Store, Search, Filter, Plus, X, AlertCircle, MapPin, User, Tag, Info, CheckCircle, ShieldAlert } from 'lucide-react';
+import { Store, Search, Filter, Plus, X, AlertCircle, MapPin, User, Tag, Info, CheckCircle, ShieldAlert, Trash2 } from 'lucide-react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 
@@ -61,6 +61,18 @@ const AdminRestaurants = () => {
             fetchRestaurants();
         } catch (err) {
             toast.error(err.response?.data?.message || 'Failed to update status');
+        }
+    };
+
+    const handleDeleteRestaurant = async (id) => {
+        if (window.confirm('CRITICAL: Are you sure you want to PERMANENTLY DELETE this restaurant? This will also delete all its menu items and cannot be undone.')) {
+            try {
+                await api.delete(`/restaurants/${id}`);
+                fetchRestaurants();
+                toast.success("Restaurant and menu items permanently deleted");
+            } catch (err) {
+                toast.error(err.response?.data?.message || 'Failed to delete restaurant');
+            }
         }
     };
 
@@ -149,19 +161,26 @@ const AdminRestaurants = () => {
                                                 {restaurant.status === 'pending' ? 'Pending Approval' : restaurant.status}
                                             </span>
                                         </td>
-                                        <td className="py-4 px-4 text-right space-x-2">
+                                        <td className="py-4 px-4 text-right flex items-center justify-end gap-2">
                                             <button 
                                                 onClick={() => openDetails(restaurant)}
-                                                className="text-primary-600 font-bold hover:text-primary-800 text-xs px-2 py-1 bg-primary-50 dark:bg-primary-900/20 rounded-lg transition-colors border border-primary-100 dark:border-primary-800"
+                                                className="text-primary-600 font-bold hover:text-primary-800 text-xs px-2.5 py-1.5 bg-primary-50 dark:bg-primary-900/20 rounded-lg transition-colors border border-primary-100 dark:border-primary-800"
                                             >
                                                 Details
                                             </button>
                                             {restaurant.status === 'pending' && (
-                                                <button onClick={() => handleUpdateStatus(restaurant._id, 'active')} className="text-white bg-green-600 px-3 py-1 rounded-lg font-bold hover:bg-green-700 text-xs transition-colors">Approve</button>
+                                                <button onClick={() => handleUpdateStatus(restaurant._id, 'active')} className="text-white bg-green-600 px-3 py-1.5 rounded-lg font-bold hover:bg-green-700 text-xs transition-colors shadow-sm">Approve</button>
                                             )}
                                             {restaurant.status === 'active' && (
-                                                <button onClick={() => handleUpdateStatus(restaurant._id, 'suspended')} className="text-red-500 font-bold hover:text-red-700 text-xs px-2 py-1">Suspend</button>
+                                                <button onClick={() => handleUpdateStatus(restaurant._id, 'suspended')} className="text-orange-600 font-bold hover:bg-orange-50 dark:hover:bg-orange-900/20 text-xs px-2.5 py-1.5 rounded-lg border border-orange-100 dark:border-orange-800 transition-colors">Suspend</button>
                                             )}
+                                            <button
+                                                onClick={() => handleDeleteRestaurant(restaurant._id)}
+                                                className="p-2 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-600 hover:text-white transition-all shadow-sm"
+                                                title="Delete Restaurant"
+                                            >
+                                                <Trash2 size={16} />
+                                            </button>
                                         </td>
                                     </tr>
                                 ))

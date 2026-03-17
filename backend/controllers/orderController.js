@@ -45,7 +45,9 @@ const createOrder = async (req, res) => {
 // @access  Private
 const getMyOrders = async (req, res) => {
     try {
-        const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+        const orders = await Order.find({ user: req.user._id })
+            .populate('rider', 'name phone')
+            .sort({ createdAt: -1 });
         res.json(orders);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -76,7 +78,10 @@ const getOrders = async (req, res) => {
             query.restaurant = restaurant;
         }
 
-        const orders = await Order.find(query).sort({ createdAt: -1 });
+        const orders = await Order.find(query)
+            .populate('user', 'name phone')
+            .populate('rider', 'name phone')
+            .sort({ createdAt: -1 });
         res.json(orders);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -92,7 +97,14 @@ const updateOrderStatus = async (req, res) => {
         const order = await Order.findById(req.params.id);
 
         if (order) {
+            console.log(`Updating order ${order.orderId} status from ${order.status} to ${status}`);
             order.status = status;
+            
+            // If the status is being set to delivered, ensure rider is tracked
+            if (status === 'delivered') {
+                console.log('Order delivered. Rider:', order.rider);
+            }
+            
             const updatedOrder = await order.save();
             
             // Notify customer
@@ -103,6 +115,7 @@ const updateOrderStatus = async (req, res) => {
             res.status(404).json({ message: 'Order not found' });
         }
     } catch (error) {
+        console.error('Update Order Status Error:', error.message);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
@@ -160,6 +173,8 @@ const acceptOrder = async (req, res) => {
         order.status = 'out_for_delivery';
         
         const updatedOrder = await order.save();
+        await updatedOrder.populate('user', 'name phone');
+        await updatedOrder.populate('rider', 'name phone');
         
         // Notify customer that rider is on the way
         socketService.emitToRoom(`user_${order.user}`, 'order_status_update', updatedOrder);
@@ -177,7 +192,9 @@ const acceptOrder = async (req, res) => {
 // @access  Private/Rider
 const getRiderOrders = async (req, res) => {
     try {
-        const orders = await Order.find({ rider: req.user._id }).sort({ createdAt: -1 });
+        const orders = await Order.find({ rider: req.user._id })
+            .populate('user', 'name phone')
+            .sort({ createdAt: -1 });
         res.json(orders);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });

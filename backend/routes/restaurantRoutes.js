@@ -1,20 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { getRestaurants, getRestaurantById, createRestaurant, updateRestaurantStatus, getMyRestaurant } = require('../controllers/restaurantController');
-const { protect } = require('../middleware/authMiddleware');
+const { getRestaurants, getRestaurantById, createRestaurant, updateRestaurantStatus, getMyRestaurant, deleteRestaurant } = require('../controllers/restaurantController');
+const { protect, admin } = require('../middleware/authMiddleware');
 
-// TODO: Add protect & admin middleware for real production
+// Public can view restaurants
 router.route('/')
     .get(getRestaurants)
-    .post(createRestaurant);
+    .post(protect, admin, createRestaurant);
 
 router.route('/my-restaurant')
     .get(protect, getMyRestaurant);
 
 router.route('/:id')
-    .get(getRestaurantById);
+    .get(getRestaurantById)
+    .delete(protect, admin, deleteRestaurant);
 
 router.route('/:id/status')
-    .put(updateRestaurantStatus);
+    .put(protect, admin, updateRestaurantStatus);
 
 module.exports = router;

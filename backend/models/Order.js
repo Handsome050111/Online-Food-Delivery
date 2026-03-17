@@ -55,10 +55,6 @@ const orderSchema = new mongoose.Schema({
         ref: 'User',
         required: false
     },
-    paymentMethod: {
-        type: String,
-        default: 'Cash on Delivery'
-    },
     deliveryAddress: {
         type: String,
         required: true
