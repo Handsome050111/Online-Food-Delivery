@@ -172,9 +172,9 @@ const AdminUsers = () => {
                                             </button>
                                             <button
                                                 onClick={() => handleDeleteUser(user._id)}
-                                                disabled={true}
-                                                className="p-2 bg-gray-50 text-gray-400 border border-gray-100 rounded-lg cursor-not-allowed opacity-50"
-                                                title="Delete Disabled Temporarily"
+                                                disabled={user.email === 'admin@fooddelivery.com'}
+                                                className={`p-2 rounded-lg border transition-all ${user.email === 'admin@fooddelivery.com' ? 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed opacity-50' : 'bg-red-50 text-red-600 border-red-100 hover:bg-red-100 dark:bg-red-900/10 dark:text-red-400 dark:border-red-900/30 dark:hover:bg-red-900/30'}`}
+                                                title={user.email === 'admin@fooddelivery.com' ? 'Cannot delete admin' : 'Delete User'}
                                             >
                                                 <Trash2 size={16} />
                                             </button>

@@ -47,7 +47,7 @@ const Navbar = () => {
     };
 
     const getDashboardLink = () => {
-        if (!userInfo) return '/login';
+        if (!userInfo) return '/';
         switch (userInfo.role) {
             case 'admin': return '/admin';
             case 'owner': return '/owner';
@@ -62,7 +62,7 @@ const Navbar = () => {
                 <div className="flex justify-between h-16 items-center">
                     {/* Logo & Location */}
                     <div className="flex items-center gap-6">
-                        <Link to={getDashboardLink()} className={`flex items-center gap-2 group ${isSearchOpen ? 'hidden sm:flex' : 'flex'}`}>
+                        <Link to="/" className={`flex items-center gap-2 group ${isSearchOpen ? 'hidden sm:flex' : 'flex'}`}>
                             <div className="bg-primary-500 text-white p-1.5 rounded-lg group-hover:bg-primary-600 transition-colors">
                                 <UtensilsCrossed size={24} />
                             </div>
