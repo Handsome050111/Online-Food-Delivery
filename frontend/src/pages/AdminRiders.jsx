@@ -170,9 +170,8 @@ const AdminRiders = () => {
                                             </button>
                                             <button
                                                 onClick={() => handleDeleteRider(rider._id)}
-                                                disabled={true}
-                                                className="p-2 bg-gray-50 text-gray-400 border border-gray-100 rounded-lg cursor-not-allowed opacity-50"
-                                                title="Delete Disabled Temporarily"
+                                                className="p-2 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-100 dark:bg-red-900/10 dark:text-red-400 dark:border-red-900/30 dark:hover:bg-red-900/30 transition-all"
+                                                title="Delete Rider"
                                             >
                                                 <Trash2 size={16} />
                                             </button>
