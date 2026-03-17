@@ -23,7 +23,13 @@ const LiveTracking = () => {
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isChatOpen, setIsChatOpen] = useState(false);
-
+    const { city } = useLocation();
+    const mapCenter = getCityCoordinates(city);
+    const [riderLocation, setRiderLocation] = useState(mapCenter);
+    const [showReviewForm, setShowReviewForm] = useState(false);
+    const [reviewData, setReviewData] = useState({ rating: 5, comment: '' });
+    const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+ 
     const fetchOrder = async () => {
         try {
             const { data } = await api.get(`/orders`);
@@ -36,8 +42,6 @@ const LiveTracking = () => {
         }
     };
 
-    const [riderLocation, setRiderLocation] = useState(mapCenter);
- 
     useEffect(() => {
         fetchOrder();
  
@@ -72,9 +76,6 @@ const LiveTracking = () => {
         { key: 'out_for_delivery', label: 'Out for Delivery', icon: Truck, description: 'Your rider is on the way to you.' },
         { key: 'delivered', label: 'Delivered', icon: CheckCircle2, description: 'Enjoy your meal!' }
     ];
-
-    const { city } = useLocation();
-    const mapCenter = getCityCoordinates(city);
 
     if (loading) {
         return (

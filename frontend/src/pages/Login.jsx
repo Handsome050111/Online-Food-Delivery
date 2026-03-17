@@ -9,6 +9,8 @@ const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const [showResetForm, setShowResetForm] = useState(false);
     const [resetData, setResetData] = useState({ token: '', newPassword: '' });
     const navigate = useNavigate();

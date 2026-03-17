@@ -9,6 +9,10 @@ import toast from 'react-hot-toast';
 const OwnerDashboard = () => {
     const navigate = useNavigate();
     const socket = useSocket();
+    const [restaurant, setRestaurant] = useState(null);
+    const [userContext, setUserContext] = useState(null);
+    const [recentOrders, setRecentOrders] = useState([]);
+    const [stats, setStats] = useState({ ordersToday: 0, revenue: 0, rating: 0, menuItems: 0 });
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({
         name: '',
