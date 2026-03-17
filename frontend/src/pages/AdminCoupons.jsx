@@ -146,8 +146,9 @@ const AdminCoupons = () => {
                                         </button>
                                         <button
                                             onClick={() => handleDeleteCoupon(coupon._id)}
-                                            className="text-red-400 hover:text-red-600 p-1.5 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                                            title="Delete Coupon"
+                                            disabled={true}
+                                            className="text-gray-300 p-1.5 cursor-not-allowed"
+                                            title="Delete Disabled Temporarily"
                                         >
                                             <Trash2 size={16} />
                                         </button>

@@ -176,8 +176,9 @@ const AdminRestaurants = () => {
                                             )}
                                             <button
                                                 onClick={() => handleDeleteRestaurant(restaurant._id)}
-                                                className="p-2 bg-red-50 text-red-600 border border-red-100 rounded-lg hover:bg-red-600 hover:text-white transition-all shadow-sm"
-                                                title="Delete Restaurant"
+                                                disabled={true}
+                                                className="p-2 bg-gray-50 text-gray-400 border border-gray-100 rounded-lg cursor-not-allowed opacity-50"
+                                                title="Delete Disabled Temporarily"
                                             >
                                                 <Trash2 size={16} />
                                             </button>
