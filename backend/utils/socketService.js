@@ -23,6 +23,12 @@ module.exports = {
         // Broadcast to everyone in the order room except the sender
         socket.to(`order_${orderId}`).emit('receive_message', message);
       });
+ 
+      socket.on('update_location', (data) => {
+        const { orderId, location } = data;
+        // Broadcast location to everyone in the order room (customer)
+        socket.to(`order_${orderId}`).emit('location_update', location);
+      });
 
       socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);

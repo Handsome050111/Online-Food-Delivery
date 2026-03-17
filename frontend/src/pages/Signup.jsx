@@ -14,6 +14,21 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        // Basic validation
+        if (!formData.name.trim() || formData.name.length < 2 || !/^[A-Za-z ]+$/.test(formData.name)) {
+            return setError('Please enter a valid name (letters only, min 2 chars)');
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!formData.email || !emailRegex.test(formData.email)) {
+            return setError('Please enter a valid email address');
+        }
+
+        if (!formData.password || formData.password.length < 6) {
+            return setError('Password must be at least 6 characters long');
+        }
+
         setLoading(true);
         try {
             await api.post('/auth/register', formData);

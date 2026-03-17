@@ -43,6 +43,7 @@ app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 app.use('/api/contact', require('./routes/contactRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/messages', require('./routes/messageRoutes'));
+app.use('/api/reviews', require('./routes/reviewRoutes'));
 
 // Robust Error Handler - MUST BE LAST
 app.use((err, req, res, next) => {

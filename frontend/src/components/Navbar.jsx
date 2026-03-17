@@ -191,73 +191,83 @@ const Navbar = () => {
 
             {/* Mobile Menu Overlay */}
             {isMenuOpen && (
-                <div className="md:hidden fixed inset-0 z-[100] bg-white dark:bg-gray-900 animate-in slide-in-from-right duration-300">
-                    <div className="flex flex-col h-full bg-white dark:bg-gray-900">
+                <div className="md:hidden fixed inset-0 z-[1000] bg-white dark:bg-gray-950 animate-in fade-in slide-in-from-right duration-300">
+                    <div className="flex flex-col h-full">
                         {/* Mobile Menu Header */}
-                        <div className="flex justify-between items-center h-16 px-4 border-b border-gray-100 dark:border-gray-800">
+                        <div className="flex justify-between items-center h-16 px-6 border-b border-gray-100 dark:border-gray-800">
                             <Link to={getDashboardLink()} onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2">
-                                <UtensilsCrossed size={24} className="text-primary-500" />
-                                <span className="text-xl font-bold dark:text-white text-gray-900">Food<span className="text-primary-500">Express</span></span>
+                                <div className="bg-primary-500 text-white p-1 rounded-lg">
+                                    <UtensilsCrossed size={20} />
+                                </div>
+                                <span className="text-xl font-black dark:text-white text-gray-900">Food<span className="text-primary-500">Express</span></span>
                             </Link>
-                            <button onClick={() => setIsMenuOpen(false)} className="p-2 text-gray-500 dark:text-gray-400">
-                                <X size={26} />
+                            <button onClick={() => setIsMenuOpen(false)} className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
+                                <X size={24} />
                             </button>
                         </div>
-
+ 
                         {/* Mobile Links */}
-                        <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
-                            <Link to="/" onClick={() => setIsMenuOpen(false)} className="block px-4 py-4 text-lg font-bold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-2xl transition-colors">Home</Link>
-                            <Link to="/restaurants" onClick={() => setIsMenuOpen(false)} className="block px-4 py-4 text-lg font-bold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-2xl transition-colors">Restaurants</Link>
-                            <Link to="/orders" onClick={() => setIsMenuOpen(false)} className="block px-4 py-4 text-lg font-bold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-2xl transition-colors">Orders</Link>
+                        <div className="flex-1 overflow-y-auto py-8 px-6 space-y-2">
+                            <p className="px-4 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4">Navigation</p>
+                            <Link to="/" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 px-4 py-4 text-xl font-bold text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-2xl transition-all active:scale-[0.98]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
+                                Home
+                            </Link>
+                            <Link to="/restaurants" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 px-4 py-4 text-xl font-bold text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-2xl transition-all active:scale-[0.98]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
+                                Restaurants
+                            </Link>
+                            <Link to="/orders" onClick={() => setIsMenuOpen(false)} className="flex items-center gap-4 px-4 py-4 text-xl font-bold text-gray-800 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-900 rounded-2xl transition-all active:scale-[0.98]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-primary-500"></span>
+                                Orders
+                            </Link>
                             
-                            <div className="h-px bg-gray-100 dark:bg-gray-800 my-4 mx-4"></div>
-                            
-                            <div className="px-4 py-2">
-                                <p className="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-4">Appearance</p>
-                                <div className="grid grid-cols-3 gap-2">
-                                    <button onClick={() => setTheme('light')} className={`flex flex-col items-center gap-2 p-3 rounded-2xl border ${theme === 'light' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600' : 'border-gray-100 dark:border-gray-800 text-gray-500 dark:text-gray-400'}`}>
+                            <div className="pt-8 mt-4 border-t border-gray-100 dark:border-gray-800">
+                                <p className="px-4 text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-4">Appearance</p>
+                                <div className="grid grid-cols-3 gap-3">
+                                    <button onClick={() => setTheme('light')} className={`flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all ${theme === 'light' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600' : 'border-gray-100 dark:border-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900'}`}>
                                         <Sun size={20} />
-                                        <span className="text-[10px] font-bold">Light</span>
+                                        <span className="text-[10px] font-black uppercase tracking-wider">Light</span>
                                     </button>
-                                    <button onClick={() => setTheme('dark')} className={`flex flex-col items-center gap-2 p-3 rounded-2xl border ${theme === 'dark' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600' : 'border-gray-100 dark:border-gray-800 text-gray-500 dark:text-gray-400'}`}>
+                                    <button onClick={() => setTheme('dark')} className={`flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all ${theme === 'dark' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600' : 'border-gray-100 dark:border-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900'}`}>
                                         <Moon size={20} />
-                                        <span className="text-[10px] font-bold">Dark</span>
+                                        <span className="text-[10px] font-black uppercase tracking-wider">Dark</span>
                                     </button>
-                                    <button onClick={() => setTheme('system')} className={`flex flex-col items-center gap-2 p-3 rounded-2xl border ${theme === 'system' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600' : 'border-gray-100 dark:border-gray-800 text-gray-500 dark:text-gray-400'}`}>
+                                    <button onClick={() => setTheme('system')} className={`flex flex-col items-center gap-2 p-4 rounded-2xl border transition-all ${theme === 'system' ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-600' : 'border-gray-100 dark:border-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900'}`}>
                                         <Monitor size={20} />
-                                        <span className="text-[10px] font-bold">System</span>
+                                        <span className="text-[10px] font-black uppercase tracking-wider">System</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
 
                         {/* Mobile Footer (CTA/Profile) */}
-                        <div className="p-6 border-t border-gray-100 dark:border-gray-800">
+                        <div className="p-8 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
                             {userInfo ? (
                                 <div className="space-y-4">
                                     <Link 
                                         to={getDashboardLink()} 
                                         onClick={() => setIsMenuOpen(false)}
-                                        className="flex items-center gap-4 bg-gray-50 dark:bg-gray-800 p-4 rounded-[20px] transition-all hover:scale-[0.98] active:scale-95"
+                                        className="flex items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:scale-[0.98] active:scale-95"
                                     >
                                         <div className="w-12 h-12 rounded-full bg-primary-500 flex items-center justify-center text-white shadow-lg shadow-primary-500/20">
                                             <User size={24} />
                                         </div>
                                         <div>
                                             <p className="font-black text-gray-900 dark:text-white leading-none mb-1">{userInfo.name}</p>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">{userInfo.role}</p>
+                                            <p className="text-[10px] text-gray-500 dark:text-gray-400 font-black uppercase tracking-widest">{userInfo.role}</p>
                                         </div>
                                     </Link>
                                     <button 
                                         onClick={() => { handleLogout(); setIsMenuOpen(false); }}
-                                        className="w-full flex items-center justify-center gap-3 py-4 text-red-500 font-black tracking-wide bg-red-50 dark:bg-red-900/10 rounded-2xl hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors"
+                                        className="w-full flex items-center justify-center gap-3 py-4 text-red-500 font-black tracking-widest uppercase text-xs bg-red-50 dark:bg-red-900/10 rounded-2xl hover:bg-red-100 dark:hover:bg-red-900/20 transition-all active:scale-95"
                                     >
-                                        <LogOut size={20} /> Logout Account
+                                        <LogOut size={18} /> Logout Account
                                     </button>
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-2 gap-4">
-                                    <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center py-4 text-gray-700 dark:text-white font-bold bg-gray-50 dark:bg-gray-800 rounded-2xl transition-all active:scale-95">Log in</Link>
+                                    <Link to="/login" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center py-4 text-gray-700 dark:text-white font-bold bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm transition-all active:scale-95">Log in</Link>
                                     <Link to="/signup" onClick={() => setIsMenuOpen(false)} className="flex items-center justify-center py-4 bg-primary-500 text-white font-black rounded-2xl shadow-lg shadow-primary-500/20 transition-all active:scale-95">Join Now</Link>
                                 </div>
                             )}

@@ -20,8 +20,16 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
-  body {
-    @apply antialiased text-gray-800 bg-white dark:text-gray-100 dark:bg-gray-950 font-sans transition-colors duration-300;
+  html, body {
+    @apply antialiased text-gray-900 bg-white dark:bg-gray-950 dark:text-gray-100 selection:bg-primary-500 selection:text-white transition-colors duration-500;
+  }
+
+  * {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .no-transition * {
+    transition: none !important;
   }
   
   button, [role="button"], a {

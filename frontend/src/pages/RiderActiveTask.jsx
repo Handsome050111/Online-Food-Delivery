@@ -6,6 +6,7 @@ import { useLocation } from '../context/LocationContext';
 import { getCityCoordinates } from '../utils/mapUtils';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import { useSocket } from '../context/SocketContext';
 import Chat from '../components/Chat';
 
 const defaultIcon = L.icon({
@@ -15,13 +16,13 @@ const defaultIcon = L.icon({
     iconAnchor: [12, 41]
 });
 L.Marker.prototype.options.icon = defaultIcon;
-
 const RiderActiveTask = () => {
     const { city } = useLocation();
     const [activeOrders, setActiveOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isChatOpen, setIsChatOpen] = useState(false);
     const [activeOrderId, setActiveOrderId] = useState(null);
+    const socket = useSocket();
 
     const fetchActiveTasks = async () => {
         try {
@@ -41,7 +42,28 @@ const RiderActiveTask = () => {
 
     useEffect(() => {
         fetchActiveTasks();
-    }, []);
+
+        let watchId;
+        if (socket && navigator.geolocation) {
+            watchId = navigator.geolocation.watchPosition((position) => {
+                const location = [position.coords.latitude, position.coords.longitude];
+                // Emit location for each active order so relevant customers get updates
+                activeOrders.forEach(order => {
+                    socket.emit('update_location', {
+                        orderId: order._id,
+                        location
+                    });
+                });
+            }, (err) => console.error("Location error:", err), {
+                enableHighAccuracy: true,
+                maximumAge: 10000
+            });
+        }
+
+        return () => {
+            if (watchId) navigator.geolocation.clearWatch(watchId);
+        };
+    }, [socket, activeOrders.length]);
 
     const completeOrder = async (orderId) => {
         try {

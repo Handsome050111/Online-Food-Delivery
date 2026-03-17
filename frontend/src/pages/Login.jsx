@@ -8,8 +8,9 @@ const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
+    const [showResetForm, setShowResetForm] = useState(false);
+    const [resetData, setResetData] = useState({ token: '', newPassword: '' });
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -17,7 +18,7 @@ const Login = () => {
         setError('');
         setLoading(true);
         try {
-            const { data } = await api.post('/auth/login', { email, password });
+            const { data } = await api.post('/auth/login', { email, password, rememberMe });
 
             // Store user info in localStorage
             localStorage.setItem('userInfo', JSON.stringify(data));
@@ -45,10 +46,27 @@ const Login = () => {
         setLoading(true);
         try {
             const { data } = await api.post('/auth/forgot-password', { email });
-            toast.success(data.message || 'Reset link sent to your email');
+            toast.success('Reset token generated! (Check console for dev)');
+            setShowResetForm(true); // Show reset form after getting token
             setError('');
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to send reset link');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            await api.post('/auth/reset-password', { email, ...resetData });
+            toast.success('Password reset successfully! You can now login.');
+            setShowResetForm(false);
+            setResetData({ token: '', newPassword: '' });
+            setError('');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to reset password');
         } finally {
             setLoading(false);
         }
@@ -153,6 +171,8 @@ const Login = () => {
                                 id="remember-me"
                                 name="remember-me"
                                 type="checkbox"
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
                                 className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 dark:border-gray-700 rounded cursor-pointer"
                             />
                             <label htmlFor="remember-me" className="ml-2 block text-sm font-medium text-gray-700 dark:text-gray-400 cursor-pointer">
@@ -182,6 +202,47 @@ const Login = () => {
                         </button>
                     </div>
                 </form>
+
+                {showResetForm && (
+                    <div className="mt-8 pt-8 border-t border-gray-100 dark:border-gray-800 animate-in fade-in slide-in-from-bottom-4 duration-300">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Reset Password</h3>
+                            <button onClick={() => setShowResetForm(false)} className="text-xs text-gray-500 hover:text-gray-700 font-bold uppercase transition-colors">Cancel</button>
+                        </div>
+                        <form onSubmit={handleResetPassword} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Reset Token</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={resetData.token}
+                                    onChange={(e) => setResetData({ ...resetData, token: e.target.value.toUpperCase() })}
+                                    className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 outline-none transition-all sm:text-sm uppercase font-black tracking-widest"
+                                    placeholder="ENTER TOKEN"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">New Password</label>
+                                <input
+                                    type="password"
+                                    required
+                                    minLength="6"
+                                    value={resetData.newPassword}
+                                    onChange={(e) => setResetData({ ...resetData, newPassword: e.target.value })}
+                                    className="block w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-primary-500 outline-none transition-all sm:text-sm"
+                                    placeholder=" 최소 6자 이상"
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all shadow-md active:scale-[0.98]"
+                            >
+                                {loading ? 'Resetting...' : 'Update Password'}
+                            </button>
+                        </form>
+                    </div>
+                )}
 
                 <p className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400 font-medium">
                     Don't have an account?{' '}

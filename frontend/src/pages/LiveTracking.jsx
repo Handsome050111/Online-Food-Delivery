@@ -36,17 +36,28 @@ const LiveTracking = () => {
         }
     };
 
+    const [riderLocation, setRiderLocation] = useState(mapCenter);
+ 
     useEffect(() => {
         fetchOrder();
-
+ 
         if (socket) {
+            socket.emit('join', `order_${orderId}`);
+
             socket.on('order_status_update', (updatedOrder) => {
                 if (updatedOrder.orderId === orderId || updatedOrder._id === orderId) {
                     setOrder(updatedOrder);
                 }
             });
 
-            return () => socket.off('order_status_update');
+            socket.on('location_update', (location) => {
+                setRiderLocation(location);
+            });
+ 
+            return () => {
+                socket.off('order_status_update');
+                socket.off('location_update');
+            };
         }
     }, [orderId, socket]);
 
@@ -192,21 +203,15 @@ const LiveTracking = () => {
                                 </div>
                             </div>
                         </div>
-
-                        <div>
-                            <h4 className="text-gray-400 dark:text-gray-500 uppercase tracking-widest text-xs font-black mb-4">Live Map</h4>
-                            <div className="h-64 rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-800 shadow-inner">
-                                <MapContainer center={mapCenter} zoom={15} style={{ height: '100%', width: '100%' }}>
-                                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                    <Marker position={mapCenter}>
-                                        <Popup>Your Ride is here!</Popup>
-                                    </Marker>
-                                </MapContainer>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
+            <Chat 
+                orderId={order._id} 
+                recipientName={order.rider?.name || "Your Rider"} 
+                isOpen={isChatOpen} 
+                onClose={() => setIsChatOpen(false)} 
+            />
         </div>
     );
 };

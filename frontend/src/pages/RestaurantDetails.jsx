@@ -12,6 +12,7 @@ const RestaurantDetails = () => {
 
     const [restaurant, setRestaurant] = useState(null);
     const [menuItems, setMenuItems] = useState([]);
+    const [reviews, setReviews] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('All');
 
@@ -42,6 +43,11 @@ const RestaurantDetails = () => {
                         const categories = [...new Set(menuResponse.data.data.map(item => item.category))];
                         if (categories.length > 0) setActiveCategory(categories[0]);
                     }
+                }
+                // Fetch Reviews
+                const reviewsResponse = await api.get(`/reviews/restaurant/${id}`);
+                if (reviewsResponse.data.success) {
+                    setReviews(reviewsResponse.data.data);
                 }
             } catch (error) {
                 console.error("Error fetching restaurant details:", error);
@@ -176,6 +182,48 @@ const RestaurantDetails = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {displayedItems.map(item => (
                                         <FoodCard key={item._id} food={item} onAddToCart={() => handleAddToCart(item)} />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Reviews Section */}
+                        <div className="mb-10">
+                            <div className="flex items-center justify-between mb-8 border-b border-gray-100 dark:border-gray-800 pb-4">
+                                <h2 className="text-2xl font-black text-gray-900 dark:text-white flex items-center gap-3">
+                                    Customer Reviews
+                                    <span className="text-sm font-bold bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 px-3 py-1 rounded-full">{reviews.length}</span>
+                                </h2>
+                            </div>
+                            
+                            {reviews.length === 0 ? (
+                                <div className="bg-white dark:bg-gray-900 rounded-3xl p-12 text-center border border-gray-100 dark:border-gray-800 shadow-sm">
+                                    <Star size={48} className="mx-auto text-gray-200 dark:text-gray-800 mb-4" />
+                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">No reviews yet</h3>
+                                    <p className="text-gray-500 dark:text-gray-400 font-medium">Be the first to share your experience with {restaurant.name}.</p>
+                                </div>
+                            ) : (
+                                <div className="space-y-6">
+                                    {reviews.map((review) => (
+                                        <div key={review._id} className="bg-white dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm transition-all hover:shadow-md">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <div>
+                                                    <h4 className="font-black text-gray-900 dark:text-white mb-0.5">{review.userName}</h4>
+                                                    <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">{new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</p>
+                                                </div>
+                                                <div className="flex gap-0.5">
+                                                    {[...Array(5)].map((_, i) => (
+                                                        <Star 
+                                                            key={i} 
+                                                            size={14} 
+                                                            fill={i < review.rating ? "currentColor" : "none"} 
+                                                            className={i < review.rating ? "text-amber-400" : "text-gray-200 dark:text-gray-700"} 
+                                                        />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <p className="text-gray-600 dark:text-gray-400 font-medium leading-relaxed italic">"{review.comment}"</p>
+                                        </div>
                                     ))}
                                 </div>
                             )}

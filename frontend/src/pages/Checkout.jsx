@@ -115,7 +115,22 @@ const Checkout = () => {
 
         if (!formData.address || !formData.phone || !formData.firstName) {
             setError('Please fill in all required delivery details (First Name, Address, Phone)');
+            toast.error('Missing required delivery details');
             return;
+        }
+
+        if (formData.phone.length < 11) {
+            setError('Phone number must be at least 11 digits');
+            toast.error('Invalid phone number');
+            return;
+        }
+
+        if (paymentMethod === 'card') {
+            if (cardDetails.number.length < 16 || cardDetails.expiry.length < 4 || cardDetails.cvc.length < 3) {
+                setError('Please provide valid card details (16-digit number, expiry, and CVC)');
+                toast.error('Invalid card details');
+                return;
+            }
         }
 
         setIsProcessing(true);
@@ -187,28 +202,33 @@ const Checkout = () => {
                                     </h2>
                                     <form className="space-y-4">
                                         {error && (
-                                            <div className="bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 p-4 rounded-xl flex items-center gap-3 text-sm font-bold border border-red-100 dark:border-red-900/30 mb-4">
+                                            <div className="bg-red-50 dark:bg-red-900/10 text-red-600 dark:text-red-400 p-4 rounded-xl flex items-center gap-3 text-sm font-bold border border-red-100 dark:border-red-900/30 mb-4 animate-in slide-in-from-top-2">
                                                 <AlertCircle size={20} />
                                                 {error}
                                             </div>
                                         )}
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">First Name *</label>
-                                                <input type="text" value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" placeholder="John" />
+                                                <label className="block text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">First Name *</label>
+                                                <input type="text" value={formData.firstName} onChange={(e) => setFormData({...formData, firstName: e.target.value})} className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-primary-500 transition-colors" placeholder="John" required />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
-                                                <input type="text" value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" placeholder="Doe" />
+                                                <label className="block text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Last Name</label>
+                                                <input type="text" value={formData.lastName} onChange={(e) => setFormData({...formData, lastName: e.target.value})} className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-primary-500 transition-colors" placeholder="Doe" />
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Address *</label>
-                                            <input type="text" value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" placeholder="House 123, Street 4, Islamabad" />
+                                            <label className="block text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Delivery Address *</label>
+                                            <input type="text" value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-primary-500 transition-colors shadow-inner" placeholder="House 123, Street 4, Islamabad" required />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1">Phone Number *</label>
-                                            <input type="tel" value={formData.phone} onChange={handlePhoneChange} className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl px-4 py-3 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500" placeholder="03001234567" />
+                                            <label className="block text-sm font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest mb-2">Phone Number *</label>
+                                            <div className="relative">
+                                                <input type="tel" value={formData.phone} onChange={handlePhoneChange} className="w-full border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-xl px-4 py-3 font-bold focus:outline-none focus:border-primary-500 transition-colors" placeholder="03XXXXXXXXX" required />
+                                                {formData.phone && formData.phone.length < 11 && (
+                                                    <p className="text-[10px] text-orange-500 font-bold mt-1 uppercase tracking-tight">Phone number must be at least 11 digits</p>
+                                                )}
+                                            </div>
                                         </div>
                                     </form>
                                 </div>

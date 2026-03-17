@@ -97,7 +97,7 @@ const Chat = ({ orderId, recipientName, isOpen, onClose }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="fixed bottom-6 right-6 z-50 w-[350px] sm:w-[400px] h-[500px] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed bottom-6 right-6 z-[9999] w-[350px] sm:w-[400px] h-[500px] bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 duration-300">
             {/* Header */}
             <div className="bg-primary-600 p-4 text-white flex items-center justify-between">
                 <div className="flex items-center gap-3">
