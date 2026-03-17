@@ -18,6 +18,12 @@ module.exports = {
         console.log(`User ${socket.id} joined room: ${room}`);
       });
 
+      socket.on('send_message', (data) => {
+        const { orderId, message } = data;
+        // Broadcast to everyone in the order room except the sender
+        socket.to(`order_${orderId}`).emit('receive_message', message);
+      });
+
       socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
       });

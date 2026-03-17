@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Package, Truck, CheckCircle2, Clock, MapPin, Phone, ArrowLeft, RefreshCw } from 'lucide-react';
+import { Package, Truck, CheckCircle2, Clock, MapPin, Phone, ArrowLeft, RefreshCw, MessageSquare } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { useSocket } from '../context/SocketContext';
 import { useLocation } from '../context/LocationContext';
 import { getCityCoordinates } from '../utils/mapUtils';
 import api from '../services/api';
+import Chat from '../components/Chat';
 
 const defaultIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -21,6 +22,7 @@ const LiveTracking = () => {
     const socket = useSocket();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isChatOpen, setIsChatOpen] = useState(false);
 
     const fetchOrder = async () => {
         try {
@@ -154,11 +156,24 @@ const LiveTracking = () => {
                                     </div>
                                     <div>
                                         <p className="font-bold text-gray-900 dark:text-white">Contact No.</p>
-                                        <p className="text-sm text-gray-500 dark:text-gray-400 font-medium leading-none mt-1">Via App Support</p>
+                                        <button 
+                                            onClick={() => setIsChatOpen(true)}
+                                            className="text-sm text-primary-600 dark:text-primary-400 font-black flex items-center gap-1.5 mt-1 hover:underline"
+                                        >
+                                            <MessageSquare size={16} />
+                                            Message Rider
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        <Chat 
+                            orderId={order._id} 
+                            recipientName="Your Rider" 
+                            isOpen={isChatOpen} 
+                            onClose={() => setIsChatOpen(false)} 
+                        />
 
                         <div>
                             <h4 className="text-gray-400 dark:text-gray-500 uppercase tracking-widest text-xs font-black mb-4">Restaurant Info</h4>

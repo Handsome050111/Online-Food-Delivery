@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Navigation, MapPin, CheckCircle2, Phone } from 'lucide-react';
+import { Navigation, MapPin, CheckCircle2, Phone, MessageSquare } from 'lucide-react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { useLocation } from '../context/LocationContext';
 import { getCityCoordinates } from '../utils/mapUtils';
 import api from '../services/api';
 import toast from 'react-hot-toast';
+import Chat from '../components/Chat';
 
 const defaultIcon = L.icon({
     iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -19,6 +20,8 @@ const RiderActiveTask = () => {
     const { city } = useLocation();
     const [activeOrders, setActiveOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [activeOrderId, setActiveOrderId] = useState(null);
 
     const fetchActiveTasks = async () => {
         try {
@@ -127,10 +130,26 @@ const RiderActiveTask = () => {
                                         </div>
                                         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 font-medium">
                                             <Phone size={16} />
-                                            +92 300 1234567
+                                            <button 
+                                                onClick={() => {
+                                                    setActiveOrderId(order._id);
+                                                    setIsChatOpen(true);
+                                                }}
+                                                className="text-primary-600 dark:text-primary-400 font-black flex items-center gap-1.5 hover:underline"
+                                            >
+                                                <MessageSquare size={16} />
+                                                Message Customer
+                                            </button>
                                         </div>
                                         </div>
                                         
+                                        <Chat 
+                                            orderId={activeOrderId} 
+                                            recipientName="Customer" 
+                                            isOpen={isChatOpen && activeOrderId === order._id} 
+                                            onClose={() => setIsChatOpen(false)} 
+                                        />
+
                                         <button 
                                             onClick={() => completeOrder(order._id)}
                                             className="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition-colors flex items-center justify-center gap-2 active:scale-95 shadow-md shadow-green-500/20"

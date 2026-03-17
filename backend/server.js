@@ -42,6 +42,7 @@ app.use('/api/coupons', require('./routes/couponRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 app.use('/api/contact', require('./routes/contactRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/messages', require('./routes/messageRoutes'));
 
 // Robust Error Handler - MUST BE LAST
 app.use((err, req, res, next) => {
