@@ -64,7 +64,7 @@ const Navbar = () => {
                     {/* Logo & Location */}
                     <div className="flex items-center gap-6">
                         <Link to="/" className={`flex items-center gap-2 group ${isSearchOpen ? 'hidden sm:flex' : 'flex'}`}>
-                            <img src={logo} alt="FoodExpress Logo" className="h-10 w-auto object-contain" />
+                            <img src={logo} alt="FoodExpress Logo" className="h-14 w-auto object-contain" />
                         </Link>
 
                         <div className={`hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer group`} onClick={handleDetectLocation}>
@@ -194,7 +194,7 @@ const Navbar = () => {
                         {/* Mobile Menu Header */}
                         <div className="flex justify-between items-center h-16 px-6 border-b border-gray-100 dark:border-gray-800">
                             <Link to={getDashboardLink()} onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2">
-                                <img src={logo} alt="FoodExpress Logo" className="h-8 w-auto object-contain" />
+                                <img src={logo} alt="FoodExpress Logo" className="h-12 w-auto object-contain" />
                             </Link>
                             <button onClick={() => setIsMenuOpen(false)} className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
                                 <X size={24} />

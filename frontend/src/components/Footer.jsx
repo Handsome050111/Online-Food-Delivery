@@ -10,7 +10,7 @@ const Footer = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
                     <div className="col-span-1 md:col-span-1">
                         <Link to="/" className="flex items-center gap-2 mb-6 transition-transform hover:scale-105 inline-flex">
-                            <img src={logo} alt="FoodExpress Logo" className="h-10 w-auto object-contain" />
+                            <img src={logo} alt="FoodExpress Logo" className="h-14 w-auto object-contain" />
                         </Link>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
                             Delicious food from your favorite local restaurants delivered at lightning speed to your door.

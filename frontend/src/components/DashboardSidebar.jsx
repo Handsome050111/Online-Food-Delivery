@@ -15,8 +15,8 @@ const DashboardSidebar = ({ links, basePath }) => {
     return (
         <aside className="w-64 bg-white dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-50 border-r border-gray-100 dark:border-gray-800 transition-colors duration-300">
             <div className="h-16 flex items-center px-6 border-b border-gray-100 dark:border-gray-800">
-                <Link to="/" className="flex items-center gap-2 group transition-transform active:scale-95">
-                    <img src={logo} alt="FoodExpress Logo" className="h-8 w-auto object-contain" />
+                <Link to="/" className="flex items-center gap-2 group transition-transform active:scale-95 py-2">
+                    <img src={logo} alt="FoodExpress Logo" className="h-12 w-auto object-contain" />
                 </Link>
             </div>
 
