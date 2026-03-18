@@ -14,10 +14,12 @@ const OwnerDashboard = () => {
     const [recentOrders, setRecentOrders] = useState([]);
     const [stats, setStats] = useState({ ordersToday: 0, revenue: 0, rating: 0, menuItems: 0 });
     const [isEditing, setIsEditing] = useState(false);
+    const [needsProfileCompletion, setNeedsProfileCompletion] = useState(false);
     const [editData, setEditData] = useState({
         name: '',
         categories: '',
         address: '',
+        phone: '',
         deliveryTime: '',
         deliveryFee: '',
         image: ''
@@ -28,10 +30,21 @@ const OwnerDashboard = () => {
             const { data } = await api.get('/restaurants/my-restaurant');
             if (data.success) {
                 setRestaurant(data.data);
+                
+                const incomplete = !data.data.address || data.data.address.trim() === '' || !data.data.phone || data.data.phone.trim() === '';
+                if (incomplete) {
+                    setIsEditing(true);
+                    setNeedsProfileCompletion(true);
+                    toast.error('Please complete your restaurant profile (Address, Phone, etc) before proceeding!', { duration: 5000 });
+                } else {
+                    setNeedsProfileCompletion(false);
+                }
+                
                 setEditData({
                     name: data.data.name,
                     categories: Array.isArray(data.data.categories) ? data.data.categories.join(', ') : data.data.categories,
                     address: data.data.address,
+                    phone: data.data.phone || '',
                     deliveryTime: data.data.deliveryTime,
                     deliveryFee: data.data.deliveryFee,
                     image: data.data.image
@@ -53,6 +66,7 @@ const OwnerDashboard = () => {
             if (data.success) {
                 toast.success('Restaurant updated successfully!');
                 setRestaurant(data.data);
+                setNeedsProfileCompletion(false);
                 setIsEditing(false);
             }
         } catch (error) {
@@ -152,12 +166,19 @@ const OwnerDashboard = () => {
                     <p className="text-gray-500 dark:text-gray-400 font-medium pt-1">Manage your restaurant operations from here.</p>
                 </div>
                 <div className="flex items-center gap-3">
-                    <button 
-                        onClick={() => setIsEditing(!isEditing)}
-                        className={`px-6 py-2 rounded-xl font-black tracking-tight transition-all active:scale-95 shadow-sm ${isEditing ? 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300' : 'bg-primary-500 text-white shadow-primary-500/20 shadow-lg'}`}
-                    >
-                        {isEditing ? 'Cancel Editing' : 'Edit Restaurant'}
-                    </button>
+                    {needsProfileCompletion ? (
+                        <div className="bg-red-50 text-red-600 px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 border border-red-100 dark:bg-red-900/10 dark:border-red-900/30">
+                            <ShieldAlert size={18} />
+                            <span>Action Required: Setup Profile</span>
+                        </div>
+                    ) : (
+                        <button 
+                            onClick={() => setIsEditing(!isEditing)}
+                            className={`px-6 py-2 rounded-xl font-black tracking-tight transition-all active:scale-95 shadow-sm ${isEditing ? 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300' : 'bg-primary-500 text-white shadow-primary-500/20 shadow-lg'}`}
+                        >
+                            {isEditing ? 'Cancel Editing' : 'Edit Restaurant'}
+                        </button>
+                    )}
                     <div className="flex items-center gap-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 px-3.5 py-2 rounded-xl border border-green-200 dark:border-green-800 shadow-sm">
                         <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse shadow-sm shadow-green-500"></div>
                         <span className="text-sm font-bold tracking-wide uppercase">Active</span>
@@ -166,8 +187,10 @@ const OwnerDashboard = () => {
             </div>
 
             {isEditing && (
-                <div className="bg-white dark:bg-gray-900 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-800 p-8 mb-10 animate-in slide-in-from-top-4 duration-500">
-                    <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6">Update Restaurant Details</h2>
+                <div className={`bg-white dark:bg-gray-900 rounded-3xl shadow-xl border p-8 mb-10 animate-in slide-in-from-top-4 duration-500 ${needsProfileCompletion ? 'border-red-300 dark:border-red-900/50 shadow-red-500/10' : 'border-gray-100 dark:border-gray-800'}`}>
+                    <h2 className="text-xl font-black text-gray-900 dark:text-white mb-6">
+                        {needsProfileCompletion ? 'Complete Your Restaurant Profile' : 'Update Restaurant Details'}
+                    </h2>
                     <form onSubmit={handleUpdateRestaurant} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-4">
                             <div>
@@ -180,7 +203,11 @@ const OwnerDashboard = () => {
                             </div>
                             <div>
                                 <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Physical Address</label>
-                                <input type="text" value={editData.address} onChange={(e) => setEditData({...editData, address: e.target.value})} className="w-full bg-gray-50 dark:bg-gray-800 border-none rounded-xl px-4 py-3 font-bold text-gray-900 dark:text-white" required />
+                                <input type="text" value={editData.address} onChange={(e) => setEditData({...editData, address: e.target.value})} className="w-full bg-gray-50 dark:bg-gray-800 border-none rounded-xl px-4 py-3 font-bold text-gray-900 dark:text-white" placeholder="123 Main St, City" required />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-2">Business Phone Number</label>
+                                <input type="tel" value={editData.phone} onChange={(e) => setEditData({...editData, phone: e.target.value})} className="w-full bg-gray-50 dark:bg-gray-800 border-none rounded-xl px-4 py-3 font-bold text-gray-900 dark:text-white" placeholder="Let customers know how to contact you" required />
                             </div>
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
@@ -210,12 +237,15 @@ const OwnerDashboard = () => {
                                 </div>
                             </div>
                             <button type="submit" className="mt-6 bg-primary-500 hover:bg-primary-600 text-white font-black py-4 rounded-2xl active:scale-[0.98] transition-all shadow-lg shadow-primary-500/20">
-                                Save All Changes
+                                {needsProfileCompletion ? 'Save and Activate Dashboard' : 'Save All Changes'}
                             </button>
                         </div>
                     </form>
                 </div>
             )}
+
+            {!needsProfileCompletion && (
+                <>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <StatsCard title="Today's Sales" value={`Rs ${stats.todaySales}`} icon={DollarSign} colorClass="text-green-600 bg-green-100" />
@@ -261,6 +291,8 @@ const OwnerDashboard = () => {
                     </div>
                 </div>
             </div>
+            </>
+            )}
         </div>
     );
 };

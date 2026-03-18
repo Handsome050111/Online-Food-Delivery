@@ -154,7 +154,7 @@ const deleteRestaurant = async (req, res) => {
 // @access  Private/Owner
 const updateMyRestaurant = async (req, res) => {
     try {
-        const { name, category, address, description, deliveryTime, deliveryFee, minOrder, image } = req.body;
+        const { name, category, address, phone, description, deliveryTime, deliveryFee, minOrder, image } = req.body;
         
         const restaurant = await Restaurant.findOne({ owner: req.user._id });
 
@@ -162,6 +162,7 @@ const updateMyRestaurant = async (req, res) => {
             restaurant.name = name || restaurant.name;
             restaurant.category = category || restaurant.category;
             restaurant.address = address || restaurant.address;
+            restaurant.phone = phone || restaurant.phone;
             restaurant.description = description || restaurant.description;
             restaurant.deliveryTime = deliveryTime || restaurant.deliveryTime;
             restaurant.deliveryFee = deliveryFee || restaurant.deliveryFee;
