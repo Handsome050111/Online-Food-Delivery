@@ -49,7 +49,7 @@ const loginUser = async (req, res) => {
 // @access  Public
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, restaurantName, restaurantCategory } = req.body;
 
         // Validation
         if (!name || !email || !password) {
@@ -90,6 +90,17 @@ const registerUser = async (req, res) => {
                 title: `New ${role.charAt(0).toUpperCase() + role.slice(1)} Registration`,
                 message: `${name} has registered as a ${role} and is awaiting approval.`,
                 type: 'info'
+            });
+        }
+
+        if (role === 'owner' && restaurantName) {
+            const Restaurant = require('../models/Restaurant');
+            await Restaurant.create({
+                name: restaurantName,
+                ownerName: name,
+                owner: user._id,
+                category: restaurantCategory || 'Other',
+                status: 'pending' // Admin approval required
             });
         }
 
