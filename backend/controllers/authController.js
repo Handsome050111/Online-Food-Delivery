@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
@@ -74,15 +75,23 @@ const registerUser = async (req, res) => {
 
         // Determine status based on role
         // For security/management: Owners and Riders require manual approval ('pending')
-        const status = (role === 'owner' || role === 'rider') ? 'pending' : 'active';
-
         const user = await User.create({
             name,
             email,
             password,
             role: role || 'customer',
-            status
+            status: role === 'customer' ? 'active' : 'pending' // pending for riders/owners
         });
+
+        // Notify admins if a restaurant owner or rider registers
+        if (role === 'rider' || role === 'owner') {
+            await Notification.create({
+                recipientRole: 'admin',
+                title: `New ${role.charAt(0).toUpperCase() + role.slice(1)} Registration`,
+                message: `${name} has registered as a ${role} and is awaiting approval.`,
+                type: 'info'
+            });
+        }
 
         if (user) {
             res.status(201).json({

@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 const bcrypt = require('bcryptjs');
 
 // @desc    Get all users (with search/filter)
@@ -82,8 +83,21 @@ const toggleUserStatus = async (req, res) => {
                 return res.status(400).json({ message: 'Cannot suspend the master admin account' });
             }
 
-            user.status = user.status === 'suspended' ? 'active' : 'suspended';
+            const previousStatus = user.status;
+            // If user is pending or suspended, make them active. If active, suspend them.
+            user.status = user.status === 'active' ? 'suspended' : 'active';
             const updatedUser = await user.save();
+
+            // Send notification if a newly approved rider/owner
+            if (previousStatus !== 'active' && updatedUser.status === 'active') {
+                await Notification.create({
+                    recipientRole: updatedUser.role,
+                    recipientId: updatedUser._id,
+                    title: 'Account Approved',
+                    message: `Congratulations! Your ${updatedUser.role} account has been approved by the admin.`,
+                    type: 'success'
+                });
+            }
 
             res.json({
                 _id: updatedUser._id,

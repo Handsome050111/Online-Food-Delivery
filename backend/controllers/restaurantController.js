@@ -1,4 +1,5 @@
 const Restaurant = require('../models/Restaurant');
+const Notification = require('../models/Notification');
 
 // @desc    Get all restaurants (with search/filter)
 // @route   GET /api/restaurants
@@ -45,6 +46,14 @@ const createRestaurant = async (req, res) => {
             rating: 0
         });
 
+        // Notify admins of new restaurant registration
+        await Notification.create({
+            recipientRole: 'admin',
+            title: 'New Restaurant Registration',
+            message: `${name} has registered and is awaiting approval.`,
+            type: 'info'
+        });
+
         res.status(201).json(restaurant);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -67,6 +76,14 @@ const updateRestaurantStatus = async (req, res) => {
             if (status === 'active' && restaurant.owner) {
                 const User = require('../models/User');
                 await User.findByIdAndUpdate(restaurant.owner, { status: 'active' });
+
+                await Notification.create({
+                    recipientRole: 'owner',
+                    recipientId: restaurant.owner,
+                    title: 'Restaurant Approved',
+                    message: `Congratulations! Your restaurant '${restaurant.name}' has been approved and is now active.`,
+                    type: 'success'
+                });
             }
 
             res.json(updatedRestaurant);
