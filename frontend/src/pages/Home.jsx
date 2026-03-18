@@ -17,6 +17,16 @@ const Home = () => {
     const [isLoadingRestaurants, setIsLoadingRestaurants] = useState(true);
     const [isLoadingDishes, setIsLoadingDishes] = useState(true);
 
+    // Auto-redirect staff/admin away from the customer homepage
+    useEffect(() => {
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        if (userInfo) {
+            if (userInfo.role === 'admin') navigate('/admin');
+            else if (userInfo.role === 'rider') navigate('/rider');
+            else if (userInfo.role === 'owner') navigate('/owner');
+        }
+    }, [navigate]);
+
     useEffect(() => {
         const fetchPopularRestaurants = async () => {
             try {
