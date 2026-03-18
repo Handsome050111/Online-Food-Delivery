@@ -5,6 +5,7 @@ import { useCart } from '../context/CartContext';
 import { useLocation } from '../context/LocationContext';
 import { useTheme } from '../context/ThemeContext';
 import { toast } from 'react-hot-toast';
+import logo from '../assets/logo.png';
 
 const Navbar = () => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -63,10 +64,7 @@ const Navbar = () => {
                     {/* Logo & Location */}
                     <div className="flex items-center gap-6">
                         <Link to="/" className={`flex items-center gap-2 group ${isSearchOpen ? 'hidden sm:flex' : 'flex'}`}>
-                            <div className="bg-primary-500 text-white p-1.5 rounded-lg group-hover:bg-primary-600 transition-colors">
-                                <UtensilsCrossed size={24} />
-                            </div>
-                            <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Food<span className="text-primary-500">Express</span></span>
+                            <img src={logo} alt="FoodExpress Logo" className="h-10 w-auto object-contain" />
                         </Link>
 
                         <div className={`hidden lg:flex items-center gap-2 px-3 py-1.5 bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer group`} onClick={handleDetectLocation}>
