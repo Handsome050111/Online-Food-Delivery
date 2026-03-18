@@ -194,10 +194,7 @@ const Navbar = () => {
                         {/* Mobile Menu Header */}
                         <div className="flex justify-between items-center h-16 px-6 border-b border-gray-100 dark:border-gray-800">
                             <Link to={getDashboardLink()} onClick={() => setIsMenuOpen(false)} className="flex items-center gap-2">
-                                <div className="bg-primary-500 text-white p-1 rounded-lg">
-                                    <UtensilsCrossed size={20} />
-                                </div>
-                                <span className="text-xl font-black dark:text-white text-gray-900">Food<span className="text-primary-500">Express</span></span>
+                                <img src={logo} alt="FoodExpress Logo" className="h-8 w-auto object-contain" />
                             </Link>
                             <button onClick={() => setIsMenuOpen(false)} className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
                                 <X size={24} />

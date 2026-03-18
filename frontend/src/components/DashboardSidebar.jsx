@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { UtensilsCrossed, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const DashboardSidebar = ({ links, basePath }) => {
     const location = useLocation();
@@ -15,10 +16,7 @@ const DashboardSidebar = ({ links, basePath }) => {
         <aside className="w-64 bg-white dark:bg-gray-900 text-gray-800 dark:text-white min-h-screen flex flex-col fixed left-0 top-0 bottom-0 z-50 border-r border-gray-100 dark:border-gray-800 transition-colors duration-300">
             <div className="h-16 flex items-center px-6 border-b border-gray-100 dark:border-gray-800">
                 <Link to="/" className="flex items-center gap-2 group transition-transform active:scale-95">
-                    <div className="bg-primary-500 text-white p-1.5 rounded-lg group-hover:bg-primary-600 transition-colors">
-                        <UtensilsCrossed size={20} />
-                    </div>
-                    <span className="text-xl font-extrabold tracking-tight text-gray-900 dark:text-white">Food<span className="text-primary-500">Express</span></span>
+                    <img src={logo} alt="FoodExpress Logo" className="h-8 w-auto object-contain" />
                 </Link>
             </div>
 

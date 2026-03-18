@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { UtensilsCrossed, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const Footer = () => {
     return (
@@ -9,10 +10,7 @@ const Footer = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
                     <div className="col-span-1 md:col-span-1">
                         <Link to="/" className="flex items-center gap-2 mb-6 transition-transform hover:scale-105 inline-flex">
-                            <div className="bg-primary-500 text-white p-1.5 rounded-lg">
-                                <UtensilsCrossed size={20} />
-                            </div>
-                            <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">Food<span className="text-primary-500">Express</span></span>
+                            <img src={logo} alt="FoodExpress Logo" className="h-10 w-auto object-contain" />
                         </Link>
                         <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
                             Delicious food from your favorite local restaurants delivered at lightning speed to your door.

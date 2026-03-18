@@ -1,16 +1,14 @@
 import React from 'react';
-import { UtensilsCrossed } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const Loader = ({ fullScreen = false }) => {
     const loaderContent = (
-        <div className="flex flex-col items-center justify-center space-y-4">
-            <div className="relative">
-                <div className="w-16 h-16 border-4 border-primary-100 dark:border-primary-900/30 border-t-primary-500 rounded-full animate-spin"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-primary-500">
-                    <UtensilsCrossed size={20} />
-                </div>
+        <div className="flex flex-col items-center justify-center space-y-6">
+            <div className="relative flex items-center justify-center">
+                <div className="absolute w-20 h-20 border-4 border-primary-100 dark:border-primary-900/30 border-t-primary-500 rounded-full animate-spin"></div>
+                <img src={logo} alt="Loading..." className="h-10 w-auto object-contain z-10 animate-pulse" />
             </div>
-            <p className="text-gray-500 dark:text-gray-400 font-medium animate-pulse">Preparing deliciousness...</p>
+            <p className="text-gray-500 dark:text-gray-400 font-medium animate-pulse tracking-wide">Preparing deliciousness...</p>
         </div>
     );
 
