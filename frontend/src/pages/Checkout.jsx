@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { CreditCard, Banknote, MapPin, Truck, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -54,6 +54,32 @@ const Checkout = () => {
     const location = useLocation();
 
     const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
+
+    useEffect(() => {
+        if (!userInfo || !userInfo.token) return;
+        
+        const fetchProfile = async () => {
+            try {
+                const { data } = await api.get('/users/profile');
+                // Handle different backend response shapes (.user payload vs direct object)
+                const u = data.success ? data.user : data;
+                
+                if (u) {
+                    const nameParts = u.name ? u.name.split(' ') : [''];
+                    setFormData({
+                        firstName: nameParts[0] || '',
+                        lastName: nameParts.slice(1).join(' ') || '',
+                        address: u.address || '',
+                        phone: u.phone || ''
+                    });
+                }
+            } catch (err) {
+                console.error('Failed to prefill checkout data:', err);
+            }
+        };
+
+        fetchProfile();
+    }, [userInfo?.token]);
 
     // Calculate totals
     const cartItems = cart?.items || [];

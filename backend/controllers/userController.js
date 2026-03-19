@@ -124,12 +124,16 @@ const updateUserProfile = async (req, res) => {
             user.email = req.body.email || user.email;
             user.phone = req.body.phone !== undefined ? req.body.phone : user.phone;
             user.address = req.body.address !== undefined ? req.body.address : user.address;
+            user.avatar = req.body.avatar !== undefined ? req.body.avatar : user.avatar;
             
             if (req.body.password) {
                 if (req.body.currentPassword) {
                     const isMatch = await user.matchPassword(req.body.currentPassword);
                     if (!isMatch) {
                         return res.status(400).json({ message: 'Invalid current password' });
+                    }
+                    if (req.body.password === req.body.currentPassword) {
+                        return res.status(400).json({ message: 'New password cannot be the same as your current password' });
                     }
                 }
                 user.password = req.body.password;
@@ -144,6 +148,7 @@ const updateUserProfile = async (req, res) => {
                 role: updatedUser.role,
                 phone: updatedUser.phone,
                 address: updatedUser.address,
+                avatar: updatedUser.avatar,
                 token: req.headers.authorization.split(' ')[1] // return existing token
             });
         } else {
@@ -169,6 +174,7 @@ const getUserProfile = async (req, res) => {
                 role: user.role,
                 phone: user.phone,
                 address: user.address,
+                avatar: user.avatar,
             };
 
             if (user.role === 'rider') {

@@ -31,9 +31,13 @@ const Signup = () => {
 
         setLoading(true);
         try {
-            await api.post('/auth/register', formData);
+            const { data } = await api.post('/auth/register', formData);
+            
+            // Auto login after successful registration
+            localStorage.setItem('userInfo', JSON.stringify(data));
+            
             toast.success('Your account has been created successfully!');
-            navigate('/login');
+            navigate('/');
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to create account');
         } finally {
@@ -178,6 +182,16 @@ const Signup = () => {
                         Sign in instead
                     </Link>
                 </p>
+
+                <div className="mt-6 flex justify-center gap-4 text-sm font-bold text-gray-500 dark:text-gray-500">
+                    <Link to="/partner" className="hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
+                        Partner with us
+                    </Link>
+                    <span>&bull;</span>
+                    <Link to="/rider-registration" className="hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
+                        Ride for us
+                    </Link>
+                </div>
             </div>
         </div>
     );

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Navigate, useLocation, Link, useNavigate } from 'react-router-dom';
 import { Bell, Search, Menu, UserCircle, LayoutDashboard, Users, Store, ShoppingBag, Tag, Bike, DollarSign, ClipboardList, UtensilsCrossed, Package, Navigation, ArrowLeft, LogOut } from 'lucide-react';
 import DashboardSidebar from '../components/DashboardSidebar';
+import api from '../services/api';
 
 const ADMIN_LINKS = [
     { path: '/admin', label: 'Dashboard Overview', icon: LayoutDashboard },
@@ -34,6 +35,21 @@ const DashboardLayout = () => {
 
     // Read user auth state to populate dynamic dashboard names
     const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
+
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        if (!userInfo || !userInfo.token) return;
+        const fetchUnread = async () => {
+            try {
+                const { data } = await api.get('/notifications');
+                setUnreadCount(data.filter(n => !n.isRead).length);
+            } catch (error) {
+                console.error("Failed to fetch unread notifications count");
+            }
+        };
+        fetchUnread();
+    }, [userInfo?.token]);
 
     const isAdmin = location.pathname.startsWith('/admin');
     const isOwner = location.pathname.startsWith('/owner');
@@ -90,14 +106,12 @@ const DashboardLayout = () => {
                     </div>
 
                     <div className="flex items-center gap-5">
-                        <div className="hidden md:flex items-center bg-gray-50 dark:bg-gray-800/50 rounded-full px-4 py-2 border border-gray-200 dark:border-gray-700 focus-within:ring-2 focus-within:ring-primary-100 dark:focus-within:ring-primary-900/30 focus-within:border-primary-400 transition-all">
-                            <Search size={16} className="text-gray-400" />
-                            <input type="text" placeholder="Search..." className="bg-transparent border-none focus:outline-none px-2 text-sm w-48 font-bold text-gray-700 dark:text-gray-300" />
-                        </div>
 
                         <Link to={`${basePath}/notifications`} className="relative p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-full transition-colors active:scale-95 block">
                             <Bell size={20} />
-                            {/* Removed hardcoded notification dot */}
+                            {unreadCount > 0 && (
+                                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 border-2 border-white dark:border-gray-900 rounded-full animate-pulse shadow-sm shadow-red-500/50"></span>
+                            )}
                         </Link>
 
                         <div className="h-8 w-px bg-gray-200 dark:bg-gray-800 mx-1"></div>

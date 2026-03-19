@@ -135,7 +135,7 @@ const RestaurantDetails = () => {
                                         </div>
                                         <div className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300 font-bold bg-gray-50 dark:bg-gray-800 px-3.5 py-1.5 rounded-full">
                                             <Navigation size={16} className="text-primary-500" />
-                                            <span>{(typeof restaurant.deliveryFee === 'number' ? restaurant.deliveryFee : 0) === 0 ? 'Free Delivery' : `Rs. ${restaurant.deliveryFee.toFixed(0)} delivery`}</span>
+                                            <span>{(typeof restaurant.deliveryFee === 'number' ? restaurant.deliveryFee : 250) === 0 ? 'Free Delivery' : `Rs. ${(typeof restaurant.deliveryFee === 'number' ? restaurant.deliveryFee : 250).toFixed(0)} delivery`}</span>
                                         </div>
                                     </div>
                                 </div>

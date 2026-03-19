@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, CheckCircle2, AlertCircle, Info } from 'lucide-react';
+import { Bell, CheckCircle2, AlertCircle, Info, X } from 'lucide-react';
 import api from '../services/api';
 import toast from 'react-hot-toast';
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedNotif, setSelectedNotif] = useState(null);
 
     const fetchNotifications = async () => {
         try {
@@ -23,6 +24,18 @@ const Notifications = () => {
     useEffect(() => {
         fetchNotifications();
     }, []);
+
+    const handleNotifClick = async (notif) => {
+        setSelectedNotif(notif);
+        if (!notif.isRead) {
+            try {
+                await api.put(`/notifications/${notif._id}/read`);
+                setNotifications(notifications.map(n => n._id === notif._id ? { ...n, isRead: true } : n));
+            } catch (error) {
+                console.error("Failed to mark notification as read", error);
+            }
+        }
+    };
 
     const markAllAsRead = async () => {
         try {
@@ -71,7 +84,8 @@ const Notifications = () => {
                         notifications.map((notif) => (
                             <div
                                 key={notif._id}
-                                className={`flex items-start gap-4 p-4 rounded-xl relative overflow-hidden group transition-colors border ${notif.isRead
+                                onClick={() => handleNotifClick(notif)}
+                                className={`flex items-start gap-4 p-4 rounded-xl relative overflow-hidden group transition-colors border cursor-pointer ${notif.isRead
                                         ? 'hover:bg-gray-50 dark:hover:bg-gray-800/50 border-transparent'
                                         : notif.type === 'error'
                                             ? 'bg-red-50 dark:bg-red-900/10 border-red-100 dark:border-red-900/30'
@@ -112,6 +126,45 @@ const Notifications = () => {
                     )}
                 </div>
             </div>
+
+            {/* Detail Modal */}
+            {selectedNotif && (
+                <div className="fixed inset-0 bg-gray-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-800 w-full max-w-md animate-in zoom-in-95 duration-200">
+                        <div className="flex justify-between items-center p-5 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 rounded-t-2xl">
+                            <div className="flex items-center gap-3">
+                                <div className={`p-2 rounded-lg ${
+                                    selectedNotif.type === 'error' ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400' :
+                                    selectedNotif.type === 'success' ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' :
+                                    'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                                }`}>
+                                    {selectedNotif.type === 'error' ? <AlertCircle size={20} /> :
+                                     selectedNotif.type === 'success' ? <CheckCircle2 size={20} /> :
+                                     <Info size={20} />}
+                                </div>
+                                <h2 className="text-lg font-extrabold text-gray-900 dark:text-white tracking-tight leading-tight">System Message</h2>
+                            </div>
+                            <button onClick={() => setSelectedNotif(null)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors p-1.5 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 shadow-sm border border-gray-100 dark:border-gray-700">
+                                <X size={18} />
+                            </button>
+                        </div>
+                        
+                        <div className="p-6">
+                            <h3 className="text-xl font-black text-gray-900 dark:text-white mb-4">{selectedNotif.title}</h3>
+                            <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-100 dark:border-gray-800 mb-6">
+                                <p className="text-gray-700 dark:text-gray-300 leading-relaxed font-medium">
+                                    {selectedNotif.message}
+                                </p>
+                            </div>
+                            
+                            <div className="flex justify-between items-center text-xs font-bold text-gray-400 uppercase tracking-widest">
+                                <span>{new Date(selectedNotif.createdAt).toLocaleDateString()}</span>
+                                <span>{new Date(selectedNotif.createdAt).toLocaleTimeString()}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

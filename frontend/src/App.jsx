@@ -29,6 +29,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import PartnerRegistration from './pages/PartnerRegistration';
+import RiderRegistration from './pages/RiderRegistration';
 
 // Dashboard Pages
 import AdminDashboard from './pages/AdminDashboard';
@@ -78,6 +79,7 @@ function App() {
                                     
                                     {/* Partner Registration */}
                                     <Route path="/partner" element={<PartnerRegistration />} />
+                                    <Route path="/rider-registration" element={<RiderRegistration />} />
                                 </Route>
 
                                 {/* Admin Dashboard */}

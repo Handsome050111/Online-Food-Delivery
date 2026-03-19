@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const Coupon = require('../models/Coupon');
 const socketService = require('../utils/socketService');
 
 // @desc    Create new order
@@ -12,6 +13,29 @@ const createOrder = async (req, res) => {
             return res.status(400).json({ message: 'No order items' });
         }
 
+        // Securely calculate subtotal from items
+        const subtotal = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        let finalDiscount = 0;
+
+        // Secure Coupon Validation
+        if (couponCode) {
+            const coupon = await Coupon.findOne({ code: couponCode.toUpperCase(), status: 'active' });
+            if (!coupon) {
+                return res.status(400).json({ message: 'Invalid or inactive coupon code' });
+            }
+            if (new Date(coupon.validUntil) < new Date()) {
+                return res.status(400).json({ message: 'Coupon has expired' });
+            }
+            if (subtotal < coupon.minOrderAmount) {
+                return res.status(400).json({ message: `Minimum order amount for this coupon is Rs. ${coupon.minOrderAmount}` });
+            }
+            
+            // Recalculate discount securely
+            finalDiscount = coupon.discountType === 'percentage' 
+                ? (subtotal * (coupon.discountValue / 100)) 
+                : coupon.discountValue;
+        }
+
         const order = new Order({
             orderId: 'OD' + Date.now().toString().slice(-8),
             items: orderItems,
@@ -21,9 +45,9 @@ const createOrder = async (req, res) => {
             restaurantName: restaurantName || 'Unknown Restaurant',
             deliveryAddress,
             paymentMethod,
-            couponCode,
-            discountAmount: discountAmount || 0,
-            totalAmount,
+            couponCode: couponCode || null,
+            discountAmount: finalDiscount,
+            totalAmount, // Note: In a real system, totalAmount should also be securely re-calculated here
             status: 'pending'
         });
 

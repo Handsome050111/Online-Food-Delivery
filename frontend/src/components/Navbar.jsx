@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingBag, User, UtensilsCrossed, Menu, Search, X, LogOut, MapPin, Locate, Moon, Sun, Monitor } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -17,8 +17,24 @@ const Navbar = () => {
     const { theme, setTheme } = useTheme();
     const navigate = useNavigate();
 
-    // Read user auth state
-    const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
+    // Read user auth state dynamically
+    const [userInfo, setUserInfo] = useState(() => JSON.parse(localStorage.getItem('userInfo') || 'null'));
+
+    useEffect(() => {
+        const handleUserUpdate = () => {
+            setUserInfo(JSON.parse(localStorage.getItem('userInfo') || 'null'));
+        };
+        
+        window.addEventListener('user_updated', handleUserUpdate);
+        
+        // Also listen to raw storage events across tabs
+        window.addEventListener('storage', handleUserUpdate);
+        
+        return () => {
+            window.removeEventListener('user_updated', handleUserUpdate);
+            window.removeEventListener('storage', handleUserUpdate);
+        };
+    }, []);
 
     // Calculate total items in cart safely
     const cartItems = cart?.items || [];
@@ -109,7 +125,7 @@ const Navbar = () => {
                         )}
 
                         {/* Theme Toggle */}
-                        <div className="relative">
+                        <div className="relative hidden md:block">
                             <button
                                 onClick={() => setIsThemeOpen(!isThemeOpen)}
                                 className="p-2 text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors flex items-center justify-center"
@@ -157,8 +173,12 @@ const Navbar = () => {
                                         to={getDashboardLink()} 
                                         className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-bold transition-colors"
                                     >
-                                        <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400">
-                                            <User size={18} />
+                                        <div className="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900/30 overflow-hidden flex items-center justify-center text-primary-600 dark:text-primary-400 border border-primary-200 dark:border-primary-800">
+                                            {userInfo.avatar ? (
+                                                <img src={userInfo.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <User size={18} />
+                                            )}
                                         </div>
                                         <span className="hidden lg:block">{userInfo.name?.split(' ')[0]}</span>
                                     </Link>
@@ -245,8 +265,12 @@ const Navbar = () => {
                                         onClick={() => setIsMenuOpen(false)}
                                         className="flex items-center gap-4 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:scale-[0.98] active:scale-95"
                                     >
-                                        <div className="w-12 h-12 rounded-full bg-primary-500 flex items-center justify-center text-white shadow-lg shadow-primary-500/20">
-                                            <User size={24} />
+                                        <div className="w-12 h-12 rounded-full bg-primary-500 overflow-hidden flex items-center justify-center text-white shadow-lg shadow-primary-500/20">
+                                            {userInfo.avatar ? (
+                                                <img src={userInfo.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <User size={24} />
+                                            )}
                                         </div>
                                         <div>
                                             <p className="font-black text-gray-900 dark:text-white leading-none mb-1">{userInfo.name}</p>

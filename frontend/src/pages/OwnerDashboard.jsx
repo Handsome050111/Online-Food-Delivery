@@ -75,17 +75,28 @@ const OwnerDashboard = () => {
         }
     };
 
-    const handleImageUpload = (e) => {
+    const handleImageUpload = async (e) => {
         const file = e.target.files[0];
-        if (file) {
-            // For now, we simulate upload by converting to base64 or using a placeholder
-            // In a real app, this would upload to S3/Cloudinary and return a URL
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setEditData({ ...editData, image: reader.result });
-                toast.success('Image ready for update!');
-            };
-            reader.readAsDataURL(file);
+        if (!file) return;
+
+        const imgData = new FormData();
+        imgData.append('image', file);
+        
+        try {
+            const uploadPromise = api.post('/upload', imgData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            
+            toast.promise(uploadPromise, {
+                loading: 'Uploading image...',
+                success: 'Image uploaded successfully!',
+                error: 'Failed to upload image.'
+            });
+            
+            const { data } = await uploadPromise;
+            setEditData({ ...editData, image: data.imagePath });
+        } catch (error) {
+            console.error('Image upload failed:', error);
         }
     };
 

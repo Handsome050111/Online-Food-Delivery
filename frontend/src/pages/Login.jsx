@@ -252,6 +252,16 @@ const Login = () => {
                         Sign up now
                     </Link>
                 </p>
+
+                <div className="mt-6 flex justify-center gap-4 text-sm font-bold text-gray-500 dark:text-gray-500">
+                    <Link to="/partner" className="hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
+                        Partner with us
+                    </Link>
+                    <span>&bull;</span>
+                    <Link to="/rider-registration" className="hover:text-primary-500 dark:hover:text-primary-400 transition-colors">
+                        Ride for us
+                    </Link>
+                </div>
             </div>
         </div>
     );

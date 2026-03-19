@@ -44,6 +44,10 @@ app.use('/api/contact', require('./routes/contactRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/messages', require('./routes/messageRoutes'));
 app.use('/api/reviews', require('./routes/reviewRoutes'));
+app.use('/api/upload', require('./routes/uploadRoutes'));
+
+// Serve uploads folder statically
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
 
 // Robust Error Handler - MUST BE LAST
 app.use((err, req, res, next) => {

@@ -110,16 +110,6 @@ const AdminRestaurants = () => {
             </div>
 
             <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 p-6">
-                <div className="flex items-center bg-gray-50 dark:bg-gray-800 rounded-xl px-4 py-2 border border-gray-100 dark:border-gray-700 focus-within:ring-2 focus-within:ring-primary-100 dark:focus-within:ring-primary-900/30 focus-within:border-primary-400 transition-all mb-6 max-w-md">
-                    <Search size={18} className="text-gray-400" />
-                    <input
-                        type="text"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Search restaurants, owners, or category..."
-                        className="bg-transparent border-none focus:outline-none px-3 py-1 w-full text-sm font-bold text-gray-700 dark:text-gray-300"
-                    />
-                </div>
 
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse min-w-[800px]">
@@ -251,7 +241,7 @@ const AdminRestaurants = () => {
                                             </div>
                                             <div>
                                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Operating Address</p>
-                                                <p className="font-bold text-gray-800 dark:text-gray-200 leading-relaxed">{selectedRestaurant.address || 'Standard operating address'}</p>
+                                                <p className="font-bold text-gray-800 dark:text-gray-200 leading-relaxed">{selectedRestaurant.address || 'Not Provided'}</p>
                                             </div>
                                         </div>
                                     </div>

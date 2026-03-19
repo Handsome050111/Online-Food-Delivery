@@ -66,6 +66,31 @@ const OwnerMenu = () => {
         }
     };
 
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const imgData = new FormData();
+        imgData.append('image', file);
+        
+        try {
+            const uploadPromise = api.post('/upload', imgData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            
+            toast.promise(uploadPromise, {
+                loading: 'Uploading image...',
+                success: 'Image uploaded successfully!',
+                error: 'Failed to upload image.'
+            });
+            
+            const { data } = await uploadPromise;
+            setFormData({ ...formData, image: data.imagePath });
+        } catch (error) {
+            console.error('Image upload failed:', error);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -154,18 +179,6 @@ const OwnerMenu = () => {
             </div>
 
             <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
-                <div className="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
-                    <div className="flex items-center bg-white dark:bg-gray-900 rounded-xl px-4 py-2 border border-gray-200 dark:border-gray-800 focus-within:ring-2 focus-within:ring-primary-100 dark:focus-within:ring-primary-900/30 focus-within:border-primary-400 transition-all max-w-md shadow-sm">
-                        <Search size={18} className="text-gray-400" />
-                        <input
-                            type="text"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                            placeholder="Search your menu..."
-                            className="bg-transparent border-none focus:outline-none px-3 py-1 w-full text-sm font-bold text-gray-700 dark:text-gray-300"
-                        />
-                    </div>
-                </div>
 
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse min-w-[800px]">
@@ -202,7 +215,7 @@ const OwnerMenu = () => {
                                                 {item.category}
                                             </span>
                                         </td>
-                                        <td className="py-4 px-6 font-extrabold text-gray-900 dark:text-white border-none">Rs. {item.price.toFixed(2)}</td>
+                                        <td className="py-4 px-6 font-extrabold text-gray-900 dark:text-white border-none">Rs. {Number(item.price)}</td>
                                         <td className="py-4 px-6">
                                             {item.popular ? (
                                                 <span className="text-amber-600 dark:text-amber-400 font-bold bg-amber-50 dark:bg-amber-900/20 px-2.5 py-1 rounded-lg text-xs border border-amber-200 dark:border-amber-800">Popular</span>
@@ -267,7 +280,7 @@ const OwnerMenu = () => {
                                     <div>
                                         <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Price (Rs.)</label>
                                         <input 
-                                            type="number" step="0.01" required 
+                                            type="number" step="0.01" min="0" required 
                                             value={formData.price} 
                                             onChange={e => setFormData({...formData, price: e.target.value})} 
                                             className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900/30 focus:border-primary-400 transition-colors font-medium outline-none" 
@@ -287,15 +300,21 @@ const OwnerMenu = () => {
                                 </div>
                                 
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Image URL</label>
-                                    <input 
-                                        type="url" 
-                                        value={formData.image} 
-                                        onChange={e => setFormData({...formData, image: e.target.value})} 
-                                        className="w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900/30 focus:border-primary-400 transition-colors font-medium outline-none" 
-                                        placeholder="https://images.unsplash.com/..." 
-                                    />
-                                    <p className="text-xs text-gray-500 dark:text-gray-400 font-bold mt-1.5 ml-1">Leave blank to use a default image placeholder.</p>
+                                    <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-1.5">Item Image</label>
+                                    <div className="flex items-center gap-4">
+                                        {formData.image && (
+                                            <div className="w-16 h-16 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 flex-shrink-0">
+                                                <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                                            </div>
+                                        )}
+                                        <input 
+                                            type="file" 
+                                            accept="image/*"
+                                            onChange={handleImageUpload} 
+                                            className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-primary-100 dark:focus:ring-primary-900/30 focus:border-primary-400 transition-colors font-medium outline-none file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100 dark:file:bg-primary-900/20 dark:file:text-primary-400 cursor-pointer" 
+                                        />
+                                    </div>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400 font-bold mt-1.5 ml-1">Leave blank to use a default placeholder or keep the existing image.</p>
                                 </div>
                                 
                                 <div className="pt-2">

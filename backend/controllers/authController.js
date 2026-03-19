@@ -49,7 +49,7 @@ const loginUser = async (req, res) => {
 // @access  Public
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password, role, restaurantName, restaurantCategory } = req.body;
+        const { name, email, password, role, restaurantName, restaurantCategory, avatar, vehicleType, licensePlate } = req.body;
 
         // Validation
         if (!name || !email || !password) {
@@ -80,7 +80,15 @@ const registerUser = async (req, res) => {
             email,
             password,
             role: role || 'customer',
-            status: role === 'customer' ? 'active' : 'pending' // pending for riders/owners
+            status: role === 'customer' ? 'active' : 'pending',
+            avatar: avatar || '',
+            ...(role === 'rider' ? {
+                riderDetails: {
+                    vehicleType: vehicleType || 'None',
+                    licensePlate: licensePlate || '',
+                    isAvailable: true
+                }
+            } : {})
         });
 
         // Notify admins if a restaurant owner or rider registers

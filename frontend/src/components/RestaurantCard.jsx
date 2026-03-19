@@ -36,7 +36,7 @@ const RestaurantCard = ({ restaurant }) => {
                     </div>
                     <div className="flex items-center gap-1.5">
                         <Navigation size={16} className="text-primary-500" />
-                        <span>{(restaurant.deliveryFee || 0) === 0 ? 'Free' : `Rs. ${(restaurant.deliveryFee || 0).toFixed(0)}`}</span>
+                        <span>{(typeof restaurant.deliveryFee === 'number' ? restaurant.deliveryFee : 250) === 0 ? 'Free' : `Rs. ${(typeof restaurant.deliveryFee === 'number' ? restaurant.deliveryFee : 250).toFixed(0)}`}</span>
                     </div>
                 </div>
             </div>
