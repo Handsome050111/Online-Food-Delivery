@@ -7,6 +7,7 @@ import FoodCard from '../components/FoodCard';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-hot-toast';
 import api from '../services/api';
+import heroBg from '../assets/hero.jpg';
 
 const Home = () => {
     const { addToCart } = useCart();
@@ -75,8 +76,16 @@ const Home = () => {
     return (
         <div className="bg-gray-50 dark:bg-gray-950 flex flex-col w-full overflow-hidden transition-colors duration-300">
             {/* Hero Section */}
-            <section className="relative bg-white dark:bg-gray-900 pt-20 pb-28 md:pt-28 md:pb-36">
-                <div className="absolute inset-0 bg-primary-50/70 dark:bg-primary-900/10 -skew-y-3 origin-bottom-left transform-gpu -z-10"></div>
+            <section className="relative bg-white dark:bg-gray-900 pt-32 pb-28 md:pt-36 md:pb-36 overflow-hidden">
+                {/* Custom Hero Background Image */}
+                <div 
+                    className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+                    style={{ backgroundImage: `url(${heroBg})`, backgroundPosition: 'center 30%' }}
+                ></div>
+                {/* Contrast Overlays */}
+                <div className="absolute inset-0 bg-white/85 dark:bg-gray-900/85 backdrop-blur-[1px] z-0"></div>
+                <div className="absolute inset-0 bg-primary-50/50 dark:bg-primary-900/20 -skew-y-3 origin-bottom-left transform-gpu z-10"></div>
+                
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-30">
                     <div className="text-center max-w-4xl mx-auto">
                         <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-8 leading-[1.1]">

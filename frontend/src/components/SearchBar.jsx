@@ -60,7 +60,6 @@ const SearchBar = ({ placeholder = "Search for restaurants or dishes...", onSear
                     type="text"
                     placeholder={placeholder}
                     className="w-full bg-transparent border-none focus:outline-none text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 text-sm sm:text-base py-1.5"
-                    onChange={(e) => onSearch && onSearch(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter' && onSearch) {
                             onSearch(e.currentTarget.value);

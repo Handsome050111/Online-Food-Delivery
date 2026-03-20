@@ -74,6 +74,7 @@ const Navbar = () => {
     };
 
     return (
+        <>
         <nav className="sticky top-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm border-b border-gray-100 dark:border-gray-800">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-16 items-center">
@@ -206,10 +207,11 @@ const Navbar = () => {
                     </div>
                 </div>
             </div>
+        </nav>
 
-            {/* Mobile Menu Overlay */}
-            {isMenuOpen && (
-                <div className="md:hidden fixed inset-0 z-[1000] bg-white dark:bg-gray-950 animate-in fade-in slide-in-from-right duration-300">
+        {/* Mobile Menu Overlay (Moved outside <nav> to escape backdrop-filter containing block constraint) */}
+        {isMenuOpen && (
+            <div className="md:hidden fixed inset-0 z-[1000] bg-white dark:bg-gray-950 animate-in fade-in slide-in-from-right duration-300">
                     <div className="flex flex-col h-full">
                         {/* Mobile Menu Header */}
                         <div className="flex justify-between items-center h-16 px-6 border-b border-gray-100 dark:border-gray-800">
@@ -294,7 +296,7 @@ const Navbar = () => {
                     </div>
                 </div>
             )}
-        </nav>
+        </>
     );
 };
 

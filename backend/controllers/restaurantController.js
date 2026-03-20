@@ -1,4 +1,5 @@
 const Restaurant = require('../models/Restaurant');
+const MenuItem = require('../models/MenuItem');
 const Notification = require('../models/Notification');
 
 // @desc    Get all restaurants (with search/filter)
@@ -8,12 +9,26 @@ const getRestaurants = async (req, res) => {
     try {
         const { search, status } = req.query;
         let query = {};
+        let searchMatchedDishes = [];
 
         if (search) {
+            // Find specific menu items mirroring the search query
+            const matchingMenuItems = await MenuItem.find({
+                $or: [
+                    { name: { $regex: search, $options: 'i' } },
+                    { category: { $regex: search, $options: 'i' } },
+                    { description: { $regex: search, $options: 'i' } }
+                ]
+            }).populate('restaurantId', 'name deliveryFee minOrder rating');
+            
+            searchMatchedDishes = matchingMenuItems;
+            const restaurantIdsFromMenuItems = matchingMenuItems.map(item => item.restaurantId._id);
+
             query.$or = [
                 { name: { $regex: search, $options: 'i' } },
                 { category: { $regex: search, $options: 'i' } },
-                { ownerName: { $regex: search, $options: 'i' } }
+                { ownerName: { $regex: search, $options: 'i' } },
+                { _id: { $in: restaurantIdsFromMenuItems } }
             ];
         }
 
@@ -22,7 +37,12 @@ const getRestaurants = async (req, res) => {
         }
 
         const restaurants = await Restaurant.find(query).sort({ createdAt: -1 });
-        res.json({ success: true, count: restaurants.length, data: restaurants });
+        
+        let responseData = { success: true, count: restaurants.length, data: restaurants };
+        if (search) {
+            responseData.menuItems = searchMatchedDishes;
+        }
+        res.json(responseData);
     } catch (error) {
         res.status(500).json({ success: false, message: 'Server error', error: error.message });
     }

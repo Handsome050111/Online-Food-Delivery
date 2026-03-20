@@ -2,16 +2,20 @@ import React, { useState, useEffect, useMemo } from 'react';
 import SearchBar from '../components/SearchBar';
 import FilterSidebar from '../components/FilterSidebar';
 import RestaurantCard from '../components/RestaurantCard';
+import FoodCard from '../components/FoodCard';
 import { SlidersHorizontal, Loader2 } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import { toast } from 'react-hot-toast';
+import { useCart } from '../context/CartContext';
 
 const Restaurants = () => {
+    const { addToCart } = useCart();
     const [searchParams] = useSearchParams();
     const urlSearch = searchParams.get('search') || '';
 
     const [restaurants, setRestaurants] = useState([]);
+    const [menuItems, setMenuItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -26,16 +30,25 @@ const Restaurants = () => {
         setSearchQuery(urlSearch);
     }, [urlSearch]);
 
-    // Fetch live restaurants on mount
+    // Fetch live restaurants on mount and search change
     useEffect(() => {
         const fetchRestaurants = async () => {
+            setIsLoading(true);
             try {
-                // Fetch only active restaurants for the customer facing portal
-                const { data } = await api.get('/restaurants?status=active');
-                if (Array.isArray(data)) {
+                // Fetch only active restaurants for the customer facing portal, appending search query
+                let endpoint = '/restaurants?status=active';
+                if (searchQuery) {
+                    endpoint += `&search=${encodeURIComponent(searchQuery)}`;
+                }
+                
+                const { data } = await api.get(endpoint);
+                
+                if (data && data.success) {
+                    setRestaurants(Array.isArray(data.data) ? data.data : data);
+                    setMenuItems(data.menuItems || []);
+                } else if (Array.isArray(data)) {
                     setRestaurants(data);
-                } else if (data && data.success && Array.isArray(data.data)) {
-                    setRestaurants(data.data);
+                    setMenuItems([]);
                 }
             } catch (error) {
                 console.error("Error fetching restaurants:", error);
@@ -45,20 +58,14 @@ const Restaurants = () => {
             }
         };
         fetchRestaurants();
-    }, []);
+    }, [searchQuery]);
 
     // Apply Filters & Search
     const filteredRestaurants = useMemo(() => {
         let result = [...restaurants];
 
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
-            result = result.filter(r =>
-                (r.name && r.name.toLowerCase().includes(query)) ||
-                (r.category && r.category.toLowerCase().includes(query)) ||
-                (r.tags && r.tags.some(tag => tag.toLowerCase().includes(query)))
-            );
-        }
+        // Search text is now fully handled by the powerful backend API
+        // which includes cross-referencing MenuItem names/categories.
 
         // Apply Custom Filters
         if (activeFilters.cuisines && activeFilters.cuisines.length > 0) {
@@ -92,11 +99,15 @@ const Restaurants = () => {
         setIsUpdating(true);
         setActiveFilters(filters);
         setVisibleCount(6); // Reset pagination on filter
-        // Add fake delay to simulate processing heavy filters/API call
         setTimeout(() => {
             setIsUpdating(false);
             setShowMobileFilters(false); // Close mobile sidebar
         }, 400);
+    };
+
+    const handleAddToCart = (dish) => {
+        addToCart(dish, dish.restaurantId || { _id: 'pop_res', name: 'Unknown Restaurant', deliveryFee: 0 });
+        toast.success(`${dish.name} added to cart!`);
     };
 
     return (
@@ -151,6 +162,27 @@ const Restaurants = () => {
                             </div>
                         ) : (
                             <>
+                                {/* Matching Dishes Grid */}
+                                {searchQuery && menuItems.length > 0 && (
+                                    <div className="mb-12 transition-opacity duration-300">
+                                        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Dishes matching "{searchQuery}"</h2>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                            {menuItems.map(item => (
+                                                <FoodCard 
+                                                    key={item._id} 
+                                                    food={item} 
+                                                    onAddToCart={() => handleAddToCart(item)}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Restaurants Grid */}
+                                {searchQuery && (restaurants.length > 0 || menuItems.length > 0) && (
+                                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6">Restaurants</h2>
+                                )}
+                                
                                 <div className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 transition-opacity duration-300 ${isUpdating ? 'opacity-50' : 'opacity-100'}`}>
                                     {filteredRestaurants.length === 0 ? (
                                         <div className="col-span-full py-16 text-center text-gray-500 dark:text-gray-400 font-bold">No restaurants found matching your criteria.</div>
